@@ -1,0 +1,10 @@
+#ifndef __ETL_PROFILE_H__
+#define __ETL_PROFILE_H__
+
+#define ETL_COMPILER_GENERIC
+#define ETL_TARGET_OS_FREERTOS
+#define ETL_NO_STL
+#define ETL_NO_CPP_NAN_SUPPORT
+#define ETL_NO_64BIT_TYPES
+
+#endif /* CONF_ETL_H_ */

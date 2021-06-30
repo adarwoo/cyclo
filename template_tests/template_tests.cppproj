@@ -1,0 +1,1731 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
+    <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
+    <avrdevice>ATxmega128A4U</avrdevice>
+    <avrdeviceseries>xmegaau</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>CPP</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>template_tests</AssemblyName>
+    <Name>template_tests</Name>
+    <RootNamespace>template_tests</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <ResetRule>0</ResetRule>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <EraseKey />
+    <AsfFrameworkConfig>
+      <framework-data>
+  <options>
+    <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.basic.sleepmgr" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="xmega.drivers.twi" value="Add" config="master" content-id="Atmel.ASF" />
+    <option id="xmega.drivers.tc" value="Add" config="" content-id="Atmel.ASF" />
+  </options>
+  <configurations>
+    <configuration key="config.xmega.drivers.twi.mode" value="master" default="both" content-id="Atmel.ASF" />
+  </configurations>
+  <files>
+    <file path="src/main.c" framework="" version="" source="common/applications/user_application/main.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/config/conf_board.h" framework="" version="" source="common/applications/user_application/user_board/config/conf_board.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/boards/board.h" framework="" version="" source="common/boards/board.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/boards/user_board/init.c" framework="" version="" source="common/boards/user_board/init.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/boards/user_board/user_board.h" framework="" version="" source="common/boards/user_board/user_board.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/utils/interrupt.h" framework="" version="" source="common/utils/interrupt.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/utils/interrupt/interrupt_avr8.h" framework="" version="" source="common/utils/interrupt/interrupt_avr8.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/utils/make/Makefile.avr.in" framework="" version="" source="common/utils/make/Makefile.avr.in" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/utils/parts.h" framework="" version="" source="common/utils/parts.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/assembler.h" framework="" version="" source="xmega/utils/assembler.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/assembler/gas.h" framework="" version="" source="xmega/utils/assembler/gas.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/bit_handling/clz_ctz.h" framework="" version="" source="xmega/utils/bit_handling/clz_ctz.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/compiler.h" framework="" version="" source="xmega/utils/compiler.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/preprocessor/mrepeat.h" framework="" version="" source="xmega/utils/preprocessor/mrepeat.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/preprocessor/preprocessor.h" framework="" version="" source="xmega/utils/preprocessor/preprocessor.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/preprocessor/stringz.h" framework="" version="" source="xmega/utils/preprocessor/stringz.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/preprocessor/tpaste.h" framework="" version="" source="xmega/utils/preprocessor/tpaste.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/progmem.h" framework="" version="" source="xmega/utils/progmem.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/utils/status_codes.h" framework="" version="" source="xmega/utils/status_codes.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/cpu/ccp.s" framework="" version="3.49.1" source="xmega\drivers\cpu\ccp.s" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/cpu/xmega_reset_cause.h" framework="" version="3.49.1" source="xmega\drivers\cpu\xmega_reset_cause.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/cpu/ccp.h" framework="" version="3.49.1" source="xmega\drivers\cpu\ccp.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/nvm/nvm.c" framework="" version="3.49.1" source="xmega\drivers\nvm\nvm.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/nvm/nvm_asm.s" framework="" version="3.49.1" source="xmega\drivers\nvm\nvm_asm.s" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/nvm/nvm.h" framework="" version="3.49.1" source="xmega\drivers\nvm\nvm.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/pmic/pmic.h" framework="" version="3.49.1" source="xmega\drivers\pmic\pmic.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/sleep/sleep.h" framework="" version="3.49.1" source="xmega\drivers\sleep\sleep.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/tc/tc.c" framework="" version="3.49.1" source="xmega\drivers\tc\tc.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/tc/tc.h" framework="" version="3.49.1" source="xmega\drivers\tc\tc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/xmega/sysclk.c" framework="" version="3.49.1" source="common\services\clock\xmega\sysclk.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/pll.h" framework="" version="3.49.1" source="common\services\clock\pll.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/genclk.h" framework="" version="3.49.1" source="common\services\clock\genclk.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/osc.h" framework="" version="3.49.1" source="common\services\clock\osc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/xmega/pll.h" framework="" version="3.49.1" source="common\services\clock\xmega\pll.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/xmega/sysclk.h" framework="" version="3.49.1" source="common\services\clock\xmega\sysclk.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/xmega/osc.h" framework="" version="3.49.1" source="common\services\clock\xmega\osc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/clock/sysclk.h" framework="" version="3.49.1" source="common\services\clock\sysclk.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/Config/conf_clock.h" framework="" version="3.49.1" source="common\services\clock\xmega\module_config_usb\conf_clock.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/sleepmgr/xmega/sleepmgr.c" framework="" version="3.49.1" source="common\services\sleepmgr\xmega\sleepmgr.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/sleepmgr/sleepmgr.h" framework="" version="3.49.1" source="common\services\sleepmgr\sleepmgr.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/sleepmgr/xmega/sleepmgr.h" framework="" version="3.49.1" source="common\services\sleepmgr\xmega\sleepmgr.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/Config/conf_sleepmgr.h" framework="" version="3.49.1" source="common\services\sleepmgr\xmega\module_config\conf_sleepmgr.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/ioport/xmega/ioport_compat.c" framework="" version="3.49.1" source="common\services\ioport\xmega\ioport_compat.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/ioport/xmega/ioport_compat.h" framework="" version="3.49.1" source="common\services\ioport\xmega\ioport_compat.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/ioport/xmega/ioport.h" framework="" version="3.49.1" source="common\services\ioport\xmega\ioport.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/ioport/ioport.h" framework="" version="3.49.1" source="common\services\ioport\ioport.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/twi/twim.c" framework="" version="3.49.1" source="xmega\drivers\twi\twim.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/twi/twim.h" framework="" version="3.49.1" source="xmega\drivers\twi\twim.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/xmega/drivers/twi/twi_common.h" framework="" version="3.49.1" source="xmega\drivers\twi\twi_common.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/Config/conf_twim.h" framework="" version="3.49.1" source="xmega\drivers\twi\module_config\conf_twim.h" changed="False" content-id="Atmel.ASF" />
+  </files>
+  <documentation help="https://asf.microchip.com/docs/3.49.1/common.applications.user_application.user_board.xmegaau/html/index.html" />
+  <offline-documentation help="" />
+  <dependencies>
+    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.49.1" />
+  </dependencies>
+  <project id="common.applications.user_application.user_board.xmegaau" value="Add" config="" content-id="Atmel.ASF" />
+  <board id="board.user_board.xmegaau" value="Add" config="" content-id="Atmel.ASF" />
+</framework-data>
+    </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
+    <avrtoolserialnumber>J42700005355</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E9746</avrdeviceexpectedsignature>
+    <avrtoolinterface>PDI</avrtoolinterface>
+    <com_atmel_avrdbg_tool_atmelice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>4000000</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J42700005355</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
+    </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGccCpp>
+  <avrgcc.common.Device>-mmcu=atxmega128a4u</avrgcc.common.Device>
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+  <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>BOARD=USER_BOARD</Value>
+      <Value>NDEBUG</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
+  <avrgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.2.141\include\</Value>
+      <Value>../freeRTOS/include</Value>
+      <Value>../include</Value>
+      <Value>../src/ASF/common/boards/user_board</Value>
+      <Value>../src/ASF/common/boards</Value>
+      <Value>../src/ASF/xmega/utils/preprocessor</Value>
+      <Value>../src/ASF/xmega/utils</Value>
+      <Value>../src/ASF/common/utils</Value>
+      <Value>../src</Value>
+      <Value>../src/config</Value>
+      <Value>../src/ASF/xmega/drivers/cpu</Value>
+      <Value>../src/ASF/xmega/drivers/nvm</Value>
+      <Value>../src/ASF/xmega/drivers/pmic</Value>
+      <Value>../src/ASF/xmega/drivers/sleep</Value>
+      <Value>../src/ASF/xmega/drivers/tc</Value>
+      <Value>../src/ASF/common/services/clock</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/ioport</Value>
+      <Value>../src/ASF/xmega/drivers/twi</Value>
+    </ListValues>
+  </avrgcc.compiler.directories.IncludePaths>
+  <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.OtherFlags>-fdata-sections</avrgcc.compiler.optimization.OtherFlags>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax</avrgcc.compiler.miscellaneous.OtherFlags>
+  <avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcccpp.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>BOARD=USER_BOARD</Value>
+      <Value>NDEBUG</Value>
+    </ListValues>
+  </avrgcccpp.compiler.symbols.DefSymbols>
+  <avrgcccpp.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.2.141\include\</Value>
+      <Value>../freeRTOS/include</Value>
+      <Value>../include</Value>
+      <Value>../src/ASF/common/boards/user_board</Value>
+      <Value>../src/ASF/common/boards</Value>
+      <Value>../src/ASF/xmega/utils/preprocessor</Value>
+      <Value>../src/ASF/xmega/utils</Value>
+      <Value>../src/ASF/common/utils</Value>
+      <Value>../src</Value>
+      <Value>../src/config</Value>
+      <Value>../src/ASF/xmega/drivers/cpu</Value>
+      <Value>../src/ASF/xmega/drivers/nvm</Value>
+      <Value>../src/ASF/xmega/drivers/pmic</Value>
+      <Value>../src/ASF/xmega/drivers/sleep</Value>
+      <Value>../src/ASF/xmega/drivers/tc</Value>
+      <Value>../src/ASF/common/services/clock</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../include/c++</Value>
+      <Value>../src/ASF/common/services/ioport</Value>
+      <Value>../src/ASF/common/services/twi</Value>
+      <Value>../src/ASF/xmega/drivers/twi</Value>
+    </ListValues>
+  </avrgcccpp.compiler.directories.IncludePaths>
+  <avrgcccpp.compiler.optimization.level>Optimize for size (-Os)</avrgcccpp.compiler.optimization.level>
+  <avrgcccpp.compiler.optimization.PackStructureMembers>True</avrgcccpp.compiler.optimization.PackStructureMembers>
+  <avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
+  <avrgcccpp.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+    </ListValues>
+  </avrgcccpp.linker.libraries.Libraries>
+  <avrgcccpp.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.2.141\include\</Value>
+      <Value>../src/ASF/common/boards/user_board</Value>
+      <Value>../src/ASF/common/boards</Value>
+      <Value>../src/ASF/xmega/utils/preprocessor</Value>
+      <Value>../src/ASF/xmega/utils</Value>
+      <Value>../src/ASF/common/utils</Value>
+      <Value>../src</Value>
+      <Value>../src/config</Value>
+      <Value>../src/ASF/xmega/drivers/cpu</Value>
+      <Value>../src/ASF/xmega/drivers/nvm</Value>
+      <Value>../src/ASF/xmega/drivers/pmic</Value>
+      <Value>../src/ASF/xmega/drivers/sleep</Value>
+      <Value>../src/ASF/xmega/drivers/tc</Value>
+      <Value>../src/ASF/common/services/clock</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/ioport</Value>
+      <Value>../src/ASF/xmega/drivers/twi</Value>
+    </ListValues>
+  </avrgcccpp.assembler.general.IncludePaths>
+</AvrGccCpp>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGccCpp>
+  <avrgcc.common.Device>-mmcu=atxmega128a4u</avrgcc.common.Device>
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+  <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>BOARD=USER_BOARD</Value>
+      <Value>DEBUG</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
+  <avrgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.2.141\include\</Value>
+      <Value>../freeRTOS/include</Value>
+      <Value>../include</Value>
+      <Value>../src/ASF/common/boards/user_board</Value>
+      <Value>../src/ASF/common/boards</Value>
+      <Value>../src/ASF/xmega/utils/preprocessor</Value>
+      <Value>../src/ASF/xmega/utils</Value>
+      <Value>../src/ASF/common/utils</Value>
+      <Value>../src</Value>
+      <Value>../src/config</Value>
+      <Value>../src/ASF/xmega/drivers/cpu</Value>
+      <Value>../src/ASF/xmega/drivers/nvm</Value>
+      <Value>../src/ASF/xmega/drivers/pmic</Value>
+      <Value>../src/ASF/xmega/drivers/sleep</Value>
+      <Value>../src/ASF/xmega/drivers/tc</Value>
+      <Value>../src/ASF/common/services/clock</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/ioport</Value>
+      <Value>../src/ASF/xmega/drivers/twi</Value>
+    </ListValues>
+  </avrgcc.compiler.directories.IncludePaths>
+  <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.OtherFlags>-fdata-sections</avrgcc.compiler.optimization.OtherFlags>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax</avrgcc.compiler.miscellaneous.OtherFlags>
+  <avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcccpp.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>BOARD=USER_BOARD</Value>
+      <Value>DEBUG</Value>
+    </ListValues>
+  </avrgcccpp.compiler.symbols.DefSymbols>
+  <avrgcccpp.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.2.141\include\</Value>
+      <Value>../freeRTOS/include</Value>
+      <Value>../include</Value>
+      <Value>../src/ASF/common/boards/user_board</Value>
+      <Value>../src/ASF/common/boards</Value>
+      <Value>../src/ASF/xmega/utils/preprocessor</Value>
+      <Value>../src/ASF/xmega/utils</Value>
+      <Value>../src/ASF/common/utils</Value>
+      <Value>../src</Value>
+      <Value>../src/config</Value>
+      <Value>../src/ASF/xmega/drivers/cpu</Value>
+      <Value>../src/ASF/xmega/drivers/nvm</Value>
+      <Value>../src/ASF/xmega/drivers/pmic</Value>
+      <Value>../src/ASF/xmega/drivers/sleep</Value>
+      <Value>../src/ASF/xmega/drivers/tc</Value>
+      <Value>../src/ASF/common/services/clock</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../include/c++</Value>
+      <Value>../src/ASF/common/services/ioport</Value>
+      <Value>../src/ASF/common/services/twi</Value>
+      <Value>../src/ASF/xmega/drivers/twi</Value>
+    </ListValues>
+  </avrgcccpp.compiler.directories.IncludePaths>
+  <avrgcccpp.compiler.optimization.level>Optimize debugging experience (-Og)</avrgcccpp.compiler.optimization.level>
+  <avrgcccpp.compiler.optimization.PackStructureMembers>True</avrgcccpp.compiler.optimization.PackStructureMembers>
+  <avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcccpp.compiler.optimization.DebugLevel>Default (-g2)</avrgcccpp.compiler.optimization.DebugLevel>
+  <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
+  <avrgcccpp.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+    </ListValues>
+  </avrgcccpp.linker.libraries.Libraries>
+  <avrgcccpp.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\XMEGAA_DFP\1.2.141\include\</Value>
+      <Value>../src/ASF/common/boards/user_board</Value>
+      <Value>../src/ASF/common/boards</Value>
+      <Value>../src/ASF/xmega/utils/preprocessor</Value>
+      <Value>../src/ASF/xmega/utils</Value>
+      <Value>../src/ASF/common/utils</Value>
+      <Value>../src</Value>
+      <Value>../src/config</Value>
+      <Value>../src/ASF/xmega/drivers/cpu</Value>
+      <Value>../src/ASF/xmega/drivers/nvm</Value>
+      <Value>../src/ASF/xmega/drivers/pmic</Value>
+      <Value>../src/ASF/xmega/drivers/sleep</Value>
+      <Value>../src/ASF/xmega/drivers/tc</Value>
+      <Value>../src/ASF/common/services/clock</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/ioport</Value>
+      <Value>../src/ASF/xmega/drivers/twi</Value>
+    </ListValues>
+  </avrgcccpp.assembler.general.IncludePaths>
+  <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
+</AvrGccCpp>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="freeRTOS\croutine.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\event_groups.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\hooks.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\atomic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\croutine.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\deprecated_definitions.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\event_groups.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\FreeRTOS.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\list.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\message_buffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\mpu_prototypes.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\mpu_wrappers.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\portable.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\portmacro.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\projdefs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\queue.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\semphr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\StackMacros.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\stack_macros.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\stream_buffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\task.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\include\timers.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\list.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\port.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\queue.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\stream_buffer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\tasks.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="freeRTOS\timers.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\c++\bits\c++config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\c++\bits\cpu_defines.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\c++\bits\os_defines.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\c++\bits\std_abs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\c++\complex.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\absolute.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\algorithm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\alignment.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\array.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\array_view.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\array_wrapper.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\atomic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\atomic\atomic_arm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\atomic\atomic_clang_sync.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\atomic\atomic_gcc_sync.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\atomic\atomic_std.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\basic_format_spec.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\basic_string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\basic_string_stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\binary.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\bitset.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\bit_stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\bloom_filter.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\bresenham_line.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\buffer_descriptors.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\callback.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\callback_service.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\callback_timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\char_traits.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\checksum.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\circular_buffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\combinations.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\compare.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\constant.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\container.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\correlation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\covariance.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_a.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_arc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_aug_ccitt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_buypass.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_ccitt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_cdma2000.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_dds110.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_dectr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_dectx.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_dnp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_en13757.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_genibus.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_kermit.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_maxim.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_mcrf4xx.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_modbus.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_profibus.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_riello.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_t10dif.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_teledisk.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_tms37157.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_usb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_x25.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc16_xmodem.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_bzip2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_c.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_d.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_jamcrc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_mpeg2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_posix.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_q.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc32_xfer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc64_ecma.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_ccitt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_cdma2000.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_darc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_dvbs2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_ebu.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_icode.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_itu.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_maxim.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_rohc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\crc8_wcdma.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\cstring.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\cumulative_moving_average.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\cyclic_value.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\debounce.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\debug_count.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\delegate.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\delegate_service.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\deprecated\factory.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\deque.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\doxygen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\endianness.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\enum_type.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\error_handler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\exception.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16_ccitt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16_genibus.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16_kermit.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16_modbus.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16_usb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16_x25.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc16_xmodem.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc32.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc32_bzip2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc32_c.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc32_mpeg2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc32_posix.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc64_ecma.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc8_ccitt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\crc8_rohc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\icache.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\experimental\variant_new.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\factorial.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\fibonacci.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\file_error_numbers.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\fixed_iterator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\fixed_sized_memory_block_allocator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\flags.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\flat_map.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\flat_multimap.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\flat_multiset.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\flat_set.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\fnv_1.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\format_spec.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\forward_list.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\frame_check_sequence.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\fsm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\function.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\functional.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\gamma.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\fsm_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\largest_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\message_packet_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\message_router_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\smallest_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\type_lookup_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\type_select_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\type_traits_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generators\variant_pool_generator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\generic_pool.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\hash.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\hfsm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\histogram.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\ihash.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\imemory_block_allocator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\indirect_vector.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\instance_count.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\integral_limits.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\intrusive_forward_list.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\intrusive_links.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\intrusive_list.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\intrusive_queue.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\intrusive_stack.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\invert.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\io_port.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\ipool.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\ireference_counted_message_pool.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\iterator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\iterator_tokenizer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\jenkins.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\largest.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\limiter.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\limits.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\list.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\log.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\macros.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\map.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\math_constants.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mean.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\memory.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\memory_model.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mem_cast.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\message.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\message_bus.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\message_packet.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\message_router.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\message_router_registry.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\message_timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\message_types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\multimap.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\multiset.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\multi_array.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\multi_range.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\murmur3.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mutex.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mutex\mutex_arm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mutex\mutex_clang_sync.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mutex\mutex_freertos.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mutex\mutex_gcc_sync.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\mutex\mutex_std.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\negative.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\nullptr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\null_type.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\numeric.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\observer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\optional.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\packet.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\parameter_pack.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\parameter_type.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\pearson.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\permutations.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\placement_new.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\platform.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\pool.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\power.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\priority_queue.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\choose_namespace.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\crc_implementation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\crc_parameters.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\ivectorpointer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\minmax_pop.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\minmax_push.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\pvoidvector.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\to_string_helper.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\private\vector_base.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\arduino_arm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\armv5.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\armv5_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\armv6.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\armv6_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\armv7.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\armv7_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\auto.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\clang_generic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\clang_generic_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp03.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp03_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp11.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp11_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp14.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp14_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp17.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\cpp17_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\determine_compiler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\determine_compiler_language_support.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\determine_compiler_version.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\determine_development_os.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\gcc_generic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\gcc_generic_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\gcc_linux_x86.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\gcc_linux_x86_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\gcc_windows_x86.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\gcc_windows_x86_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\msvc_x86.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\msvc_x86_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\segger_gcc_stlport.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\ticc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\profiles\ticc_no_stl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\quantize.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\queue.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\queue_lockable.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\queue_mpmc_mutex.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\queue_spsc_atomic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\queue_spsc_isr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\queue_spsc_locked.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\radix.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\random.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\ratio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\reference_counted_message.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\reference_counted_message_pool.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\reference_counted_object.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\reference_flat_map.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\reference_flat_multimap.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\reference_flat_multiset.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\reference_flat_set.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\rescale.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\rms.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\scaled_rounding.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\scheduler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\set.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\shared_message.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\smallest.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\span.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\sqrt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\stack.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\standard_deviation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\state_chart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\static_assert.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\string_stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\string_utilities.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\string_view.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\successor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\task.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\threshold.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\tokenizer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\token_functions.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\token_iterator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\to_string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\to_u16string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\to_u32string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\to_wstring.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\type_def.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\type_lookup.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\type_select.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\type_traits.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\u16format_spec.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\u16string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\u16string_stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\u32format_spec.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\u32string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\u32string_stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\unordered_map.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\unordered_multimap.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\unordered_multiset.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\unordered_set.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\user_type.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\utility.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\variance.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\variant.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\variant_pool.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\vector.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\version.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\visitor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\wformat_spec.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\wstring.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl\wstring_stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\etl_profile.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\FreeRTOSConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\task.hpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\trace.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="main.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ASF\xmega\drivers\twi\twim.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\config\conf_twim.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\drivers\twi\twi_common.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\drivers\twi\twim.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cassert">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\ccomplex">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cctype">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cerrno">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cfenv">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cfloat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\charconv">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\chrono">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cinttypes">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\ciso646">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\climits">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\clocale">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cmath">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\codecvt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\complex">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\csetjmp">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstdalign">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstdarg">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstdbool">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstddef">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstdint">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstdio">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstdlib">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cstring">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\ctgmath">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\ctime">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cuchar">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cwchar">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\cwctype">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\c++\new">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\config\conf_sleepmgr.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\sleepmgr\xmega\sleepmgr.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\sleepmgr\sleepmgr.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\ioport\xmega\ioport.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\ioport\ioport.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\services\ioport\xmega\ioport_compat.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\common\services\ioport\xmega\ioport_compat.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\services\sleepmgr\xmega\sleepmgr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\config\conf_clock.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\clock\sysclk.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\clock\xmega\osc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\clock\xmega\sysclk.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\clock\xmega\pll.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\clock\osc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\clock\genclk.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\clock\pll.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\services\clock\xmega\sysclk.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ASF\xmega\drivers\nvm\nvm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ASF\xmega\drivers\tc\tc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\xmega\drivers\tc\tc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\drivers\sleep\sleep.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\drivers\pmic\pmic.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\drivers\nvm\nvm.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\xmega\drivers\nvm\nvm_asm.s">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\xmega\drivers\cpu\ccp.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\xmega\drivers\cpu\ccp.s">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\xmega\drivers\cpu\xmega_reset_cause.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\boards\user_board\user_board.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\utils\make\Makefile.avr.in">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\assembler\gas.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\progmem.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\preprocessor\stringz.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\boards\board.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\boards\user_board\init.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\common\utils\interrupt\interrupt_avr8.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\utils\parts.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\status_codes.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\preprocessor\preprocessor.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\assembler.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\preprocessor\tpaste.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\bit_handling\clz_ctz.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\utils\interrupt.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\config\conf_board.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\preprocessor\mrepeat.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\xmega\utils\compiler.h">
+      <SubType>compile</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="freeRTOS\" />
+    <Folder Include="freeRTOS\include\" />
+    <Folder Include="include\" />
+    <Folder Include="include\c++\" />
+    <Folder Include="include\c++\bits\" />
+    <Folder Include="include\etl\" />
+    <Folder Include="include\etl\atomic\" />
+    <Folder Include="include\etl\deprecated\" />
+    <Folder Include="include\etl\experimental\" />
+    <Folder Include="include\etl\generators\" />
+    <Folder Include="include\etl\mutex\" />
+    <Folder Include="include\etl\private\" />
+    <Folder Include="include\etl\profiles\" />
+    <Folder Include="src\" />
+    <Folder Include="src\ASF\" />
+    <Folder Include="src\ASF\common\" />
+    <Folder Include="src\ASF\common\boards\" />
+    <Folder Include="src\ASF\common\boards\user_board\" />
+    <Folder Include="src\ASF\common\services\" />
+    <Folder Include="src\ASF\common\services\clock\" />
+    <Folder Include="src\ASF\common\services\clock\xmega\" />
+    <Folder Include="src\ASF\common\services\ioport\" />
+    <Folder Include="src\ASF\common\services\ioport\xmega\" />
+    <Folder Include="src\ASF\common\services\sleepmgr\" />
+    <Folder Include="src\ASF\common\services\sleepmgr\xmega\" />
+    <Folder Include="src\ASF\common\utils\" />
+    <Folder Include="src\ASF\common\utils\interrupt\" />
+    <Folder Include="src\ASF\common\utils\make\" />
+    <Folder Include="src\ASF\xmega\" />
+    <Folder Include="src\ASF\xmega\drivers\" />
+    <Folder Include="src\ASF\xmega\drivers\cpu\" />
+    <Folder Include="src\ASF\xmega\drivers\nvm\" />
+    <Folder Include="src\ASF\xmega\drivers\pmic\" />
+    <Folder Include="src\ASF\xmega\drivers\sleep\" />
+    <Folder Include="src\ASF\xmega\drivers\tc\" />
+    <Folder Include="src\ASF\xmega\drivers\twi\" />
+    <Folder Include="src\ASF\xmega\utils\" />
+    <Folder Include="src\ASF\xmega\utils\assembler\" />
+    <Folder Include="src\ASF\xmega\utils\bit_handling\" />
+    <Folder Include="src\ASF\xmega\utils\preprocessor\" />
+    <Folder Include="src\config\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="freeRTOS\include\stdint.readme">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="freeRTOS\lexicon.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_fsm.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_largest.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_message_packet.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_message_router.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_smallest.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_type_lookup.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_type_select.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_type_traits.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\etl\generators\generate_variant_pool.bat">
+      <SubType>compile</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>
