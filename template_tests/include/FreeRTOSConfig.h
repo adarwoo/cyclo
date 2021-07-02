@@ -118,7 +118,7 @@ to exclude the API function. */
 /* Optional functions - most linkers will remove unused functions anyway. */
 #define INCLUDE_vTaskPrioritySet			   	0
 #define INCLUDE_uxTaskPriorityGet				0
-#define INCLUDE_vTaskDelete						0
+#define INCLUDE_vTaskDelete						1
 #define INCLUDE_vTaskSuspend			   		1 // Needed to block on queues
 #define INCLUDE_vTaskDelayUntil					1
 #define INCLUDE_vTaskDelay					   	1
