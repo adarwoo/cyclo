@@ -1,5 +1,8 @@
-/*
- * rtos.h
+/**
+ * @file
+ * @{
+ * C++ abstraction of FreeRTOS.
+ * 
  *
  * Created: 01/07/2021 12:19:42
  *  Author: micro
@@ -16,7 +19,7 @@
 #include "etl/algorithm.h"
 #include "etl/delegate.h"
 
-#include "typestring.hh"
+#include "typestring.hpp"
 
 #include "trace.h"
 
@@ -65,6 +68,16 @@ namespace rtos
    }
   
  
+   /** 
+    * Create a new static task.
+    * The templated type must be unique for each task.
+    * The TName parameter must use the 'typestring_is' macros which creates a literal string type.
+    * This string makes the task unique.
+    * The stack size is on top of the minimum recommended.
+    * The priority defaults to normal.
+    * The run method actually creates the FreeRTOS task and starts the task imediatly.
+    * The run take a void (void) entrypoint. You can use lambda to pass other values
+    */
    template<
       class TName,
       const size_t TStackSize=0,
