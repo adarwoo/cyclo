@@ -70,9 +70,6 @@ void board_init(void)
     //gfx_mono_ssd1306_init();
 
     sleepmgr_init();
-
-    // Initialise the keypad
-    //keypad_init();
 	
 	// Start the USB
 	//udc_start();

@@ -78,7 +78,7 @@
 #endif
 #define configMAX_TASK_NAME_LEN					4
    #define configUSE_TRACE_FACILITY				0
-#define configUSE_16_BIT_TICKS					1    // 0 means 32bit ticks
+#define configUSE_16_BIT_TICKS					0    // 0 means 32bit ticks
 #define configIDLE_SHOULD_YIELD					1
 #define configQUEUE_REGISTRY_SIZE				0
 #define configCHECK_FOR_STACK_OVERFLOW 		2    // use both method 1 and method 2

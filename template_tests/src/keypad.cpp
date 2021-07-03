@@ -16,8 +16,12 @@ struct keypad_key_t
    uint8_t mask; ///< ID of the key
 };
 
-static uint8_t number_of_keys;
-static keypad_key_t* key_state;
+//static uint8_t KEYPAD_NUMBER_OF_KEYS;
+
+// Register a timer for sampling the keypad_pins
+constexpr ioport_pin_t keypad_pins[] = { KEYPAD_PINS };
+constexpr uint8_t KEYPAD_NUMBER_OF_KEYS = sizeof(keypad_pins) / sizeof(ioport_pin_t);
+static keypad_key_t keypad_keys_state[KEYPAD_NUMBER_OF_KEYS];
 
 /**
 written by Kenneth A. Kuhn
@@ -96,10 +100,8 @@ static void keypad_process(void)
 {
     uint8_t i;
 
-    trace_tgl(TRACE_TICK);
-
-    for (i = 0; i < number_of_keys; ++i) {
-        keypad_key_t* key = &(key_state[i]);
+    for (i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i) {
+        keypad_key_t* key = &(keypad_keys_state[i]);
 
         if (key->handler) {
             // Get the state of the key
@@ -144,17 +146,12 @@ static void keypad_process(void)
 /** Initialize the keypad library */
 extern "C" void keypad_init()
 {
-    // Register a timer for sampling the pins
-    constexpr ioport_pin_t pins[] = { KEYPAD_PINS };
-    constexpr size_t number_of_keys = sizeof(pins) / sizeof(ioport_pin_t);  
-    
-    static keypad_key_t key_state[number_of_keys];
-    memset(key_state, 0, sizeof(key_state));
+    memset(keypad_keys_state, 0, sizeof(keypad_keys_state));
 
     // Initialize every keys
-    for (uint8_t i = 0; i < number_of_keys; ++i) {
-        key_state[i].mask = 1 << i;
-        key_state[i].pin = pins[i];
+    for (uint8_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i) {
+        keypad_keys_state[i].mask = 1 << i;
+        keypad_keys_state[i].pin = keypad_pins[i];
     }
 
     // Initialise the sampling timer
@@ -173,9 +170,9 @@ void keypad_register_callback(uint8_t key_masks, keypad_handler_t handler)
 {
     uint8_t i;
 
-    for (i = 0; i < number_of_keys; ++i) {
-        if (key_state[i].mask &= key_masks) {
-            key_state[i].handler = handler;
+    for (i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i) {
+        if (keypad_keys_state[i].mask &= key_masks) {
+            keypad_keys_state[i].handler = handler;
         }
     }
 }

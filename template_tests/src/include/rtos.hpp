@@ -15,6 +15,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 
 #include "etl/algorithm.h"
 #include "etl/delegate.h"
@@ -33,6 +34,25 @@ namespace rtos
       normal = (configMAX_PRIORITIES >> 2),
       high = (configMAX_PRIORITIES - 1)
    };
+   
+
+   /** TickType_t becomes rtos::tick_t */
+   using tick_t = TickType_t;
+  
+   namespace tick
+   {
+      constexpr tick_t infinite = portMAX_DELAY;
+      constexpr tick_t per_second = configTICK_RATE_HZ;
+      
+      constexpr tick_t operator"" _ms ( unsigned long long milliseconds )
+         { return static_cast<tick_t>((milliseconds * per_second) / 1000); }
+
+      constexpr tick_t operator"" _s(unsigned long long seconds)
+         { return static_cast<tick_t>(per_second * seconds); }
+
+      constexpr tick_t operator"" _M(unsigned long long minutes)
+         { return static_cast<tick_t>(per_second * 60 * minutes); }
+   }
 
 
    /**
@@ -127,7 +147,56 @@ namespace rtos
       vTaskStartScheduler();
       assert(0);
    }
+
+   static void delay(tick_t ticks)
+      { vTaskDelay(ticks); }
    
+   /**
+    * Static queue wrapper
+    */
+   template<
+      typename T,
+      const size_t TQueueLength=8
+   >
+   class Queue
+   {
+      
+      /** Structure that will hold the TCB of the task being created. */
+      StaticQueue_t static_queue;
+
+      /** Local stack storage */
+      uint8_t queue_storage_area[TQueueLength * sizeof(T)];
+      
+      /** Handle to the queue */
+      QueueHandle_t handle;
+    
+   public:
+      QueueHandle_t operator *() { return handle; }
+
+      Queue() {
+         /* Create a queue capable of containing 10 uint64_t values. */
+         handle = xQueueCreateStatic( TQueueLength, sizeof(T), queue_storage_area, &static_queue );
+         assert( handle );
+      }
+      
+      bool send(T &what, tick_t tickToWait = tick::infinite )
+         { return (xQueueSend(handle, &what, tickToWait) == pdPASS) ? true : false; }
+
+      bool receive(T &what, tick_t tickToWait = tick::infinite )
+         { return (xQueueReceive(handle, &what, tickToWait) == pdPASS) ? true : false; }
+
+      bool send_from_isr(T &what)
+         { return (xQueueSendFromISR(handle, &what, NULL) == pdPASS) ? true : false; }
+
+      bool receive_from_isr(T &what)
+         { return (xQueueReceiveFromISR(handle, &what, NULL) == pdPASS) ? true : false; }
+            
+      inline T& operator<<(T& what)
+         { receive(what); return what; }
+
+      inline T& operator>>(T& what)
+         { send(what); return what; }
+   };
 }
 
 
