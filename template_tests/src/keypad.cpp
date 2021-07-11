@@ -13,6 +13,7 @@ struct keypad_key_t
    uint8_t cycle; ///< Number of consecutive cycle in the given state
    bool output; ///< Consolidated output
    keypad_handler_t handler; ///< Callback to call on a push or repeat
+   void *param; ///< Additonal param to pass along
    uint8_t mask; ///< ID of the key
 };
 
@@ -127,10 +128,10 @@ static void keypad_process(void)
             // Check the integrator result
             if (key->output) {
                 if (key->cycle == 0) {
-                    key->handler(key->mask, false);
+                    key->handler(key->mask, key->param);
                 } else if (key->cycle == KEYPAD_FIRST_REPEAT_CYCLES || key->cycle == KEYPAD_NEXT_REPEAT_CYCLE) {
                     // Repeats
-                    key->handler(key->mask, true);
+                    key->handler(key->mask, key->param);
                 }
 
                 if (key->cycle == KEYPAD_NEXT_REPEAT_CYCLE) {
@@ -166,13 +167,14 @@ extern "C" void keypad_init()
 }
 
 /** Register a callback for one or many keys */
-void keypad_register_callback(uint8_t key_masks, keypad_handler_t handler)
+void keypad_register_callback(uint8_t key_masks, keypad_handler_t handler, void *param)
 {
     uint8_t i;
 
     for (i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i) {
         if (keypad_keys_state[i].mask &= key_masks) {
             keypad_keys_state[i].handler = handler;
+            keypad_keys_state[i].param = param;
         }
     }
 }

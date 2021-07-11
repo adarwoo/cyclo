@@ -81,7 +81,6 @@ namespace etl
   class message : public imessage
   {
   public:
-
     enum
     {
       ID = ID_

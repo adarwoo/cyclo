@@ -76,7 +76,7 @@
 #else
     #define configUSE_MALLOC_FAILED_HOOK		0
 #endif
-#define configMAX_TASK_NAME_LEN					4
+#define configMAX_TASK_NAME_LEN					8
    #define configUSE_TRACE_FACILITY				0
 #define configUSE_16_BIT_TICKS					0    // 0 means 32bit ticks
 #define configIDLE_SHOULD_YIELD					1
@@ -100,7 +100,7 @@
 #define configUSE_TIME_SLICING					1 // Allow task of same prio to share the time
 #define configUSE_NEWLIB_REENTRANT				0
 /* Software timer related definitions. */
-#define configUSE_TIMERS						   0
+#define configUSE_TIMERS						   1
 /* Hook function related definitions. */
 #define configUSE_DAEMON_TASK_STARTUP_HOOK	0
 #define configENABLE_BACKWARD_COMPATIBILITY	0
@@ -128,7 +128,7 @@ to exclude the API function. */
 #define INCLUDE_xTaskGetIdleTaskHandle			0
 #define INCLUDE_eTaskGetState					   0
 #define INCLUDE_xEventGroupSetBitFromISR		0
-#define INCLUDE_xTimerPendFunctionCall			0
+#define INCLUDE_xTimerPendFunctionCall			1
 #define INCLUDE_xTaskAbortDelay					0
 #define INCLUDE_xTaskGetHandle					0
 #define INCLUDE_xTaskResumeFromISR				0

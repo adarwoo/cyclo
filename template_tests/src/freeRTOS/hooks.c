@@ -1,5 +1,6 @@
 #include <FreeRTOS.h>
 #include <task.h>
+#include <timers.h>
 
 /** Implied in heap_1 */
 extern void vApplicationMallocFailedHook( void );
@@ -43,4 +44,26 @@ void vApplicationGetIdleTaskMemory(
    Note that, as the array is necessarily of type StackType_t,
    configMINIMAL_STACK_SIZE is specified in words, not bytes. */
    *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+}
+
+
+void vApplicationGetTimerTaskMemory(
+   StaticTask_t **ppxTimerTaskTCBBuffer,
+   StackType_t **ppxTimerTaskStackBuffer,
+   uint32_t *pulTimerTaskStackSize )
+{
+   static StaticTask_t xTimerTaskTCB;
+   static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
+
+   /* Pass out a pointer to the StaticTask_t structure in which the Idle task's
+   state will be stored. */
+   *ppxTimerTaskTCBBuffer = &xTimerTaskTCB;
+
+   /* Pass out the array that will be used as the Idle task's stack. */
+   *ppxTimerTaskStackBuffer = uxTimerTaskStack;
+
+   /* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
+   Note that, as the array is necessarily of type StackType_t,
+   configMINIMAL_STACK_SIZE is specified in words, not bytes. */
+   *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }
