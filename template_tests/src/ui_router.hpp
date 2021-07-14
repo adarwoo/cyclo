@@ -119,8 +119,14 @@ public:
 
 // On UI timer
 //
-struct UIRouter : public fx::Worker<UIRouter, msg::RefreshUI, msg::Keypad>
+struct UIRouter : public fx::Worker<UIRouter, fx::DispatcherStarted, msg::RefreshUI, msg::Keypad>
 {
+   void on_receive(const fx::DispatcherStarted &msg)
+   {
+      auto log = Trace(TRACE_IDLE);
+      rtos::delay(20_ms);
+   }
+
    void on_receive(const msg::RefreshUI &msg)
    {
    }

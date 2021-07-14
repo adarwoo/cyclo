@@ -1,8 +1,7 @@
 #ifndef keypad_tasklet_hpp__included
 #define keypad_tasklet_hpp__included
 
-#include "rtos.hpp"
-#include "etl/message_bus.h"
+#include "fx.hpp"
 #include "msg_defs.hpp"
 #include "keypad.h"
 
@@ -11,10 +10,8 @@
  */
 class KeypadTasklet : public rtos::Tasklet
 {
-    etl::imessage_bus &root_dispatcher;
-
 public:
-    KeypadTasklet(etl::imessage_bus &root) : root_dispatcher(root)
+    KeypadTasklet()
     {
         keypad_init();
         keypad_register_callback(
@@ -34,8 +31,7 @@ public:
         msg::Keypad msg;
         msg.key_code = key;
 
-        //etl::send_message(root_dispatcher, msg);
-        root_dispatcher.receive(msg);
+        fx::publish(msg);
     }
 };
 

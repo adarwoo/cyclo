@@ -2,101 +2,112 @@
 #define FX_H_
 /*
  * fx.h
- * A bus which differ through a queue and a task
+ * Framework for connecting consumer/producers statically
  *
  * Created: 08/07/2021 19:04:29
  *  Author: micro
  */
+
+
+#include "etl/message.h"
+
+#include "typestring.hpp"
+
+#include "etl/message_router.h"
 #include "etl/message_bus.h"
+#include "etl/function.h"
+#include "etl/delegate.h"
+
+#include "msg_defs.hpp"
+#include "trace.h"
 #include "rtos.hpp"
+
 
 namespace fx
 {
-   /** Cannot be bound to the root dispatcher since Td */
-   inline static etl::imessage_bus *root_dispatcher = nullptr;
-
-   inline static etl::message_router_id_t current_worker_id = 0;
-
+   static inline etl::imessage_bus *root_dispatcher = nullptr;
    
-   struct DispatcherStartedMessage : etl::message<255>
-   {
-   };   
-   
-   template<class D, class... T>
-   struct Worker : public etl::message_router<D, T...>
-   {
-      Worker() : etl::message_router<D, T...>(++current_worker_id)
-      {}
-
-      virtual void on_dispatcher_started()
-      {}
-
-      virtual void on_receive(const DispatcherStartedMessage &)
-      {
-         on_dispatcher_started();
-      }
-
-      virtual void on_receive_unknown(const etl::imessage &msg)
-      {}
-   };
-
-
-   template <class TMsgPacket, class TName, const size_t TStackSize, uint_least8_t MAX_ROUTERS_=1>
-   class Dispatcher : public etl::imessage_bus, public rtos::Task<TName, TStackSize>
-   {
-      rtos::Queue<TMsgPacket, MAX_ROUTERS_> queue;
-
-   public:
-      Dispatcher() : etl::imessage_bus(router_list), queue()
-      {
-         //assert(root_dispatcher != nullptr);
-         //root_dispatcher->subscribe(*this);
-         
-         this->run();
-      }
-
-      virtual void receive(const etl::imessage &message) override
-      {
-         auto packet = TMsgPacket(message);
-         queue.send(packet);
-      }
-
-      /** Dispatcher's task entry point */
-      void default_handler() override
-      {
-         TMsgPacket *packet = nullptr;
-         
-         //for ( auto *worker : router_list ) 
-         //{
-         //   send_message(*worker, DispatcherStartedMessage {});
-         //}
-
-         while (true)
-         {
-            // Get the shared message from the queue.
-            queue.receive(packet);
-
-            // Send it to the base implementation for routing.
-            receive(packet->get());
-         }
-      }
-
-  private:
-      etl::vector<etl::imessage_router*, MAX_ROUTERS_> router_list;  
-   };
-
-
-   template<const size_t TSize>
-   class RootDispatcher : etl::message_bus<TSize>
+   template<const size_t MAXBUSES>
+   class RootDispatcher : public etl::message_bus<MAXBUSES>
    {
    public:
-      RootDispatcher() : etl::message_bus<TSize>()
+      RootDispatcher()
       {
-         assert(root_dispatcher != nullptr);
+         assert(root_dispatcher == nullptr);
          root_dispatcher = this;
       }
    };
+   
+   void publish(const etl::imessage& msg_)
+   {
+      assert(root_dispatcher);
+      root_dispatcher->receive(msg_);
+   }
+   
+   inline static etl::message_router_id_t message_router_auto_id {0};
 
-} // namespace fx
+   constexpr etl::message_id_t DISPATCHER_STARTED = 255;
+   
+   struct DispatcherStarted : etl::message<DISPATCHER_STARTED> {};
+      
+   template<class T, class... TMsgs>
+   struct Worker : public etl::message_router<T, TMsgs...>
+   {
+      Worker<T, TMsgs...>() : etl::message_router<T, TMsgs...>(++message_router_auto_id) {}
+      void on_receive_unknown(const etl::imessage& msg) {}
+      void on_start();
+   };
+   
+   template <class TPacket, class TName, const size_t STACKSIZE, const uint_least8_t MAX_ROUTERS, const size_t QUEUESIZE=4>
+   class Dispatcher : public etl::message_bus<MAX_ROUTERS>, public rtos::Task<TName, STACKSIZE>
+   {
+      rtos::Queue<TPacket, QUEUESIZE> queue;
+         
+   public:
+      Dispatcher() : etl::message_bus<MAX_ROUTERS>()
+      {
+         this->run();
+      }
+      
+      template<class T, class... TMsg> Dispatcher &operator<<(Worker<T, TMsg...>& w)
+      {
+         this->subscribe(w);
+         return *this;
+      }
+
+      template<class T, class... TMsg> Dispatcher &operator<<(Worker<T, TMsg...>&& w)
+      {
+         Worker<T, TMsg...> *p = (Worker<T, TMsg...> *)malloc(sizeof(Worker<T, TMsg...>));
+         assert(p != nullptr);
+         ::new (p) Worker<T, TMsg...>();
+         
+         this->subscribe(*p);
+         return *this;
+      }
+      
+   protected:
+      void receive(const etl::imessage& msg_) override
+      {
+         auto packet = TPacket(msg_);
+         queue.send(packet);
+      }
+      
+      void default_handler()
+      {
+         // Thread is started. Let all worker know ti
+         etl::message_bus<MAX_ROUTERS>::receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, DispatcherStarted {});
+         
+         while (true)
+         {
+            auto packet = TPacket();
+
+            queue.receive(packet);
+            auto &msg = packet.get();
+            etl::message_bus<MAX_ROUTERS>::receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, msg);
+         }
+      }
+   };
+}
+
 
 #endif /* FX_H_ */

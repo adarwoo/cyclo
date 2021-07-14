@@ -16,18 +16,29 @@ int main(void)
 {
    board_init();
 
-   //auto root = fx::RootDispatcher<2>();
+   auto root = fx::RootDispatcher<2>();
+   auto ui_bus = fx::Dispatcher<msg::packet, typestring_is("ui"), 256, 2>();
+   auto ui = UIRouter {};
    
-   auto ui = UIRouter();
-//   auto seq = SequencerRouter(msg::router::SEQUENCER);
-
-   auto ui_bus = fx::Dispatcher<msg::packet, typestring_is("ui"), 1024, 2>();
+   root.subscribe(ui_bus);
    ui_bus.subscribe(ui);
 
-//   auto d2 = fx::Dispatcher<msg::packet, typestring_is("seq"), 255, 1>();
-//   d2.subscribe(seq);
+//   auto seq = SequencerRouter(msg::router::SEQUENCER);
+   //auto seq_bus = fx::Dispatcher<msg::packet, typestring_is("seq"), 255, 1>();
+   //d2.subscribe(seq);
+   
+   #if 0
+   using root_t = fx::root_dispatcher<2, msg::packet>;
+   
+   auto root = root_t() 
+      << root_t::dispatcher<typestring_is("ui"), 255, 1>() 
+         << UIRouter()
+         << Console()
+      << root_t::dispatcher<typestring_is("seq"), 255, 1>() 
+         << SequencerRouter();
+   #endif
 
-   KeypadTasklet key_task(ui_bus);
+   auto key_tasklet = KeypadTasklet {};
 
    rtos::start_scheduler();
 }

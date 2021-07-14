@@ -45,7 +45,6 @@ namespace msg
       UI,
       SEQUENCER,
       CONSOLE_SERVER,
-      
    };
 }
 
