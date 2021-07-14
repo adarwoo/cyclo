@@ -36,6 +36,12 @@ namespace fx
          assert(root_dispatcher == nullptr);
          root_dispatcher = this;
       }
+
+      template<class T> RootDispatcher &operator<<(T& d)
+      {
+         this->subscribe(d);
+         return *this;
+      }
    };
    
    void publish(const etl::imessage& msg_)
@@ -69,19 +75,9 @@ namespace fx
          this->run();
       }
       
-      template<class T, class... TMsg> Dispatcher &operator<<(Worker<T, TMsg...>& w)
+      template<class T> Dispatcher &operator<<(T& w)
       {
          this->subscribe(w);
-         return *this;
-      }
-
-      template<class T, class... TMsg> Dispatcher &operator<<(Worker<T, TMsg...>&& w)
-      {
-         Worker<T, TMsg...> *p = (Worker<T, TMsg...> *)malloc(sizeof(Worker<T, TMsg...>));
-         assert(p != nullptr);
-         ::new (p) Worker<T, TMsg...>();
-         
-         this->subscribe(*p);
          return *this;
       }
       

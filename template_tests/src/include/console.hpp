@@ -1,5 +1,5 @@
-#ifndef console_router_hpp__included
-#define console_router_hpp__included
+#ifndef console_workerer_hpp__included
+#define console_workerer_hpp__included
 /*
  * UI Woker
  */
@@ -8,14 +8,11 @@
 
 using namespace rtos::tick;
 
-class ConsoleRouter : public etl::message_router<TerminalWorker, msg::NoNcUpdate, msg::Keypad>
+class ConsoleWorker : public fx::Worker<ConsoleWorker, msg::NoNcUpdate, msg::Keypad>
 {
 public:
-   ConsoleRouter(etl::message_router_id_t id_) : etl::message_router<ConsoleRouter, msg::NoNcUpdate, msg::Keypad>(id_) {}
-
    void on_receive(const msg::NoNcUpdate &msg)
    {
-       
    }
 
    void on_receive(const msg::Keypad &msg)
@@ -27,4 +24,4 @@ public:
    void on_receive_unknown(const etl::imessage &msg) {}
 };
 
-#endif // ndef console_router_hpp__included
+#endif // ndef console_workerer_hpp__included
