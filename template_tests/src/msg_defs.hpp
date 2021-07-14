@@ -1,14 +1,11 @@
 #ifndef msg_defs_hpp__included
 #define msg_defs_hpp__included
 /*
- * User interface message router
+ * Fx messages
  * Created: 04/07/2021 14:35:24
  *  Author: micro
- */ 
+ */
 #include "etl/message.h"
-
-#include "typestring.hpp"
-
 
 namespace msg
 {
@@ -40,19 +37,16 @@ namespace msg
       ///< Turn no of off (irrespective of the NO/NC status. True to turn ON.
       bool turn_on;
    };
-   
+
    using packet = etl::message_packet<Keypad, NoNcUpdate, RefreshUI, SetRelay>;
-
-   namespace router
+   
+   enum router : etl::message_router_id_t
    {
-      enum : etl::message_router_id_t
-      {
-         UI,
-         TERMINAL,
-         SEQUENCER,
-      };  
-   }
+      UI,
+      SEQUENCER,
+      CONSOLE_SERVER,
+      
+   };
 }
-
 
 #endif // ndef msg_defs_hpp__included
