@@ -6,21 +6,21 @@
 #include "keypad.h"
 #include "trace.h"
 
-struct keypad_key_t 
+struct keypad_key_t
 {
-   ioport_pin_t pin; ///< Pin to sample
-   uint8_t integrator; ///< Current integrated value on the pin
-   uint8_t cycle; ///< Number of consecutive cycle in the given state
-   bool output; ///< Consolidated output
-   keypad_handler_t handler; ///< Callback to call on a push or repeat
-   void *param; ///< Additonal param to pass along
-   uint8_t mask; ///< ID of the key
+    ioport_pin_t pin;         ///< Pin to sample
+    uint8_t integrator;       ///< Current integrated value on the pin
+    uint8_t cycle;            ///< Number of consecutive cycle in the given state
+    bool output;              ///< Consolidated output
+    keypad_handler_t handler; ///< Callback to call on a push or repeat
+    void *param;              ///< Additonal param to pass along
+    uint8_t mask;             ///< ID of the key
 };
 
 //static uint8_t KEYPAD_NUMBER_OF_KEYS;
 
 // Register a timer for sampling the keypad_pins
-constexpr ioport_pin_t keypad_pins[] = { KEYPAD_PINS };
+constexpr ioport_pin_t keypad_pins[] = {KEYPAD_PINS};
 constexpr uint8_t KEYPAD_NUMBER_OF_KEYS = sizeof(keypad_pins) / sizeof(ioport_pin_t);
 static keypad_key_t keypad_keys_state[KEYPAD_NUMBER_OF_KEYS];
 
@@ -88,7 +88,7 @@ is in Hertz */
 
 // Set the next auto-repeat delay
 #ifndef KEYPAD_NEXT_REPEATS_EVERY_MS
-#define KEYPAD_NEXT_REPEATS_EVERY_MS 100
+#define KEYPAD_NEXT_REPEATS_EVERY_MS 150
 #endif
 
 // Shortcut in cycles
@@ -101,40 +101,54 @@ static void keypad_process(void)
 {
     uint8_t i;
 
-    for (i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i) {
-        keypad_key_t* key = &(keypad_keys_state[i]);
+    for (i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i)
+    {
+        keypad_key_t *key = &(keypad_keys_state[i]);
 
-        if (key->handler) {
+        if (key->handler)
+        {
             // Get the state of the key
-            if (!ioport_get_pin_level(key->pin)) {
-                if (key->integrator < KEYPAD_FILTER_CYCLES) {
+            if (!ioport_get_pin_level(key->pin))
+            {
+                if (key->integrator < KEYPAD_FILTER_CYCLES)
+                {
                     ++key->integrator;
 
-                    if (key->integrator == KEYPAD_FILTER_CYCLES) {
+                    if (key->integrator == KEYPAD_FILTER_CYCLES)
+                    {
                         key->output = true;
                         key->cycle = 0;
                     }
                 }
-            } else {
-                if (key->integrator) {
+            }
+            else
+            {
+                if (key->integrator)
+                {
                     --key->integrator;
 
-                    if (key->integrator == 0) {
+                    if (key->integrator == 0)
+                    {
                         key->output = false;
                     }
                 }
             }
 
             // Check the integrator result
-            if (key->output) {
-                if (key->cycle == 0) {
+            if (key->output)
+            {
+                if (key->cycle == 0)
+                {
                     key->handler(key->mask, key->param);
-                } else if (key->cycle == KEYPAD_FIRST_REPEAT_CYCLES || key->cycle == KEYPAD_NEXT_REPEAT_CYCLE) {
+                }
+                else if (key->cycle == KEYPAD_FIRST_REPEAT_CYCLES || key->cycle == KEYPAD_NEXT_REPEAT_CYCLE)
+                {
                     // Repeats
                     key->handler(key->mask, key->param);
                 }
 
-                if (key->cycle == KEYPAD_NEXT_REPEAT_CYCLE) {
+                if (key->cycle == KEYPAD_NEXT_REPEAT_CYCLE)
+                {
                     key->cycle = KEYPAD_FIRST_REPEAT_CYCLES;
                 }
 
@@ -144,13 +158,15 @@ static void keypad_process(void)
     }
 }
 
+
 /** Initialize the keypad library */
 extern "C" void keypad_init()
 {
     memset(keypad_keys_state, 0, sizeof(keypad_keys_state));
 
     // Initialize every keys
-    for (uint8_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i) {
+    for (uint8_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i)
+    {
         keypad_keys_state[i].mask = 1 << i;
         keypad_keys_state[i].pin = keypad_pins[i];
     }
@@ -166,13 +182,16 @@ extern "C" void keypad_init()
     tc_set_overflow_interrupt_level(&KEYPAD_TC, TC_INT_LVL_LO);
 }
 
+
 /** Register a callback for one or many keys */
 void keypad_register_callback(uint8_t key_masks, keypad_handler_t handler, void *param)
 {
     uint8_t i;
 
-    for (i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i) {
-        if (keypad_keys_state[i].mask &= key_masks) {
+    for (i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i)
+    {
+        if (keypad_keys_state[i].mask &= key_masks)
+        {
             keypad_keys_state[i].handler = handler;
             keypad_keys_state[i].param = param;
         }

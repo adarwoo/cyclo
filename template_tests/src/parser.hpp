@@ -30,38 +30,46 @@
 struct CommandItem
 {
    ///< Command for the engine
-   enum class ECommand: char
+   enum class ECommand : char
    {
-      delay='d', open = 'o', close = 'c' 
+      delay = 'd',
+      open = 'o',
+      close = 'c'
    } command;
 
    ///< Delay after the command execution
    uint32_t delay_ms;
    ///< Cycle counter duing execution
-   uint32_t cycle {0};
+   uint32_t cycle{0};
 
    ///< Simple constructor
-   explicit CommandItem(ECommand type, uint32_t delay = 0) : 
-      command(type), delay_ms(delay)
-   {}
+   explicit CommandItem(ECommand type, uint32_t delay = 0) : command(type), delay_ms(delay)
+   {
+   }
 
    ///< Simple Enum converter for debug
-   constexpr const char*to_string(ECommand c) const
+   constexpr const char *to_string(ECommand c) const
    {
       switch (c)
       {
-         case ECommand::open: return "Open";
-         case ECommand::close: return "Close";
-         case ECommand::delay: return "Delay";
+      case ECommand::open:
+         return "Open";
+      case ECommand::close:
+         return "Close";
+      case ECommand::delay:
+         return "Delay";
       }
 
       return "Idle";
    }
 };
 
-
 ///< Possible nom command interactions
-enum Interact: char { help='h', list='l' };
+enum Interact : char
+{
+   help = 'h',
+   list = 'l'
+};
 
 /**
  * Parser for the command line.
@@ -69,7 +77,7 @@ enum Interact: char { help='h', list='l' };
  * The command created from the interpretation is internal to parser and can therefore
  *  be used before any new parsing.
  */
-template<const size_t MAX_SIZE=16, const size_t MAX_ERROR_BUFFER=40>
+template <const size_t MAX_SIZE = 16, const size_t MAX_ERROR_BUFFER = 40>
 class Parser
 {
 public:
@@ -86,11 +94,11 @@ private:
    InteractHandler interact_handler_;
    CommandHandler command_handler_;
    ErrorHandler error_handler_;
-   etl::string_view::const_iterator buffer_ {nullptr};
+   etl::string_view::const_iterator buffer_{nullptr};
 
-   void safe_insert(CommandItem::ECommand c, etl::string_view token )
+   void safe_insert(CommandItem::ECommand c, etl::string_view token)
    {
-      if ( live_.full() )
+      if (live_.full())
       {
          err_.assign("Too many items");
          error(token);
@@ -115,10 +123,10 @@ private:
    void error(T where)
    {
       uint_least8_t distance;
-      
-      if constexpr(etl::is_same_v<T, etl::string_view>)
+
+      if constexpr (etl::is_same_v<T, etl::string_view>)
          distance = where.begin() - buffer_;
-      else if constexpr(etl::is_pointer_v<T>)
+      else if constexpr (etl::is_pointer_v<T>)
          distance = where - buffer_;
 
       this->error_handler_(err_, distance);
@@ -133,33 +141,32 @@ private:
    {
       auto retval = 0ul;
 
-      using Item = etl::pair<const char*, uint32_t>;
+      using Item = etl::pair<const char *, uint32_t>;
 
       static constexpr Item unit_lut[] = {
-         {"H", 60ul*60ul*1000ul}, {"M", 60ul*1000ul}, {"s", 1000}, {"m", 1}, {"", 1000}
-      };
+          {"H", 60ul * 60ul * 1000ul}, {"M", 60ul * 1000ul}, {"s", 1000}, {"m", 1}, {"", 1000}};
 
       // Check if the first char is a digit before perusing
-      if ( ::isdigit(token.front()) )
+      if (::isdigit(token.front()))
       {
          // Convert
          auto unit_start = token.begin();
-         auto number = strtoul(unit_start, const_cast<char**>(&unit_start), 10);
+         auto number = strtoul(unit_start, const_cast<char **>(&unit_start), 10);
          auto unit = etl::string_view(unit_start, token.end());
 
          auto foundit = etl::find_if(etl::begin(unit_lut), etl::end(unit_lut),
-            [unit](const Item &i) {return unit == i.first;}
-         );
+                                     [unit](const Item &i)
+                                     { return unit == i.first; });
 
          if (foundit != etl::end(unit_lut))
          {
-            retval =  number * foundit->second;
+            retval = number * foundit->second;
          }
          else
          {
-            err_ ="Invalid unit: '";
+            err_ = "Invalid unit: '";
             err_.append(unit.data(), unit.size());
-            err_ +="\'";
+            err_ += "\'";
             error(unit_start);
          }
       }
@@ -169,15 +176,14 @@ private:
 
 public:
    Parser(
-      InteractHandler interact_handler,
-      CommandHandler command_handler,
-      ErrorHandler error_handler
-   ) :
-      interact_handler_(interact_handler), 
-      command_handler_(command_handler),
-      error_handler_(error_handler)
-   {}
-   
+       InteractHandler interact_handler,
+       CommandHandler command_handler,
+       ErrorHandler error_handler) : interact_handler_(interact_handler),
+                                     command_handler_(command_handler),
+                                     error_handler_(error_handler)
+   {
+   }
+
    const Command &get_command() const { return live_; }
 
    /**
@@ -201,13 +207,13 @@ public:
 
          // Lambdas to scope things a bit
          auto is_command = [token](etl::string_view command)
-         { 
-            return command.starts_with(token); 
+         {
+            return command.starts_with(token);
          };
 
-         if ( auto number = get_delay(token) )
+         if (auto number = get_delay(token))
          {
-            if ( not live_.empty() )
+            if (not live_.empty())
             {
                live_.back().delay_ms += number;
             }
@@ -232,7 +238,7 @@ public:
                {
                   err_ = "Unexpected: '";
                   err_.append(token.data(), token.size());
-                  err_ +="\'";
+                  err_ += "\'";
                   error(token);
                }
                else if (is_command("help"))
@@ -247,7 +253,7 @@ public:
                {
                   err_ = "Unexpected: '";
                   err_.append(token.data(), token.size());
-                  err_ +="\'";
+                  err_ += "\'";
                   error(token);
                }
             }
@@ -255,11 +261,11 @@ public:
       }
 
       // If the last item is not idle - and there is no pause, add 1 second worth
-      if ( err_.empty() and not live_.empty() )
+      if (err_.empty() and not live_.empty())
       {
          auto &item = live_.back();
 
-         if (item.command != CommandItem::ECommand::delay and item.delay_ms == 0 )
+         if (item.command != CommandItem::ECommand::delay and item.delay_ms == 0)
          {
             item.delay_ms = 1000;
          }

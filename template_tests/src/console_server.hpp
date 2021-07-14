@@ -1,5 +1,5 @@
-#ifndef vt100__term_hpp_was_included
-#define vt100__term_hpp_was_included
+#ifndef console_server_hpp_was_included
+#define console_server_hpp_was_included
 
 //----- Include Files ---------------------------------------------------------
 #include <cstdint>
@@ -18,8 +18,8 @@
 // Constant definitions
 //
 
-template<typename TTerminal, const size_t TBufferSize=40, const size_t THistorySize=10>
-class Console
+template <typename TTerminal, const size_t TBufferSize = 40, const size_t THistorySize = 10>
+class ConsoleServer
 {
 public:
     /** Native char type */
@@ -68,10 +68,9 @@ protected:
     input_state_t input_state;
 
 public:
-    Console() :
-        input_buffer_position(input_buffer.begin()),
-        history_position(),
-        input_state(input_state_t::normal)
+    ConsoleServer() : input_buffer_position(input_buffer.begin()),
+                history_position(),
+                input_state(input_state_t::normal)
     {
     }
 
@@ -199,7 +198,7 @@ public:
             // user pressed [ENTER] - echo CR and LF to terminal
             TTerminal::move_to_start_of_next_line();
 
-            if ( not input_buffer.empty() )
+            if (not input_buffer.empty())
             {
                 // Store the last (non-empty) line in the history
                 do_history(history_e::save);
@@ -270,13 +269,13 @@ protected:
         print_prompt();
 
         // print the new command line buffer
-        for ( auto c : input_buffer )
+        for (auto c : input_buffer)
         {
             TTerminal::putc(c);
         }
 
         // Erase end of line
-        if ( erase_up_to > input_buffer.size() )
+        if (erase_up_to > input_buffer.size())
         {
             TTerminal::erase_right(erase_up_to - input_buffer.size());
         }
@@ -301,7 +300,7 @@ protected:
         {
             if (action == history_e::next)
             {
-                if ( history_position != history_buffer.end() )
+                if (history_position != history_buffer.end())
                 {
                     ++history_position;
                 }
@@ -313,7 +312,7 @@ protected:
             }
             else // prev
             {
-                if ( history_position != history_buffer.begin() )
+                if (history_position != history_buffer.begin())
                 {
                     --history_position;
                 }
@@ -337,4 +336,4 @@ protected:
     }
 };
 
-#endif // ndef vt100__term_hpp_was_included
+#endif // ndef console_server_hpp_was_included

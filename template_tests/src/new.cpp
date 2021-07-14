@@ -16,16 +16,16 @@ void *operator new(size_t size_, void *ptr_) { return ptr_; }
  */
 
 void operator delete(void *ptr_) { free(ptr_); }
-   
+
 /** Delete a void */
-void operator delete(void*, unsigned int)
+void operator delete(void *, unsigned int)
 {
-   asm volatile ( "break" );
+   asm volatile("break");
 }
 
 /** Called if a pure virtual is called */
 extern "C" void __cxa_pure_virtual()
 {
-   asm volatile ( "break" );
+   asm volatile("break");
    assert(0);
 }
