@@ -67,7 +67,7 @@ void board_init(void)
     twi_master_enable(&TWI_MASTER);
     cpu_irq_enable();
 
-    //gfx_mono_ssd1306_init();
+    gfx_mono_ssd1306_init();
 
     sleepmgr_init();
 	

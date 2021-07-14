@@ -39,6 +39,10 @@
 
 #include "../ioport.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \brief A pin mask
  *
@@ -307,5 +311,10 @@ static inline void ioport_tgl_group(port_id_t port_id, pin_mask_t port_mask)
 {
 	arch_ioport_toggle_port_level(port_id, port_mask);
 }
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* IOPORT_COMPAT_H_ */

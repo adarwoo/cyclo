@@ -59,6 +59,15 @@
 // From module: Common build items for user board support templates
 #include <user_board.h>
 
+// From module: Delay routines
+#include <delay.h>
+
+// From module: GFX Monochrome - Monochrome Graphic Library
+#include <gfx_mono.h>
+
+// From module: GFX Monochrome - System Font
+#include <sysfont.h>
+
 // From module: Generic board support
 #include <board.h>
 
@@ -76,6 +85,10 @@
 
 // From module: Part identification macros
 #include <parts.h>
+
+// From module: SSD1306 OLED controller
+#include <font.h>
+#include <ssd1306.h>
 
 // From module: Sleep Controller driver
 #include <sleep.h>

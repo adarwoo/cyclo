@@ -6,6 +6,8 @@
  * Created: 29/06/2021 21:26:21
  * Author : software@arreckx.com
  */
+#include "asf.h"
+
 #include "fx.hpp"
 #include "msg_defs.hpp"
 #include "etl/limits.h"
@@ -15,22 +17,16 @@ using namespace rtos::tick;
 enum class quadrant_t : uint8_t
 {
    none,
-   prog = 1 << 1,
-   activity = 1 << 2,
-   counter = 1 << 3,
-   info = 1 << 4,
-   //all = 255
+   prog = 1,
+   activity,
+   counter,
+   info,
+   stop
 };
 
-using quadrants_t = quadrant_t;
+constexpr uint8_t operator*(const quadrant_t q)
+   { return static_cast<uint8_t>(q); }
 
-bool operator&(quadrants_t qset, quadrant_t qval)
-{
-   uint8_t u8_set = static_cast<uint8_t>(qset);
-   uint8_t u8_v = static_cast<uint8_t>(qval);
-   
-   return (u8_set & u8_v);
-}
 
 enum class pgm_t : uint8_t
 {
@@ -63,7 +59,7 @@ enum class contact_state_t : uint8_t
 
 class HMI
 {
-   quadrant_t selection;
+   quadrant_t current_selection;
 
    // Keep references to the system state machine
    cycle_counter_t &counter;
@@ -73,7 +69,7 @@ class HMI
 
 public:
    HMI(cycle_counter_t &cnt, pgm_t &pgm, contact_cfg_t &cfg, contact_state_t &state) :
-      selection(quadrant_t::none), counter(cnt), program(pgm), contact(cfg), state(state)
+      current_selection(quadrant_t::none), counter(cnt), program(pgm), contact(cfg), state(state)
    {
       draw_splash();
    }
@@ -82,13 +78,28 @@ public:
    {
 
    }
-
-   void draw(const quadrants_t qs)
+   
+   void draw()
    {
-      if ( qs & quadrant_t::prog )     { draw_prog(); }
-      if ( qs & quadrant_t::activity ) { draw_activity(); }
-      if ( qs & quadrant_t::counter )  { draw_counter(); }
-      if ( qs & quadrant_t::info )     { draw_info(); }
+      for ( uint8_t q=(*quadrant_t::none)+1; q<*quadrant_t::stop; ++q )
+      {
+         draw((quadrant_t)q);
+      }      
+   }
+
+   void draw(const quadrant_t qs)
+   {
+      draw_box(qs);
+      
+      switch(qs)
+      {
+         case quadrant_t::prog:     draw_prog();     break;
+         case quadrant_t::activity: draw_activity(); break;
+         case quadrant_t::counter:  draw_counter();  break;
+         case quadrant_t::info:     draw_info();     break;
+         default:
+            assert(0);
+      }
    }
 
    void draw_splash()
@@ -115,7 +126,23 @@ public:
    {
 
    }
+   
+   void draw_box(const quadrant_t q)
+   {
+      gfx_coord_t y1 {(*q-1) * 16};
+      gfx_coord_t y2 {y1 + 16};
+
+      gfx_mono_generic_draw_rect(0, 0, 47, 16, GFX_PIXEL_SET);
+   }
 };
+
+   // Keep references to the system state machine
+   cycle_counter_t counter;
+   pgm_t program;
+   contact_cfg_t contact;
+   contact_state_t state;
+   
+HMI hmi {counter, program, contact, state};
 
 // On UI timer
 //
@@ -123,8 +150,7 @@ struct UIRouter : public fx::Worker<UIRouter, fx::DispatcherStarted, msg::Refres
 {
    void on_receive(const fx::DispatcherStarted &msg)
    {
-      auto log = Trace(TRACE_IDLE);
-      rtos::delay(20_ms);
+      hmi.draw_box(quadrant_t::counter);
    }
 
    void on_receive(const msg::RefreshUI &msg)
