@@ -1601,9 +1601,6 @@
     <Compile Include="src\keypad_tasklet.hpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\logo.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\main.cpp">
       <SubType>compile</SubType>
     </Compile>

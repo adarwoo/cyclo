@@ -627,31 +627,15 @@ namespace rtos
    template <class TName>
    class Timer
    {
-   public:
-      using delegate_t = etl::delegate<void()>;
-      typedef void (*cb_t)();
-
    private:
       /**
       *  Reference to the underlying timer handle.
       */
       TimerHandle_t handle;
       StaticTimer_t pxTimerBuffer;
-      //delegate_t cb;
-      cb_t cb;
 
    public:
-      Timer(tick_t PeriodInTicks, bool Periodic = true) : cb(nullptr)
-      {
-         handle = xTimerCreateStatic(TName::data(), PeriodInTicks, Periodic ? pdTRUE : pdFALSE, this, TimerCallbackFunctionAdapter, &pxTimerBuffer);
-
-         if (handle == NULL)
-         {
-            configASSERT(!"Timer Constructor Failed");
-         }
-      }
-
-      Timer(cb_t cb, tick_t PeriodInTicks, bool Periodic = true) : cb(cb)
+      Timer(tick_t PeriodInTicks, bool Periodic = false)
       {
          handle = xTimerCreateStatic(TName::data(), PeriodInTicks, Periodic ? pdTRUE : pdFALSE, this, TimerCallbackFunctionAdapter, &pxTimerBuffer);
 
@@ -673,8 +657,9 @@ namespace rtos
 
       bool start(tick_t CmdTimeout = tick::infinite)
       {
+         assert(handle != nullptr);
          return xTimerStart(handle, CmdTimeout) == pdFALSE ? false : true;
-      }
+      }         
 
       bool start_from_isr()
       {
@@ -752,25 +737,11 @@ namespace rtos
       }
 
    protected:
-      cb_t get_callback()
-      {
-         return cb;
-      }
-
       static void TimerCallbackFunctionAdapter(TimerHandle_t xTimer)
       {
          Timer *timer = static_cast<Timer *>(pvTimerGetTimerID(xTimer));
 
-         cb_t cb = timer->get_callback();
-
-         if (cb != nullptr)
-         {
-            cb();
-         }
-         else
-         {
-            timer->run();
-         }
+         timer->run();
       }
 
    protected:

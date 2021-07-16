@@ -37,10 +37,10 @@
 #define CONF_SSD1306_H_INCLUDED
 
 #  define SSD1306_TWI_INTERFACE 1
-#  define SSD1306_TWI		   &TWIC
-#  define SSD1306_HEIGHT		32
+#  define SSD1306_TWI		     &TWIC
+#  define SSD1306_HEIGHT        32
 #  define SSD1306_COLUMN_OFFSET 40
-#  define SSD1306_TWI_ADDR		0x3C
+#  define SSD1306_TWI_ADDR	     0x3C
 #  define SSD1306_BUFFER_SIZE   48
 
 #endif /* CONF_SSD1306_H_INCLUDED */

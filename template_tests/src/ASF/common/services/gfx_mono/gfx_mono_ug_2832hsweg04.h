@@ -117,8 +117,10 @@
 #define gfx_mono_mask_byte(page, column, pixel_mask, color) \
 	gfx_mono_ssd1306_mask_byte(page, column, pixel_mask, color)
 
+#ifdef CONFIG_SSD1306_FRAMEBUFFER
 #define gfx_mono_put_framebuffer() \
 	gfx_mono_ssd1306_put_framebuffer()
+#endif
 
 void gfx_mono_ssd1306_put_framebuffer(void);
 

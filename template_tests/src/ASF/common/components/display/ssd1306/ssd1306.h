@@ -319,7 +319,14 @@ static inline void ssd1306_write_data_buffer(const uint8_t *data, uint8_t size)
  */
 static inline uint8_t ssd1306_read_data(void)
 {
-	return 0;
+#if defined(SSD1306_TWI_INTERFACE)
+   ((uint8_t *)twi_packet.buffer)[0] = 0b01000000;
+   uint8_t *pTo = &(((uint8_t *)twi_packet.buffer)[1]);
+
+   twi_packet.length = 2;
+   twi_master_read(SSD1306_TWI, &twi_packet);
+#endif
+	return *pTo;
 }
 
 /**
