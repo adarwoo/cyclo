@@ -2,7 +2,6 @@
 #include <asf.h>
 #include <string.h>
 
-#include "conf_keypad.h"
 #include "keypad.h"
 #include "trace.h"
 

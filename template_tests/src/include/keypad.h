@@ -22,8 +22,6 @@ void keypad_init(void);
  */
 void keypad_register_callback(uint8_t key_masks, keypad_handler_t handler, void *param);
 
-#include "conf_keypad.h"
-
 #ifdef __cplusplus
 }
 #endif

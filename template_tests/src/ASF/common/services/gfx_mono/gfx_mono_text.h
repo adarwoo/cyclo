@@ -44,6 +44,10 @@
 # include "hugemem.h"
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \ingroup gfx_mono
  * \defgroup gfx_mono_font Font support
@@ -117,5 +121,9 @@ void gfx_mono_get_progmem_string_bounding_box(char PROGMEM_PTR_T str,
 /** @} */
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* GFX_MONO_TEXT_H_INCLUDED */

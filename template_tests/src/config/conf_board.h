@@ -27,5 +27,25 @@
 #define TRACE_IDLE IOPORT_CREATE_PIN(PORTD, 1)
 #define TRACE_ERR  IOPORT_CREATE_PIN(PORTD, 2)
 
+/*
+ * Timers allocation
+ * TCC0 TCC1 TCD0 TCD1 TCE0 TCE1 TCF0 TCF1
+ */
+#define FREERTOS_TC TCC0
+#define KEYPAD_TC   TCD0
+#define NONC_TC     TCE0
+
+/*
+ * Keypad defines
+ */
+
+// Define the key codes defines
+#define KEY_UP 1<<0
+#define KEY_DOWN 1<<1
+#define KEY_SELECT 1<<2
+
+// Define the matching pins. The pins must be configured to yield a '0' on a push
+#define KEYPAD_PINS JOYSTICK_UP, JOYSTICK_DOWN, JOYSTICK_PUSH
+
 
 #endif // CONF_BOARD_H

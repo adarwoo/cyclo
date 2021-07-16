@@ -14,7 +14,8 @@ namespace msg
       NO_NC_UPDATE,
       SET_RELAY,
       REFRESH_UI,
-      KEYPAD_EVENT
+      KEYPAD_EVENT,
+      CDC_CHAR_EVENT
    };
 
    struct Keypad : etl::message<KEYPAD_EVENT>
@@ -24,12 +25,7 @@ namespace msg
 
    struct NoNcUpdate : etl::message<NO_NC_UPDATE>
    {
-      // No data. The value is atomic - better read it from the source
-   };
-
-   struct RefreshUI : etl::message<REFRESH_UI>
-   {
-      // Command message. No data
+      bool is_no;
    };
 
    struct SetRelay : etl::message<SET_RELAY>
@@ -38,14 +34,14 @@ namespace msg
       bool turn_on;
    };
 
-   using packet = etl::message_packet<Keypad, NoNcUpdate, RefreshUI, SetRelay>;
-   
-   enum router : etl::message_router_id_t
+   struct CDCChar : etl::message<CDC_CHAR_EVENT>
    {
-      UI,
-      SEQUENCER,
-      CONSOLE_SERVER,
+      char c;
    };
+
+   using packet = etl::message_packet<Keypad, NoNcUpdate, SetRelay>;
+  
+   using cdc = etl::message_packet<CDCChar>;
 }
 
 #endif // ndef msg_defs_hpp__included

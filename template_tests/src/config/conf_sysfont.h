@@ -45,7 +45,7 @@
 
 /* #define USE_FONT_BPMONO_10x16 */
 /* #define USE_FONT_BPMONO_10x14 */
-/* #define USE_FONT_MONO_MMM_10x12 */
+//#define USE_FONT_MONO_MMM_10x12
 #define USE_FONT_BASIC_6x7
 
 #if defined(USE_FONT_BPMONO_10x16)
