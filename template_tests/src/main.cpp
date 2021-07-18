@@ -17,7 +17,7 @@
 int main(void)
 {
    board_init();
-
+   
    auto ui = UIWorker();
    auto console = ConsoleWorker {};
 

@@ -56,8 +56,14 @@
 #include <ccp.h>
 #include <xmega_reset_cause.h>
 
+// From module: Chip Reset Cause Access - XMEGA implementation
+#include <reset_cause.h>
+
 // From module: Common build items for user board support templates
 #include <user_board.h>
+
+// From module: Cyclic Redundancy Check module driver
+#include <crc.h>
 
 // From module: Delay routines
 #include <delay.h>
@@ -105,6 +111,9 @@
 
 // From module: TWI - Two-wire Master Interface
 #include <twim.h>
+
+// From module: WDT - Watchdog Timer
+#include <wdt.h>
 
 // From module: XMEGA compiler driver
 #include <compiler.h>

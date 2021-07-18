@@ -22,47 +22,6 @@
 #include <etl/delegate.h>
 #include <etl/tokenizer.h>
 
-/**
- * A single command item to execute.
- * It carries the operation as well as a delay.
- * The delay is to be observed after the command
- */
-struct CommandItem
-{
-   ///< Command for the engine
-   enum class ECommand : char
-   {
-      delay = 'd',
-      open = 'o',
-      close = 'c'
-   } command;
-
-   ///< Delay after the command execution
-   uint32_t delay_ms;
-   ///< Cycle counter duing execution
-   uint32_t cycle{0};
-
-   ///< Simple constructor
-   explicit CommandItem(ECommand type, uint32_t delay = 0) : command(type), delay_ms(delay)
-   {
-   }
-
-   ///< Simple Enum converter for debug
-   constexpr const char *to_string(ECommand c) const
-   {
-      switch (c)
-      {
-      case ECommand::open:
-         return "Open";
-      case ECommand::close:
-         return "Close";
-      case ECommand::delay:
-         return "Delay";
-      }
-
-      return "Idle";
-   }
-};
 
 ///< Possible nom command interactions
 enum Interact : char
@@ -81,7 +40,6 @@ template <const size_t MAX_SIZE = 16, const size_t MAX_ERROR_BUFFER = 40>
 class Parser
 {
 public:
-   using Command = etl::vector<CommandItem, MAX_SIZE>;
    using InteractHandler = etl::delegate<void(Interact)>;
    using ErrorHandler = etl::delegate<void(const etl::string_view, uint_least8_t)>;
    using CommandHandler = etl::delegate<void(const Command &)>;

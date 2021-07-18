@@ -6,6 +6,7 @@
  *  Author: micro
  */
 #include "etl/message.h"
+#include "cyclo.hpp"
 
 namespace msg
 {
@@ -16,7 +17,8 @@ namespace msg
       REFRESH_UI,
       KEYPAD_EVENT,
       CDC_CHAR_EVENT,
-      END_OF_SPLASH
+      END_OF_SPLASH,
+      COUNTER_UPDATE,
    };
 
    struct Keypad : etl::message<KEYPAD_EVENT>
@@ -26,7 +28,6 @@ namespace msg
 
    struct NoNcUpdate : etl::message<NO_NC_UPDATE>
    {
-      bool is_no;
    };
 
    struct SetRelay : etl::message<SET_RELAY>
@@ -43,8 +44,18 @@ namespace msg
    {
       char c;
    };
+   
+   struct CounterUpdate : etl::message<COUNTER_UPDATE>
+   {
+   };
 
-   using packet = etl::message_packet<EndOfSplash, Keypad, NoNcUpdate, SetRelay>;
+   using packet = etl::message_packet<
+      EndOfSplash, 
+      Keypad, 
+      NoNcUpdate, 
+      SetRelay,
+      CounterUpdate
+   >;
   
    using cdc = etl::message_packet<CDCChar>;
 }

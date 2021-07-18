@@ -10,9 +10,12 @@
 
 #include "fx.hpp"
 #include "msg_defs.hpp"
+#include "cyclo.hpp"
 
 #include "etl/limits.h"
 #include "etl/optional.h"
+
+#include "nvstore.hpp"
 
 #include <cstdio>
 
@@ -29,77 +32,68 @@ const gfx_mono_color_t PROGMEM logo_header[] = {
    0xff,0xff,0xff,0xff,0xff,0xff,0x9f,0x8f,0x87,0xc0,0xe0,0xc0,0x80,0x87,0xc7,0xc7,0xcf,0xef,0xdf,0xe7,0xe3,0xe0,0xf0,0xf0,0xf1,0xe1,0xe3,0xe3,0xf7,0xf7,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
 };
 
-
-enum class quadrant_t : uint8_t
-{
-   none,
-   prog = 1,
-   activity,
-   counter,
-   info,
-   stop
+const gfx_mono_color_t PROGMEM switch_opened[] = {
+   0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80,0xc0,0x60,0x30,0x18,0xc,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+   0x84,0x84,0x84,0x84,0x8e,0x9b,0x91,0x9b,0x8f,0x81,0x80,0x80,0x80,0x80,0x80,0x8e,0x9b,0x91,0x9b,0x8e,0x84,0x84,0x84,0x84,
 };
 
-uint8_t operator*(const quadrant_t q)
-   { return static_cast<uint8_t>(q) - 1; }
+const gfx_mono_color_t PROGMEM switch_closed[] = {
+   0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80,0x80,0x80,0x80,0x80,0xc0,0xc0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,
+   0x84,0x84,0x84,0x84,0x8e,0x9b,0x91,0x9b,0x8f,0x83,0x83,0x81,0x81,0x81,0x81,0x8f,0x9b,0x91,0x9b,0x8e,0x84,0x84,0x84,0x84,
+};
 
-inline quadrant_t operator++(quadrant_t &q, int)
+const gfx_mono_color_t PROGMEM rec_stop[] = {
+   0x0,0x0,0xfe,0x2,0x2,0xf2,0xf2,0xf2,0xf2,0xf2,0xf2,0xf2,0x2,0x2,0xfe,0x0,
+   0x80,0x80,0xbf,0xa0,0xa0,0xa7,0xa7,0xa7,0xa7,0xa7,0xa7,0xa7,0xa0,0xa0,0xbf,0x80,
+};
+
+const gfx_mono_color_t PROGMEM rec_play[] = {
+   0x0,0x0,0xfe,0x2,0x2,0xf2,0xf2,0xe2,0xe2,0xc2,0xc2,0x82,0x2,0x2,0xfe,0x0,
+   0x80,0x80,0xbf,0xa0,0xa0,0xa7,0xa7,0xa3,0xa3,0xa1,0xa1,0xa0,0xa0,0xa0,0xbf,0x80,
+};
+
+const gfx_mono_color_t PROGMEM rec_pause[] = {
+   0x0,0x0,0xfe,0x2,0x2,0xf2,0xf2,0x2,0x2,0x2,0xf2,0xf2,0x2,0x2,0xfe,0x0,
+   0x80,0x80,0xbf,0xa0,0xa0,0xa7,0xa7,0xa0,0xa0,0xa0,0xa7,0xa7,0xa0,0xa0,0xbf,0x80,
+};
+
+
+struct Quadrant
 {
-   quadrant_t retval = q;
-   uint8_t iq = static_cast<uint8_t>(q);
-   q = static_cast<quadrant_t>(++iq);
-   
-   if (q == quadrant_t::stop)
+   enum type_t: uint8_t
    {
-      q = quadrant_t::prog;
+      prog,
+      activity,
+      counter,
+      info,
+      stop
+   } q;
+   
+   constexpr static size_t COUNTOF = static_cast<size_t>(type_t::stop);
+   
+   explicit Quadrant() { q = prog; }
+   
+   uint8_t operator*()
+      { return static_cast<uint8_t>(q); }
+         
+   Quadrant operator++(int)
+   {
+      Quadrant retval = *this;
+      q = static_cast<type_t>((static_cast<uint8_t>(q) + 1) % COUNTOF);
+      return retval; 
+   }
+
+   Quadrant operator--(int)
+   {
+      Quadrant retval = *this;
+      q = static_cast<type_t>((static_cast<uint8_t>(q) - 1) % COUNTOF);
+      return retval; 
    }
    
-   return retval; 
-}
-
-inline quadrant_t operator--(quadrant_t &q, int)
-{
-   quadrant_t retval = q;
-   uint8_t iq = static_cast<uint8_t>(q);
-   q = static_cast<quadrant_t>(--iq);
-   
-   if (q == quadrant_t::none)
-   {
-      q = quadrant_t::info;
+   gfx_coord_t get_y_pos() const
+   { 
+      return (static_cast<uint8_t>(q) & 0x0F) * 16;
    }
-   
-   return retval;
-}
-
-
-enum class pgm_t : uint8_t
-{
-   P_USB,
-   P_1,
-   P_2,
-   P_3,
-   P_4,
-   P_5,
-   P_6,
-   P_7,
-   P_8,
-   P_9,
-   STOP
-};
-
-using cycle_counter_t = uint16_t;
-
-enum class contact_cfg_t : uint8_t
-{
-   tdb,
-   no,
-   nc
-};
-
-enum class contact_state_t : uint8_t
-{
-   opened,
-   closed
 };
 
 
@@ -111,14 +105,7 @@ class UIWorker : public fx::Worker<UIWorker,
    msg::NoNcUpdate, 
    msg::EndOfSplash>
 {
-   // Keep references to the system state machine
-   cycle_counter_t counter;
-   pgm_t program;
-   contact_cfg_t contact;
-   contact_state_t state;
-
-   quadrant_t current_selection, previous_selection;
-   etl::optional<bool> is_no;
+   Quadrant current_selection, previous_selection;
    bool endOfSplash;
    
    // Create a timer
@@ -135,13 +122,17 @@ class UIWorker : public fx::Worker<UIWorker,
    } splash_timer;
    
 public:
-   explicit UIWorker() : counter{0}, program{pgm_t::P_USB}, endOfSplash {false}
+   explicit UIWorker() : endOfSplash {false}
    {
       gfx_mono_init();
       
-      current_selection = previous_selection = quadrant_t::none;
+      // Grab the NVStore's slots
+      //NVStore::instance().slots;
    }
    
+   // --------------------------------------------------------------
+   // Message handlers
+   // --------------------------------------------------------------
    void on_receive(const fx::DispatcherStarted &msg)
    {
       draw_splash();
@@ -150,35 +141,33 @@ public:
    
    void on_receive(const msg::EndOfSplash &msg)
    {
+      endOfSplash = true;
+      
       // Clear using the low level API
       ssd1306_init();
       gfx_mono_init();
-      
-      endOfSplash = true;
-      draw_box(quadrant_t::counter);
-      draw_counter();
-      
-      if (is_no.has_value())
-      {
-         draw_nonc(*is_no);   
-      }
+      draw();
    }
 
    void on_receive(const msg::Keypad &msg)
    {
+      if ( cyclo::pgm_sel == cyclo::P_USB )
+      {
+         return;
+      }         
+      
       switch (msg.key_code)
       {
          case KEY_UP:
             previous_selection = current_selection--;
-            draw_cursor(previous_selection, current_selection);
+            draw_cursor();
             break;
          case KEY_DOWN:
             previous_selection = current_selection++;
-            draw_cursor(previous_selection, current_selection);
+            draw_cursor();
             break;
          case KEY_SELECT:
-            ++counter;
-            draw_counter();
+            // TODO
             break;
          default:
             assert(0);
@@ -188,41 +177,35 @@ public:
    
    void on_receive(const msg::NoNcUpdate &msg)
    {
-      is_no = msg.is_no;
-      
+      // Refresh immediately (unless the splash is still up)
       if (endOfSplash)
       {
-         draw_nonc(*is_no);
+         draw_nonc();
       }
-   }
-
-protected:
-
-   void update_cycle_counter(cycle_counter_t newCount)
-   {
-
    }
    
+   void on_receive(const msg::CounterUpdate &)
+   {
+      draw_counter();
+   }
+   
+
+// --------------------------------------------------------------
+// Draw methods
+// --------------------------------------------------------------
+private:
    void draw()
    {
-      for ( uint8_t q=(*quadrant_t::none)+1; q<*quadrant_t::stop; ++q )
-      {
-         draw((quadrant_t)q);
-      }
-   }
-
-   void draw(const quadrant_t qs)
-   {
-      draw_box(qs);
+      draw_box();
+      draw_prog();
+      draw_status();
+      draw_counter();
+      draw_contact();
+      draw_nonc();
       
-      switch(qs)
+      if ( cyclo::pgm_sel != cyclo::P_USB )
       {
-         case quadrant_t::prog:     draw_prog();     break;
-         case quadrant_t::activity: draw_activity(); break;
-         case quadrant_t::counter:  draw_counter();  break;
-         case quadrant_t::info:     draw_info();     break;
-         default:
-         assert(0);
+         draw_cursor();
       }
    }
 
@@ -240,66 +223,109 @@ protected:
    
    void draw_prog()
    {
-
+      if ( cyclo::pgm_sel == cyclo::P_USB )
+      {
+         gfx_mono_draw_string("USB", 16, 4, &sysfont);
+      }
+      else if ( cyclo::pgm_sel == cyclo::P_MAN )
+      {
+         gfx_mono_draw_string("MAN", 16, 4, &sysfont);
+      }
+      else
+      {
+         char pgmString[4];
+         snprintf(pgmString, 3, "P%1u", *cyclo::pgm_sel);
+      }
    }
 
-   void draw_activity()
+   void draw_contact()
    {
+      auto* switch_pixmap = cyclo::contact == cyclo::contact_t::opened ?
+         (gfx_mono_color_t*)switch_opened : (gfx_mono_color_t*)switch_closed;
+      
+      struct gfx_mono_bitmap sw_bm = {
+         .width = 24, .height = 16, .type=GFX_MONO_BITMAP_PROGMEM, switch_pixmap
+      };
 
+      gfx_mono_put_bitmap(&sw_bm, 11, 48);
+   }
+
+   void draw_nonc()
+   {
+      if (cyclo::toggle_pos.has_value())
+      {
+         gfx_mono_draw_string( 
+            (*cyclo::toggle_pos == cyclo::rocker_toggle_t::no) ? "NO" : "NC", 
+            35, 52, &sysfont
+         );
+      }         
    }
 
    void draw_counter()
    {
-      static char counterString[6];
-      snprintf(counterString, sizeof(counterString), "%.5u", this->counter);
+      char counterString[] = "-----";
+      
+      if ( cyclo::counter )
+      {
+         snprintf(counterString, sizeof(counterString), "%.5u", *cyclo::counter);
+      }
+      
       gfx_mono_draw_string(counterString, 15, 36, &sysfont);
    }
    
-   void draw_nonc(bool isNo )
+   void draw_status()
    {
-      gfx_mono_draw_string(isNo ? "NO" : "NC", 34, 52, &sysfont);
-   }
-
-   void draw_info()
-   {
-
-   }
-   
-   void draw_box(const quadrant_t q)
-   {
-      gfx_mono_generic_draw_rect(0, 0, 48, 64, GFX_PIXEL_SET);
-      gfx_mono_draw_horizontal_line(0, 15, 48, GFX_PIXEL_SET);
-      gfx_mono_draw_horizontal_line(0, 31, 48, GFX_PIXEL_SET);
-      gfx_mono_draw_horizontal_line(0, 47, 48, GFX_PIXEL_SET);
-   }
-   
-   void draw_selection()
-   {
-      
-   }
-   
-   void draw_cursor(quadrant_t from, quadrant_t to)
-   {
-      auto q2y = [](quadrant_t q) {
-         return (*q) * 16;
+      struct gfx_mono_bitmap _bm = {
+         .width = 16, .height = 16, .type=GFX_MONO_BITMAP_PROGMEM, (gfx_mono_color_t*)rec_play
       };
       
-      
-      if ( from != quadrant_t::none )
+      if ( cyclo::seq_status == cyclo::seq_status_t::stopped )
       {
-         gfx_coord_t y = q2y(from) + 3;
+         // Display run
+         _bm.data.progmem = (gfx_mono_color_t*)rec_play;
+         gfx_mono_put_bitmap(&_bm, 11, 16);   
+      }
+      else if ( cyclo::seq_status == cyclo::seq_status_t::running )
+      {
+         _bm.data.progmem = (gfx_mono_color_t*)rec_pause;
+         gfx_mono_put_bitmap(&_bm, 11, 16);
+      }
+      else
+      {
+         _bm.data.progmem = (gfx_mono_color_t*)rec_play;
+         gfx_mono_put_bitmap(&_bm, 9, 16);
+         _bm.data.progmem = (gfx_mono_color_t*)rec_stop;
+         gfx_mono_put_bitmap(&_bm, 25, 16);
+      }
+   }
+   
+   void draw_box()
+   {
+      gfx_mono_draw_rect(0, 0, 48, 64, GFX_PIXEL_SET);
+      
+      // Dot the lines
+      for (gfx_coord_t x=2; x<48; x+=2)
+      {
+         gfx_mono_draw_pixel(x, 15, GFX_PIXEL_SET);
+         gfx_mono_draw_pixel(x, 31, GFX_PIXEL_SET);
+         gfx_mono_draw_pixel(x, 47, GFX_PIXEL_SET);
+      }
+   }
+   
+   void draw_cursor()
+   {
+      if ( *previous_selection != *current_selection )
+      {
+         gfx_coord_t y = previous_selection.get_y_pos() + 3;
 
-         gfx_mono_draw_filled_rect(3, y, 9, 9, GFX_PIXEL_CLR);
+         gfx_mono_draw_filled_rect(3, y, 7, 9, GFX_PIXEL_CLR);
       }
       
-      if ( to != quadrant_t::none )
-      {
-         gfx_coord_t y = q2y(to) + 3;
+      gfx_coord_t y = current_selection.get_y_pos() + 3;
 
-         gfx_mono_draw_line(3, y, 11, y+4, GFX_PIXEL_SET);
-         gfx_mono_draw_line(11, y+4, 3, y+8, GFX_PIXEL_SET);
-         gfx_mono_draw_line(3, y+8, 3, y, GFX_PIXEL_SET);
-      }
+      gfx_mono_draw_line(3, y, 9, y+4, GFX_PIXEL_SET);
+      gfx_mono_draw_line(9, y+4, 3, y+8, GFX_PIXEL_SET);
+      gfx_mono_draw_line(3, y+8, 3, y, GFX_PIXEL_SET);
    }
    
 };

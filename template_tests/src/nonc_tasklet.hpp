@@ -4,7 +4,7 @@
 #include "asf.h"
 #include "fx.hpp"
 #include "msg_defs.hpp"
-#include "keypad.h"
+#include "cyclo.hpp"
 
 #ifndef NONC_SAMPLE_FREQUENCY_HZ
 #define NONC_SAMPLE_FREQUENCY_HZ 100
@@ -54,11 +54,11 @@ public:
         if ( nc_readback != no_readback )
         {
            // Any changes?
-           State now = nc_readback ? State::nc : State::no;
+           cyclo::rocker_toggle_t now = nc_readback ? cyclo::rocker_toggle_t::nc : cyclo::rocker_toggle_t::no;
            
-           if ( now != state )
+           if ( (not cyclo::toggle_pos) or (now != *cyclo::toggle_pos) )
            {
-              state = now;
+              cyclo::toggle_pos = now;
               assert(this_);
               this_->schedule_from_isr(0);
            }
@@ -67,9 +67,8 @@ public:
 
     virtual void run(uint32_t unused) override
     {
-       msg::NoNcUpdate msg;
-       msg.is_no = (state == State::no);
-       fx::publish(msg);
+       // Store globally
+       fx::publish(msg::NoNcUpdate{});
     }
 };
 

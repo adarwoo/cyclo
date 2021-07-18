@@ -33,17 +33,22 @@
         <options>
           <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="common.services.basic.sleepmgr" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="xmega.drivers.tc" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="xmega.drivers.twi" value="Add" config="master" content-id="Atmel.ASF" />
+          <option id="common.services.basic.cpu" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.gfx_mono" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.gfx_mono.font" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="common.services.basic.sleepmgr" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="xmega.drivers.crc" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="xmega.drivers.nvm" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="xmega.drivers.tc" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="xmega.drivers.twi" value="Add" config="master" content-id="Atmel.ASF" />
+          <option id="xmega.drivers.wdt" value="Add" config="" content-id="Atmel.ASF" />
         </options>
         <configurations>
           <configuration key="config.xmega.drivers.twi.mode" value="master" default="both" content-id="Atmel.ASF" />
           <configuration key="config.gfx_mono.display" value="ug_2832hsweg04" default="null" content-id="Atmel.ASF" />
           <configuration key="config.spi_master_type" value="standard_spi" default="standard_spi" content-id="Atmel.ASF" />
+          <configuration key="config.xmega.drivers.usb.device.sleepmgr" value="with_sleepmgr" default="with_sleepmgr" content-id="Atmel.ASF" />
         </configurations>
         <files>
           <file path="src/main.c" framework="" version="" source="common/applications/user_application/main.c" changed="False" content-id="Atmel.ASF" />
@@ -125,6 +130,11 @@
           <file path="src/ASF/common/services/spi/spi_master.h" framework="" version="3.49.1" source="common\services\spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/common/services/spi/xmega_spi/spi_master.h" framework="" version="3.49.1" source="common\services\spi\xmega_spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/Config/conf_spi_master.h" framework="" version="3.49.1" source="common\services\spi\xmega_spi\module_config\conf_spi_master.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/xmega/drivers/crc/crc.c" framework="" version="3.49.1" source="xmega\drivers\crc\crc.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/xmega/drivers/crc/crc.h" framework="" version="3.49.1" source="xmega\drivers\crc\crc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/xmega/drivers/wdt/wdt.c" framework="" version="3.49.1" source="xmega\drivers\wdt\wdt.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/xmega/drivers/wdt/wdt.h" framework="" version="3.49.1" source="xmega\drivers\wdt\wdt.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/cpu/reset_cause.h" framework="" version="3.49.1" source="common\services\cpu\reset_cause.h" changed="False" content-id="Atmel.ASF" />
         </files>
         <documentation help="https://asf.microchip.com/docs/3.49.1/common.applications.user_application.user_board.xmegaau/html/index.html" />
         <offline-documentation help="" />
@@ -195,6 +205,9 @@
             <Value>../src/ASF/common/services/delay</Value>
             <Value>../src/ASF/common/services/spi/xmega_spi</Value>
             <Value>../src/ASF/common/services/spi</Value>
+            <Value>../src/ASF/xmega/drivers/crc</Value>
+            <Value>../src/ASF/xmega/drivers/wdt</Value>
+            <Value>../src/ASF/common/services/cpu</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
         <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
@@ -243,6 +256,16 @@
             <Value>../src/ASF/common/services/delay</Value>
             <Value>../src/ASF/common/services/spi/xmega_spi</Value>
             <Value>../src/ASF/common/services/spi</Value>
+            <Value>../src/ASF/xmega/drivers/crc</Value>
+            <Value>../src/ASF/xmega/drivers/wdt</Value>
+            <Value>../src/ASF/common/services/cpu</Value>
+            <Value>../src/ASF/common/services/usb</Value>
+            <Value>../src/ASF/common/services/usb/class/cdc</Value>
+            <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+            <Value>../src/ASF/common/services/usb/udc</Value>
+            <Value>../src/ASF/common/utils/stdio/stdio_usb</Value>
+            <Value>../src/ASF/thirdparty/wireless/addons/sio2host/usb</Value>
+            <Value>../src/ASF/xmega/drivers/usb</Value>
           </ListValues>
         </avrgcccpp.compiler.directories.IncludePaths>
         <avrgcccpp.compiler.optimization.level>Optimize for size (-Os)</avrgcccpp.compiler.optimization.level>
@@ -281,6 +304,9 @@
             <Value>../src/ASF/common/services/delay</Value>
             <Value>../src/ASF/common/services/spi/xmega_spi</Value>
             <Value>../src/ASF/common/services/spi</Value>
+            <Value>../src/ASF/xmega/drivers/crc</Value>
+            <Value>../src/ASF/xmega/drivers/wdt</Value>
+            <Value>../src/ASF/common/services/cpu</Value>
           </ListValues>
         </avrgcccpp.assembler.general.IncludePaths>
       </AvrGccCpp>
@@ -329,6 +355,9 @@
             <Value>../src/ASF/common/services/delay</Value>
             <Value>../src/ASF/common/services/spi/xmega_spi</Value>
             <Value>../src/ASF/common/services/spi</Value>
+            <Value>../src/ASF/xmega/drivers/crc</Value>
+            <Value>../src/ASF/xmega/drivers/wdt</Value>
+            <Value>../src/ASF/common/services/cpu</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
         <avrgcc.compiler.optimization.OtherFlags>-fdata-sections</avrgcc.compiler.optimization.OtherFlags>
@@ -377,6 +406,16 @@
             <Value>../src/ASF/common/services/delay</Value>
             <Value>../src/ASF/common/services/spi/xmega_spi</Value>
             <Value>../src/ASF/common/services/spi</Value>
+            <Value>../src/ASF/xmega/drivers/crc</Value>
+            <Value>../src/ASF/xmega/drivers/wdt</Value>
+            <Value>../src/ASF/common/services/cpu</Value>
+            <Value>../src/ASF/common/services/usb</Value>
+            <Value>../src/ASF/common/services/usb/class/cdc</Value>
+            <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+            <Value>../src/ASF/common/services/usb/udc</Value>
+            <Value>../src/ASF/common/utils/stdio/stdio_usb</Value>
+            <Value>../src/ASF/thirdparty/wireless/addons/sio2host/usb</Value>
+            <Value>../src/ASF/xmega/drivers/usb</Value>
           </ListValues>
         </avrgcccpp.compiler.directories.IncludePaths>
         <avrgcccpp.compiler.optimization.OtherFlags>-fno-rtti -fno-exceptions</avrgcccpp.compiler.optimization.OtherFlags>
@@ -415,6 +454,9 @@
             <Value>../src/ASF/common/services/delay</Value>
             <Value>../src/ASF/common/services/spi/xmega_spi</Value>
             <Value>../src/ASF/common/services/spi</Value>
+            <Value>../src/ASF/xmega/drivers/crc</Value>
+            <Value>../src/ASF/xmega/drivers/wdt</Value>
+            <Value>../src/ASF/common/services/cpu</Value>
           </ListValues>
         </avrgcccpp.assembler.general.IncludePaths>
         <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
@@ -425,7 +467,37 @@
     <Compile Include="src\ASF\common\components\display\ssd1306\font.c">
       <SubType>compile</SubType>
     </Compile>
+    <None Include="src\ASF\common\services\cpu\reset_cause.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\xmega\drivers\crc\crc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\xmega\drivers\crc\crc.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\xmega\drivers\wdt\wdt.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\xmega\drivers\wdt\wdt.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\config\conf_cyclo.hpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\console_worker.hpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\cyclo.hpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\nonc_tasklet.hpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\nvstore.hpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\pgm_man.hpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\sequencer_worker.hpp">
@@ -1580,9 +1652,6 @@
     <Compile Include="src\include\keypad.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\include\nonc_tasklet.hpp">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\include\rtos.hpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1899,6 +1968,7 @@
     <Folder Include="src\ASF\common\services\" />
     <Folder Include="src\ASF\common\services\clock\" />
     <Folder Include="src\ASF\common\services\clock\xmega\" />
+    <Folder Include="src\ASF\common\services\cpu\" />
     <Folder Include="src\ASF\common\services\delay\" />
     <Folder Include="src\ASF\common\services\delay\xmega\" />
     <Folder Include="src\ASF\common\services\gfx_mono\" />
@@ -1916,12 +1986,14 @@
     <Folder Include="src\ASF\xmega\" />
     <Folder Include="src\ASF\xmega\drivers\" />
     <Folder Include="src\ASF\xmega\drivers\cpu\" />
+    <Folder Include="src\ASF\xmega\drivers\crc\" />
     <Folder Include="src\ASF\xmega\drivers\nvm\" />
     <Folder Include="src\ASF\xmega\drivers\pmic\" />
     <Folder Include="src\ASF\xmega\drivers\sleep\" />
     <Folder Include="src\ASF\xmega\drivers\spi\" />
     <Folder Include="src\ASF\xmega\drivers\tc\" />
     <Folder Include="src\ASF\xmega\drivers\twi\" />
+    <Folder Include="src\ASF\xmega\drivers\wdt\" />
     <Folder Include="src\ASF\xmega\utils\" />
     <Folder Include="src\ASF\xmega\utils\assembler\" />
     <Folder Include="src\ASF\xmega\utils\bit_handling\" />
