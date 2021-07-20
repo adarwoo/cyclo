@@ -14,6 +14,7 @@
 static inline void trace_set(ioport_pin_t pin) { ioport_set_pin_level(pin, true); }
 static inline void trace_clear(ioport_pin_t pin) { ioport_set_pin_level(pin, false); }
 static inline void trace_tgl(ioport_pin_t pin) { ioport_toggle_pin_level(pin); }
+   
 
 #ifdef __cplusplus
 /**

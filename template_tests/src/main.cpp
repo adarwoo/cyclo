@@ -12,21 +12,37 @@
 #include "ui_worker.hpp"
 #include "sequencer_worker.hpp"
 #include "console_worker.hpp"
+#include "contact_worker.hpp"
+
+void abort(bool test)
+{
+   if ( not test )
+   {
+      trace_set(TRACE_ERR);
+   }
+   
+   while (1)
+   {
+      continue;
+   }
+}
 
 
 int main(void)
 {
    board_init();
    
+   auto contact = ContactWorker {};
+   auto rt_bus = fx::Dispatcher<msg::packet, typestring_is("rt"), 64, 2>();
+   
    auto ui = UIWorker();
    auto console = ConsoleWorker {};
-
-   auto ui_bus = fx::Dispatcher<msg::packet, typestring_is("ui"), 256, 2>();
+   auto ui_bus = fx::Dispatcher<msg::packet, typestring_is("ui"), 64, 2>();
 
    auto root = fx::RootDispatcher<2>();
 
-   root << ui_bus;
-
+   root << rt_bus << ui_bus;
+   rt_bus << contact;
    ui_bus << ui << console;
 
    auto key_tasklet = KeypadTasklet {};

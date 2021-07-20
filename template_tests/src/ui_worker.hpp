@@ -76,6 +76,8 @@ struct Quadrant
    uint8_t operator*()
       { return static_cast<uint8_t>(q); }
          
+   bool operator==(type_t t) { return q == t; }
+         
    Quadrant operator++(int)
    {
       Quadrant retval = *this;
@@ -103,7 +105,8 @@ class UIWorker : public fx::Worker<UIWorker,
    fx::DispatcherStarted, 
    msg::Keypad, 
    msg::NoNcUpdate, 
-   msg::EndOfSplash>
+   msg::EndOfSplash,
+   msg::SetRelay>
 {
    Quadrant current_selection, previous_selection;
    bool endOfSplash;
@@ -167,7 +170,12 @@ public:
             draw_cursor();
             break;
          case KEY_SELECT:
-            // TODO
+            if ( current_selection == Quadrant::info)
+            {
+               using namespace cyclo;
+               contact = (contact == contact_t::closed) ? contact_t::opened : contact_t::closed;
+               fx::publish(msg::SetRelay {});
+            }
             break;
          default:
             assert(0);
@@ -188,6 +196,12 @@ public:
    {
       draw_counter();
    }
+   
+   void on_receive(const msg::SetRelay &)
+   {
+      draw_contact();
+   }
+   
    
 
 // --------------------------------------------------------------

@@ -33,7 +33,7 @@ namespace msg
    struct SetRelay : etl::message<SET_RELAY>
    {
       ///< Turn no of off (irrespective of the NO/NC status. True to turn ON.
-      bool turn_on;
+      bool invert;
    };
    
    struct EndOfSplash : etl::message<END_OF_SPLASH>
@@ -56,6 +56,7 @@ namespace msg
       SetRelay,
       CounterUpdate
    >;
+   
   
    using cdc = etl::message_packet<CDCChar>;
 }

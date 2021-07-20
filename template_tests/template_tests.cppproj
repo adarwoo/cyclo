@@ -488,6 +488,9 @@
     <Compile Include="src\console_worker.hpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\contact_worker.hpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\cyclo.hpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1953,6 +1956,9 @@
       <SubType>compile</SubType>
     </None>
     <None Include="src\include\etl\generators\generate_variant_pool.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\XMLFile1.xml">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>

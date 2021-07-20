@@ -61,6 +61,9 @@ namespace fx
    {
       Worker<T, TMsgs...>() : etl::message_router<T, TMsgs...>(++message_router_auto_id) {}
       void on_receive_unknown(const etl::imessage& msg) {}
+         
+      // TODO static auto publisher_tasklet = rtos::Tasklet()
+      // publisher_tasklet.run(..)
    };
    
    template <class TPacket, class TName, const size_t STACKSIZE, const uint_least8_t MAX_ROUTERS, const size_t QUEUESIZE=4>
@@ -89,7 +92,7 @@ namespace fx
       
       void default_handler()
       {
-         // Thread is started. Let all worker know ti
+         // Thread is started. Let all worker know it
          etl::message_bus<MAX_ROUTERS>::receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, DispatcherStarted {});
          
          while (true)

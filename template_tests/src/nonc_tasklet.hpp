@@ -47,8 +47,8 @@ public:
     {
         // Both sides are read
         // The state changes once the following is measured
-        bool nc_readback = ioport_get_pin_level(SWITCH_SENSE_NC);
-        bool no_readback = ioport_get_pin_level(SWITCH_SENSE_NO);
+        bool nc_readback = not ioport_get_pin_level(SWITCH_SENSE_NC);
+        bool no_readback = not ioport_get_pin_level(SWITCH_SENSE_NO);
 
         // Measure is viable?
         if ( nc_readback != no_readback )
