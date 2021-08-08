@@ -26,13 +26,8 @@ void board_init(void)
 	 * specific board configuration, found in conf_board.h.
 	 */
 
-   // Force a zero on output now
-	ioport_set_pin_level(RELAY_CTRL, false);
-
-    // Force a zero on output now
-    ioport_set_pin_level(RELAY_CTRL, false);
-
-    // Activate the relay command
+    // Force a zero on output the set as output
+	 ioport_set_pin_level(RELAY_CTRL, false);
     ioport_set_pin_dir(RELAY_CTRL, IOPORT_DIR_OUTPUT);
 
     // Activate pull-ups on the input pin
@@ -51,8 +46,8 @@ void board_init(void)
     ioport_set_pin_mode(SWITCH_SENSE_NC, IOPORT_MODE_PULLUP);
 
     // Activate trace pins for debug
-    ioport_set_pin_dir(TRACE_TICK, IOPORT_DIR_OUTPUT);
-    ioport_set_pin_dir(TRACE_IDLE, IOPORT_DIR_OUTPUT);
+    ioport_set_pin_dir(TRACE_INFO, IOPORT_DIR_OUTPUT);
+    ioport_set_pin_dir(TRACE_WARN, IOPORT_DIR_OUTPUT);
     ioport_set_pin_dir(TRACE_ERR, IOPORT_DIR_OUTPUT);
 
     // Activate the i2c for the OLED chip

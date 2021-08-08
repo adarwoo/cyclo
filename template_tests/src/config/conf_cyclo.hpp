@@ -4,15 +4,13 @@
  * conf_cyclo.h
  *
  * Created: 17/07/2021 18:33:44
- *  Author: micro
+ *  Author: software@arreckx.com
  */ 
 
 namespace cyclo
 {
    /** Max number of commands per programs */
    constexpr size_t max_items_per_command = 12;
-   
-  
 }
 
 

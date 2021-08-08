@@ -1,7 +1,7 @@
 #ifndef ui_worker_hpp__included
 #define ui_worker_hpp__included
 /*
- * UI Woker
+ * UI Worker
  *
  * Created: 29/06/2021 21:26:21
  * Author : software@arreckx.com
@@ -10,106 +10,26 @@
 
 #include "fx.hpp"
 #include "msg_defs.hpp"
-#include "cyclo.hpp"
 
 #include "etl/limits.h"
 #include "etl/optional.h"
 
-#include "nvstore.hpp"
-
-#include <cstdio>
+#include "ui_model.hpp"
+#include "ui_view.hpp"
+#include "ui_controller.hpp"
 
 using namespace rtos::tick;
 
-const gfx_mono_color_t PROGMEM logo_header[] = {
-   0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x3f,0xf,0x7,0x7,0x3,0x1,0x1,0x3,0x3,0x3,0x1,0x1,0x1,0x3,0x3,0xf,0xff,0xff,
-   0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x7f,0x7f,0x3f,0x3f,0x1f,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe0,0xe0,0xf0,0xf0,0xf0,0xfc,0xff,0xff,
-   0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x7f,0x3f,0x3f,0x1f,0x1f,0x7,0x3,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf0,0xe0,0xe0,0xc0,0x80,0x80,0x0,0x3,0x87,0xff,0xff,0xff,0xff,0xff,0xff,
-   0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x3f,0x3,0x1,0x0,0x0,0x0,0xf8,0xfc,0x8e,0x87,0x87,0x87,0x8f,0xfe,0xfc,0x0,0x0,0x0,0x0,0x0,0x80,0xc0,0x0,0x0,0x3f,0x7f,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
-   0xff,0xff,0xc7,0xf1,0xf1,0xf0,0xe0,0xc0,0xc0,0x80,0x80,0x0,0x0,0x0,0x0,0xf,0xf,0x1,0x1,0x1,0x1,0x1,0xf,0xf,0x0,0x0,0x0,0x7c,0xfe,0xff,0xff,0xff,0xfe,0xfc,0xfc,0xfc,0xfc,0xfe,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
-   0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xf3,0x0,0x0,0x0,0x0,0x80,0xe0,0xf8,0xf8,0xf8,0xf8,0xe0,0x0,0x0,0x0,0x0,0xc0,0xf0,0xfe,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
-   0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x3,0x0,0x0,0x0,0xfe,0xff,0xff,0xff,0xff,0xff,0xff,0x80,0x0,0x0,0x0,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
-   0xff,0xff,0xff,0xff,0xff,0xff,0x9f,0x8f,0x87,0xc0,0xe0,0xc0,0x80,0x87,0xc7,0xc7,0xcf,0xef,0xdf,0xe7,0xe3,0xe0,0xf0,0xf0,0xf1,0xe1,0xe3,0xe3,0xf7,0xf7,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
-};
-
-const gfx_mono_color_t PROGMEM switch_opened[] = {
-   0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80,0xc0,0x60,0x30,0x18,0xc,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
-   0x84,0x84,0x84,0x84,0x8e,0x9b,0x91,0x9b,0x8f,0x81,0x80,0x80,0x80,0x80,0x80,0x8e,0x9b,0x91,0x9b,0x8e,0x84,0x84,0x84,0x84,
-};
-
-const gfx_mono_color_t PROGMEM switch_closed[] = {
-   0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80,0x80,0x80,0x80,0x80,0xc0,0xc0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,
-   0x84,0x84,0x84,0x84,0x8e,0x9b,0x91,0x9b,0x8f,0x83,0x83,0x81,0x81,0x81,0x81,0x8f,0x9b,0x91,0x9b,0x8e,0x84,0x84,0x84,0x84,
-};
-
-const gfx_mono_color_t PROGMEM rec_stop[] = {
-   0x0,0x0,0xfe,0x2,0x2,0xf2,0xf2,0xf2,0xf2,0xf2,0xf2,0xf2,0x2,0x2,0xfe,0x0,
-   0x80,0x80,0xbf,0xa0,0xa0,0xa7,0xa7,0xa7,0xa7,0xa7,0xa7,0xa7,0xa0,0xa0,0xbf,0x80,
-};
-
-const gfx_mono_color_t PROGMEM rec_play[] = {
-   0x0,0x0,0xfe,0x2,0x2,0xf2,0xf2,0xe2,0xe2,0xc2,0xc2,0x82,0x2,0x2,0xfe,0x0,
-   0x80,0x80,0xbf,0xa0,0xa0,0xa7,0xa7,0xa3,0xa3,0xa1,0xa1,0xa0,0xa0,0xa0,0xbf,0x80,
-};
-
-const gfx_mono_color_t PROGMEM rec_pause[] = {
-   0x0,0x0,0xfe,0x2,0x2,0xf2,0xf2,0x2,0x2,0x2,0xf2,0xf2,0x2,0x2,0xfe,0x0,
-   0x80,0x80,0xbf,0xa0,0xa0,0xa7,0xa7,0xa0,0xa0,0xa0,0xa7,0xa7,0xa0,0xa0,0xbf,0x80,
-};
-
-
-struct Quadrant
-{
-   enum type_t: uint8_t
-   {
-      prog,
-      activity,
-      counter,
-      info,
-      stop
-   } q;
-   
-   constexpr static size_t COUNTOF = static_cast<size_t>(type_t::stop);
-   
-   explicit Quadrant() { q = prog; }
-   
-   uint8_t operator*()
-      { return static_cast<uint8_t>(q); }
-         
-   bool operator==(type_t t) { return q == t; }
-         
-   Quadrant operator++(int)
-   {
-      Quadrant retval = *this;
-      q = static_cast<type_t>((static_cast<uint8_t>(q) + 1) % COUNTOF);
-      return retval; 
-   }
-
-   Quadrant operator--(int)
-   {
-      Quadrant retval = *this;
-      q = static_cast<type_t>((static_cast<uint8_t>(q) - 1) % COUNTOF);
-      return retval; 
-   }
-   
-   gfx_coord_t get_y_pos() const
-   { 
-      return (static_cast<uint8_t>(q) & 0x0F) * 16;
-   }
-};
-
-
-// On UI timer
-//
-class UIWorker : public fx::Worker<UIWorker,
+class UIWorker : public fx::Worker<
+   UIWorker,
    fx::DispatcherStarted, 
-   msg::Keypad, 
-   msg::NoNcUpdate, 
    msg::EndOfSplash,
-   msg::SetRelay>
+   msg::Keypad,
+   msg::NoNcUpdate,
+   msg::ContactUpdate
+>
 {
-   Quadrant current_selection, previous_selection;
-   bool endOfSplash;
+   using UIController = sml::sm<sm_cyclo>;
    
    // Create a timer
    class Splash_timer : public rtos::Timer<typestring_is("tsplash")>
@@ -119,18 +39,28 @@ class UIWorker : public fx::Worker<UIWorker,
    protected:   
       virtual void run() override
       {
-         auto msg = msg::EndOfSplash {};
-         fx::publish(msg);
+         fx::publish(msg::EndOfSplash {});
       }
    } splash_timer;
    
+   UIModel model;
+   UIView  view;
+   UIController controller;
+   
 public:
-   explicit UIWorker() : endOfSplash {false}
+   explicit UIWorker() : model{}, view{model}, controller{model, view}
    {
-      gfx_mono_init();
+   }
+   
+   // @return true if the main screen can be updated with external changes
+   bool can_update()
+   {
+      using namespace sml;
       
-      // Grab the NVStore's slots
-      //NVStore::instance().slots;
+      return 
+         not controller.is<decltype(state<program_selection>)>(state<program_setup>)
+         and
+         not controller.is("splash"_s);
    }
    
    // --------------------------------------------------------------
@@ -138,210 +68,49 @@ public:
    // --------------------------------------------------------------
    void on_receive(const fx::DispatcherStarted &msg)
    {
-      draw_splash();
       splash_timer.start();
    }
-   
+
    void on_receive(const msg::EndOfSplash &msg)
    {
-      endOfSplash = true;
-      
-      // Clear using the low level API
-      ssd1306_init();
-      gfx_mono_init();
-      draw();
+      process_event(controller, splash_timeout{});
    }
 
    void on_receive(const msg::Keypad &msg)
    {
-      if ( cyclo::pgm_sel == cyclo::P_USB )
-      {
-         return;
-      }         
-      
       switch (msg.key_code)
       {
-         case KEY_UP:
-            previous_selection = current_selection--;
-            draw_cursor();
-            break;
-         case KEY_DOWN:
-            previous_selection = current_selection++;
-            draw_cursor();
-            break;
-         case KEY_SELECT:
-            if ( current_selection == Quadrant::info)
-            {
-               using namespace cyclo;
-               contact = (contact == contact_t::closed) ? contact_t::opened : contact_t::closed;
-               fx::publish(msg::SetRelay {});
-            }
-            break;
-         default:
-            assert(0);
+        case KEY_UP: process_event(controller, up {}); break;
+        case KEY_DOWN: process_event(controller, down{}); break;
+        case KEY_SELECT: process_event(controller, push{}); break;
+        default:
+           assert(0);
       }
-      
    }
    
    void on_receive(const msg::NoNcUpdate &msg)
    {
-      // Refresh immediately (unless the splash is still up)
-      if (endOfSplash)
+      if ( can_update() )
       {
-         draw_nonc();
+         view.draw_nonc();
       }
    }
    
    void on_receive(const msg::CounterUpdate &)
    {
-      draw_counter();
-   }
-   
-   void on_receive(const msg::SetRelay &)
-   {
-      draw_contact();
-   }
-   
-   
-
-// --------------------------------------------------------------
-// Draw methods
-// --------------------------------------------------------------
-private:
-   void draw()
-   {
-      draw_box();
-      draw_prog();
-      draw_status();
-      draw_counter();
-      draw_contact();
-      draw_nonc();
-      
-      if ( cyclo::pgm_sel != cyclo::P_USB )
+      if ( can_update() )
       {
-         draw_cursor();
-      }
-   }
-
-   void draw_splash()
-   {
-      struct gfx_mono_bitmap logo_bm = {
-         .width = 48,
-         .height = 64,
-         .type=GFX_MONO_BITMAP_PROGMEM,
-         (gfx_mono_color_t*)logo_header
-      };
-
-      gfx_mono_put_bitmap(&logo_bm, 0, 0);
-   }
-   
-   void draw_prog()
-   {
-      if ( cyclo::pgm_sel == cyclo::P_USB )
-      {
-         gfx_mono_draw_string("USB", 16, 4, &sysfont);
-      }
-      else if ( cyclo::pgm_sel == cyclo::P_MAN )
-      {
-         gfx_mono_draw_string("MAN", 16, 4, &sysfont);
-      }
-      else
-      {
-         char pgmString[4];
-         snprintf(pgmString, 3, "P%1u", *cyclo::pgm_sel);
-      }
-   }
-
-   void draw_contact()
-   {
-      auto* switch_pixmap = cyclo::contact == cyclo::contact_t::opened ?
-         (gfx_mono_color_t*)switch_opened : (gfx_mono_color_t*)switch_closed;
-      
-      struct gfx_mono_bitmap sw_bm = {
-         .width = 24, .height = 16, .type=GFX_MONO_BITMAP_PROGMEM, switch_pixmap
-      };
-
-      gfx_mono_put_bitmap(&sw_bm, 11, 48);
-   }
-
-   void draw_nonc()
-   {
-      if (cyclo::toggle_pos.has_value())
-      {
-         gfx_mono_draw_string( 
-            (*cyclo::toggle_pos == cyclo::rocker_toggle_t::no) ? "NO" : "NC", 
-            35, 52, &sysfont
-         );
+         view.draw_counter();
       }         
    }
 
-   void draw_counter()
+   void on_receive(const msg::ContactUpdate &)
    {
-      char counterString[] = "-----";
-      
-      if ( cyclo::counter )
+      if ( can_update() )
       {
-         snprintf(counterString, sizeof(counterString), "%.5u", *cyclo::counter);
-      }
-      
-      gfx_mono_draw_string(counterString, 15, 36, &sysfont);
-   }
-   
-   void draw_status()
-   {
-      struct gfx_mono_bitmap _bm = {
-         .width = 16, .height = 16, .type=GFX_MONO_BITMAP_PROGMEM, (gfx_mono_color_t*)rec_play
-      };
-      
-      if ( cyclo::seq_status == cyclo::seq_status_t::stopped )
-      {
-         // Display run
-         _bm.data.progmem = (gfx_mono_color_t*)rec_play;
-         gfx_mono_put_bitmap(&_bm, 11, 16);   
-      }
-      else if ( cyclo::seq_status == cyclo::seq_status_t::running )
-      {
-         _bm.data.progmem = (gfx_mono_color_t*)rec_pause;
-         gfx_mono_put_bitmap(&_bm, 11, 16);
-      }
-      else
-      {
-         _bm.data.progmem = (gfx_mono_color_t*)rec_play;
-         gfx_mono_put_bitmap(&_bm, 9, 16);
-         _bm.data.progmem = (gfx_mono_color_t*)rec_stop;
-         gfx_mono_put_bitmap(&_bm, 25, 16);
+         view.draw_contact();
       }
    }
-   
-   void draw_box()
-   {
-      gfx_mono_draw_rect(0, 0, 48, 64, GFX_PIXEL_SET);
-      
-      // Dot the lines
-      for (gfx_coord_t x=2; x<48; x+=2)
-      {
-         gfx_mono_draw_pixel(x, 15, GFX_PIXEL_SET);
-         gfx_mono_draw_pixel(x, 31, GFX_PIXEL_SET);
-         gfx_mono_draw_pixel(x, 47, GFX_PIXEL_SET);
-      }
-   }
-   
-   void draw_cursor()
-   {
-      if ( *previous_selection != *current_selection )
-      {
-         gfx_coord_t y = previous_selection.get_y_pos() + 3;
-
-         gfx_mono_draw_filled_rect(3, y, 7, 9, GFX_PIXEL_CLR);
-      }
-      
-      gfx_coord_t y = current_selection.get_y_pos() + 3;
-
-      gfx_mono_draw_line(3, y, 9, y+4, GFX_PIXEL_SET);
-      gfx_mono_draw_line(9, y+4, 3, y+8, GFX_PIXEL_SET);
-      gfx_mono_draw_line(3, y+8, 3, y, GFX_PIXEL_SET);
-   }
-   
 };
 
 

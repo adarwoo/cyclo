@@ -1,5 +1,5 @@
-#ifndef sequencer_router_hpp__included
-#define sequencer_router_hpp__included
+#ifndef sequencer_worker_hpp_included
+#define sequencer_worker_hpp_included
 /*
  * Sequencer router
  *
@@ -11,14 +11,13 @@
 
 using namespace rtos::tick;
 
-class SequencerRouter : public etl::message_router<SequencerRouter, msg::NoNcUpdate>
+class SequencerWorker : public fx::Worker<
+   SequencerWorker,
+   msg::NoNcUpdate>
 {
 public:
-   SequencerRouter(etl::message_router_id_t id_) : etl::message_router<SequencerRouter, msg::NoNcUpdate>(id_) {}
-
    void on_receive(const msg::NoNcUpdate &msg)
    {
-      auto log = Trace(TRACE_TICK);
       rtos::delay(100_ms);
    }
 
@@ -26,4 +25,4 @@ public:
 };
 
 
-#endif // ndef sequencer_router_hpp__included
+#endif // ndef sequencer_worker_hpp_included

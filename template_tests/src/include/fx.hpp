@@ -37,7 +37,8 @@ namespace fx
          root_dispatcher = this;
       }
 
-      template<class T> RootDispatcher &operator<<(T& d)
+      template<class T> RootDispatcher &
+      operator<<(T& d)
       {
          this->subscribe(d);
          return *this;
@@ -66,7 +67,7 @@ namespace fx
       // publisher_tasklet.run(..)
    };
    
-   template <class TPacket, class TName, const size_t STACKSIZE, const uint_least8_t MAX_ROUTERS, const size_t QUEUESIZE=4>
+   template <class TPacket, class TName, const size_t STACKSIZE, const uint_least8_t MAX_ROUTERS=1, const size_t QUEUESIZE=4>
    class Dispatcher : public etl::message_bus<MAX_ROUTERS>, public rtos::Task<TName, STACKSIZE>
    {
       rtos::Queue<TPacket, QUEUESIZE> queue;

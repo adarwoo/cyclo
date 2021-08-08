@@ -4,11 +4,9 @@
  * cyclo.cpp
  *
  * Created: 17/07/2021 16:11:18
- *  Author: micro
+ * Author: software@arreckx.com
  */ 
 #include <cstdint>
-#include <etl/atomic.h>
-#include <etl/optional.h>
 
 #include "conf_cyclo.hpp"
 
@@ -89,7 +87,7 @@ namespace cyclo
    struct CommandItem
    {
       ///< Command for the engine
-      enum class ECommand : char
+      enum class command_t : char
       {
          delay = 'd',
          open = 'o',
@@ -100,20 +98,20 @@ namespace cyclo
       uint32_t delay_ms;
 
       ///< Simple constructor
-      explicit CommandItem(ECommand type, uint32_t delay = 0) : command(type), delay_ms(delay)
+      explicit CommandItem(command_t type, uint32_t delay = 0) : command(type), delay_ms(delay)
       {
       }
 
       ///< Simple Enum converter for debug
-      constexpr const char *to_string(ECommand c) const
+      constexpr const char *to_string(command_t c) const
       {
          switch (c)
          {
-         case ECommand::open:
+         case command_t::open:
             return "Open";
-         case ECommand::close:
+         case command_t::close:
             return "Close";
-         case ECommand::delay:
+         case command_t::delay:
             return "Delay";
          }
 
@@ -121,7 +119,14 @@ namespace cyclo
       }
    };
 
-   using Command = etl::vector<CommandItem, cyclo::max_items_per_command>;
+   struct Command
+   {
+      using Items = etl::vector<CommandItem, cyclo::max_items_per_command>;
+      
+      Items items;
+      bool repeat;
+      Items::const_iterator current;
+   };
 };
 
 

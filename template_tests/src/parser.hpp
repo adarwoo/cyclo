@@ -27,7 +27,9 @@
 enum Interact : char
 {
    help = 'h',
-   list = 'l'
+   list = 'l',
+   save = 's',
+   del  = 'd'
 };
 
 /**
@@ -54,7 +56,7 @@ private:
    ErrorHandler error_handler_;
    etl::string_view::const_iterator buffer_{nullptr};
 
-   void safe_insert(CommandItem::ECommand c, etl::string_view token)
+   void safe_insert(CommandItem::command_t c, etl::string_view token)
    {
       if (live_.full())
       {
@@ -63,7 +65,7 @@ private:
       }
       else
       {
-         if (c != CommandItem::ECommand::delay)
+         if (c != CommandItem::delay)
          {
             // Force a 1 second delay unless given
             if (not live_.empty() and live_.back().delay_ms == 0)

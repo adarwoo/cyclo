@@ -15,6 +15,19 @@ static inline void trace_set(ioport_pin_t pin) { ioport_set_pin_level(pin, true)
 static inline void trace_clear(ioport_pin_t pin) { ioport_set_pin_level(pin, false); }
 static inline void trace_tgl(ioport_pin_t pin) { ioport_toggle_pin_level(pin); }
    
+static inline void trace_assert(bool test, ioport_pin_t pin)
+{
+   if ( not test )
+   {
+      trace_set(pin);
+
+      while (1)
+      {
+      	asm("break");
+         continue;
+      }
+   }
+}
 
 #ifdef __cplusplus
 /**
@@ -35,5 +48,10 @@ struct Trace
 	}
 };
 #endif
+
+// Overwrite the assert macro
+// TRACE_ERR must be configured
+#undef assert
+#define assert(cond) trace_assert(cond, TRACE_ERR)
 
 #endif /* TRACE_H_ */

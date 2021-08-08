@@ -1,10 +1,10 @@
 #ifndef nonc_tasklet_hpp__included
 #define nonc_tasklet_hpp__included
 
-#include "asf.h"
-#include "fx.hpp"
-#include "msg_defs.hpp"
-#include "cyclo.hpp"
+#include <asf.h>
+
+#include "contact_manager.hpp"
+
 
 #ifndef NONC_SAMPLE_FREQUENCY_HZ
 #define NONC_SAMPLE_FREQUENCY_HZ 100
@@ -16,15 +16,10 @@
  */
 class NoNcTasklet : public rtos::Tasklet
 {
-    enum class State
-    {
-        unknown,
-        no,
-        nc
-    };
-    
-    inline static State state = State::unknown;
     inline static NoNcTasklet *this_ = nullptr;
+    inline static ContactManager& contact{ContactManager::instance()};
+    
+    using no_nc_t = ContactManager::no_nc_t;
 
 public:
     NoNcTasklet()
@@ -32,15 +27,15 @@ public:
        // Remember this_ since the callback does have any params
        this_ = this;
           
-        // Initialise the sampling timer
-        tc_enable(&NONC_TC);
-        tc_set_wgm(&NONC_TC, TC_WG_NORMAL);
-        tc_set_resolution(&NONC_TC, sysclk_get_per_hz() / NONC_SAMPLE_FREQUENCY_HZ);
-        tc_write_period(&NONC_TC, tc_get_resolution(&NONC_TC) / NONC_SAMPLE_FREQUENCY_HZ);
-        tc_set_overflow_interrupt_callback(&NONC_TC, &NoNcTasklet::read_nonc);
+       // Initialize the sampling timer
+       tc_enable(&NONC_TC);
+       tc_set_wgm(&NONC_TC, TC_WG_NORMAL);
+       tc_set_resolution(&NONC_TC, sysclk_get_per_hz() / NONC_SAMPLE_FREQUENCY_HZ);
+       tc_write_period(&NONC_TC, tc_get_resolution(&NONC_TC) / NONC_SAMPLE_FREQUENCY_HZ);
+       tc_set_overflow_interrupt_callback(&NONC_TC, &NoNcTasklet::read_nonc);
 
-        // Low interrupt priority
-        tc_set_overflow_interrupt_level(&NONC_TC, TC_INT_LVL_LO);
+       // Low interrupt priority
+       tc_set_overflow_interrupt_level(&NONC_TC, TC_INT_LVL_LO);
     }
 
     static void read_nonc()
@@ -54,21 +49,18 @@ public:
         if ( nc_readback != no_readback )
         {
            // Any changes?
-           cyclo::rocker_toggle_t now = nc_readback ? cyclo::rocker_toggle_t::nc : cyclo::rocker_toggle_t::no;
-           
-           if ( (not cyclo::toggle_pos) or (now != *cyclo::toggle_pos) )
+           if ( no_readback != contact.is_no() )
            {
-              cyclo::toggle_pos = now;
               assert(this_);
-              this_->schedule_from_isr(0);
+              this_->schedule_from_isr(no_readback);
            }
        }
     }
 
-    virtual void run(uint32_t unused) override
+    virtual void run(uint32_t no_readback) override
     {
-       // Store globally
-       fx::publish(msg::NoNcUpdate{});
+       // Get the manager to take care of it
+       contact.set_as_no(no_readback);
     }
 };
 
