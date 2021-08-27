@@ -2,33 +2,35 @@
 #include <task.h>
 #include <timers.h>
 
-#include "logger.h"
+#include <logger.h>
 
-void vApplicationStackOverflowHook( TaskHandle_t xTask, char * pcTaskName )
+
+void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
 {
-   LOG_ERROR(NULL, "Stack overflow");
-   
-   #ifndef _POSIX
-   asm("break");
-   #endif
-   while(1);
+   LOG_ERROR( NULL, "Stack overflow" );
+
+#ifndef _POSIX
+   asm( "break" );
+#endif
+   while ( 1 )
+      ;
 }
 
 /**
- * As configSUPPORT_STATIC_ALLOCATION is set to 1, 
- * the application must provide an implementation of 
- * vApplicationGetIdleTaskMemory() to provide the memory that is used by the Idle task. 
+ * As configSUPPORT_STATIC_ALLOCATION is set to 1,
+ * the application must provide an implementation of
+ * vApplicationGetIdleTaskMemory() to provide the memory that is used by the Idle task.
  */
-void vApplicationGetIdleTaskMemory( 
+void vApplicationGetIdleTaskMemory(
    StaticTask_t **ppxIdleTaskTCBBuffer,
-   StackType_t **ppxIdleTaskStackBuffer,
-   uint32_t *pulIdleTaskStackSize )
+   StackType_t ** ppxIdleTaskStackBuffer,
+   uint32_t *     pulIdleTaskStackSize )
 {
    /* If the buffers to be provided to the Idle task are declared inside this
    function then they must be declared static - otherwise they will be allocated on
    the stack and so not exists after this function exits. */
    static StaticTask_t xIdleTaskTCB;
-   static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
+   static StackType_t  uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
 
    /* Pass out a pointer to the StaticTask_t structure in which the Idle task's
    state will be stored. */
@@ -46,11 +48,11 @@ void vApplicationGetIdleTaskMemory(
 
 void vApplicationGetTimerTaskMemory(
    StaticTask_t **ppxTimerTaskTCBBuffer,
-   StackType_t **ppxTimerTaskStackBuffer,
-   uint32_t *pulTimerTaskStackSize )
+   StackType_t ** ppxTimerTaskStackBuffer,
+   uint32_t *     pulTimerTaskStackSize )
 {
    static StaticTask_t xTimerTaskTCB;
-   static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
+   static StackType_t  uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
 
    /* Pass out a pointer to the StaticTask_t structure in which the Idle task's
    state will be stored. */
@@ -66,7 +68,6 @@ void vApplicationGetTimerTaskMemory(
 }
 
 #ifdef _POSIX
-void vApplicationIdleHook(void)
-{
-}
+void vApplicationIdleHook( void )
+{}
 #endif

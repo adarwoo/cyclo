@@ -9,9 +9,9 @@
  */
 
 #ifdef _POSIX
-   #include "sim.hpp"
+#   include "sim.hpp"
 #else
-   #include "asf.h"
+#   include "asf.h"
 #endif
 
 #endif /* ndef asx_h_was_included */

@@ -1,7 +1,7 @@
 #ifndef keypad_tasklet_hpp__included
 #define keypad_tasklet_hpp__included
 
-#include "rtos.hpp"
+#include <rtos.hpp>
 
 /**
  * Tasklet which posts the key event to the UI router
@@ -9,12 +9,12 @@
 class KeypadTasklet : public rtos::Tasklet
 {
 public:
-    explicit KeypadTasklet();
+   explicit KeypadTasklet();
 
-    static void callback_from_isr(uint8_t k, void *param);
+   static void callback_from_isr( uint8_t k, void *param );
 
-    virtual void run(uint32_t key) override;
+   virtual void run( uint32_t key ) override;
 };
 
 
-#endif // ndef keypad_tasklet_hpp__included
+#endif  // ndef keypad_tasklet_hpp__included

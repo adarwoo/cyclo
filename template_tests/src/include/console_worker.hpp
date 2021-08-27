@@ -10,10 +10,8 @@
 class ConsoleWorker : public fx::Worker<ConsoleWorker, msg::CDCChar>
 {
 public:
-   void on_receive(const msg::CDCChar &msg)
-   {
-   }
+   void on_receive( const msg::CDCChar &msg ) {}
 };
 
 
-#endif // ndef console_worker_hpp__included
+#endif  // ndef console_worker_hpp__included

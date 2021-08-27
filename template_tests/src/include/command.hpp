@@ -6,35 +6,30 @@
  *
  * Created: 06/08/2021 23:15:28
  *  Author: software@arreckx.com
- */ 
-
+ */
 #include <cstdint>
+
 #include <etl/vector.h>
 
 #include "conf_cyclo.hpp"
 
 
 /**
-   * A single command item to execute.
-   * It carries the operation as well as a delay.
-   * The delay is to be observed after the command
-   */
+ * A single command item to execute.
+ * It carries the operation as well as a delay.
+ * The delay is to be observed after the command
+ */
 struct CommandItem
 {
    ///< Command for the engine
-   enum command_t : char
-   {
-      open  = 'o',
-      close = 'c',
-      delay = 'd',
-      loop  = 'l'
-   } command;
+   enum command_t : char { open = 'o', close = 'c', delay = 'd', loop = 'l' } command;
 
    ///< Delay after the command execution
    uint32_t delay_ms;
 
    ///< Simple constructor
-   explicit CommandItem(command_t type, uint32_t delay = 0) : command{type}, delay_ms{delay} {}
+   explicit CommandItem( command_t type, uint32_t delay = 0 ) : command{ type }, delay_ms{ delay }
+   {}
 };
 
 
@@ -44,10 +39,10 @@ struct CommandItem
 class Command : public etl::vector<CommandItem, cyclo::max_items_per_command>
 {
    const_iterator it;
-   
-public:   
+
+public:
    // Command
-   Command() : it{begin()} {}
+   Command() : it{ begin() } {}
 
    /**
     * Get the next item. This is the first item following a reset.
@@ -58,20 +53,17 @@ public:
    auto iterate()
    {
       const CommandItem *retval = nullptr;
-      
+
       if ( it != end() )
       {
-         retval = &(*it++);
+         retval = &( *it++ );
       }
-      
+
       return retval;
    }
-   
-   void start()
-   {
-      it = begin();
-   }
+
+   void start() { it = begin(); }
 };
 
 
-#endif // ndef command_hpp_was_included
+#endif  // ndef command_hpp_was_included
