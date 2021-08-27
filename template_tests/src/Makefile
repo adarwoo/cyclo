@@ -3,27 +3,13 @@ CXX                   := g++
 BIN                   := cyclo
 
 BUILD_DIR             := ../build
-BUILD_DIR_ABS         := $(abspath $(BUILD_DIR))
-
-FREERTOS_DIR_REL      := FreeRTOS
-FREERTOS_DIR          := $(abspath $(FREERTOS_DIR_REL))
-
-LOGGER_DIR_REL        := logger
-LOGGER_DIR            := $(abspath $(LOGGER_DIR_REL))
-
-BOOST_DIR_REL         := boost
-BOOST_DIR             := $(abspath $(LOGGER_DIR_REL))
-
+FREERTOS_DIR          := FreeRTOS
+LOGGER_DIR            := logger
+BOOST_DIR             := boost
 KERNEL_DIR            := ${FREERTOS_DIR}/Source
-
-RTOS_DIR_REL          := rtos++
-RTOS_DIR              := $(abspath $(RTOS_DIR_REL))
-
-SIMULATION_DIR_REL    := simulation
-SIMULATION_DIR        := $(abspath $(SIMULATION_DIR_REL))
-
-FX_DIR_REL            := fx
-FX_DIR                := $(abspath $(FX_DIR_REL))
+RTOS_DIR              := rtos++
+SIMULATION_DIR        := simulation
+FX_DIR                := fx
 
 INCLUDE_DIRS          := -I.
 INCLUDE_DIRS          += -Iinclude
@@ -65,6 +51,7 @@ CXX_SRCS              += ${SIMULATION_DIR}/src/sim.cpp
 CXX_SRCS              += keypad_tasklet.cpp \
                          nonc_tasklet.cpp \
                          cyclo_manager.cpp \
+                         sequencer_worker.cpp \
                          contact.cpp ui_view.cpp \
                          ui_worker.cpp \
                          main.cpp
@@ -73,7 +60,7 @@ CFLAGS                :=    -ggdb3
 LDFLAGS               :=    -ggdb3 -pthread
 CPPFLAGS              :=    $(INCLUDE_DIRS) -DBUILD_DIR=\"$(BUILD_DIR_ABS)\"
 CPPFLAGS              +=    -D_WINDOWS_ -D_POSIX
-CXXFLAGS              :=    -std=c++17 -Wno-subobject-linkage -fno-exceptions -fno-rtti $(CFLAGS)
+CXXFLAGS              :=    -std=c++17 -Wno-subobject-linkage -fno-exceptions $(CFLAGS)
 
 CFLAGS              +=   -O0
 LDFLAGS             +=   -O0

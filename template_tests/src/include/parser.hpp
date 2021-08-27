@@ -14,6 +14,8 @@
  */
 #include <cctype>
 
+#include <logger.h>
+
 #include <etl/algorithm.h>
 #include <etl/basic_string.h>
 #include <etl/delegate.h>
@@ -85,9 +87,12 @@ class Parser
             // Force a 1 second delay unless given
             if ( not live_.empty() and live_.back().delay_ms == 0 )
             {
+               LOG_DEBUG("parser", "Adding 1s delay");
                live_.back().delay_ms = 1000;
             }
          }
+
+         LOG_DEBUG("parser", "Adding item: %c", c);
 
          // Insert a new command
          live_.push_back( CommandItem( c ) );
@@ -99,11 +104,10 @@ class Parser
     * An error can be triggered.
     * @return 0 if not, otherwise the correct delay in ms
     */
-   uint32_t get_delay( const etl::string_view token )
+   bool get_delay( uint32_t &value, const etl::string_view token )
    {
-      auto retval = 0ul;
-
       using Item = etl::pair<const char *, uint32_t>;
+      bool retval = false;
 
       static constexpr Item unit_lut[] = {
          { "H", 60ul * 60ul * 1000ul },
@@ -127,7 +131,8 @@ class Parser
 
          if ( foundit != etl::end( unit_lut ) )
          {
-            retval = number * foundit->second;
+            value = number * foundit->second;
+            retval = true;
          }
          else
          {
@@ -169,6 +174,8 @@ public:
       live_.clear();
       err_.clear();
 
+      LOG_INFO("parser", "Parsing: %s", etl::string<60>(buffer).c_str());
+
       for ( auto token : etl::tokenizer( buffer, etl::char_separator( " ," ) ) )
       {
          // Break on error
@@ -180,10 +187,14 @@ public:
             return command.starts_with( token );
          };
 
-         if ( auto number = get_delay( token ) )
+         uint32_t number;
+
+         if ( get_delay( number, token ) )
          {
             if ( not live_.empty() )
             {
+               LOG_DEBUG("parser", "Adding %dms delay", number);
+
                live_.back().delay_ms += number;
             }
             else
@@ -241,6 +252,8 @@ public:
 
          if ( item.delay_ms == 0 and ( live_.front().command != CommandItem::delay ) )
          {
+            LOG_DEBUG("parser", "Adding 1s delay");
+
             item.delay_ms = 1000;
          }
 

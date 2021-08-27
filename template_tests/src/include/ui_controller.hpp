@@ -3,6 +3,8 @@
 
 #include <boost/sml.hpp>
 
+#include <logger.h>
+
 #include "ui_model.hpp"
 #include "ui_view.hpp"
 
@@ -37,6 +39,8 @@ namespace
 template<class TSM, class TEvent>
 void process_event( TSM &sm, TEvent &&evt )
 {
+   LOG_HEADER("sm");
+
    sm.process_event( evt );
 
    while ( controller_process_next )

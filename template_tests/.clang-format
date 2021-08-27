@@ -52,17 +52,17 @@ FixNamespaceComments: 'true'
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex:           '^<[[:alnum:]]+\.h>'
-    Priority:        1
-  - Regex:           '^<[[:alnum:]]+>'
-    Priority:        2
-  - Regex:           '^<[[:alnum:]_\/]+\.h>'
-    Priority:        3
-  - Regex:           '^<.*\.(hpp|h\+\+)>'
-    Priority:        4
-  - Regex:           '^\"[[:alnum:]]+\.h'
-    Priority:        5
-  - Regex:           '^\"[[:alnum:]]+\.hpp'
     Priority:        6
+  - Regex:           '^<[[:alnum:]]+>'
+    Priority:        5
+  - Regex:           '^<[[:alnum:]_\/]+\.h>'
+    Priority:        4
+  - Regex:           '^<.*\.(hpp|h\+\+)>'
+    Priority:        3
+  - Regex:           '^\"[[:alnum:]]+\.h'
+    Priority:        2
+  - Regex:           '^\"[[:alnum:]]+\.hpp'
+    Priority:        1
 IndentCaseLabels: 'false'
 IndentPPDirectives: AfterHash
 IndentWidth: '3'

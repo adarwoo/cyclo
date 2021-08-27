@@ -17,9 +17,19 @@ namespace
 
    /** The default manual program for when the EEPROM is blank */
    constexpr static char default_man_pgm[] = "c 60 o 5 *";
+
+   struct PgmStorage
+   {
+      char     marker; ///< Marker, must be a value other than 255 to be analysed
+      char     pgm[ CycloManager::STORAGE_MAX_LENGTH ]; ///< Actual program in ASCII storage area
+      char     spare; 
+      uint16_t crc;
+   };
+
+   constexpr size_t PGM_STORAGE_DATA_SIZE_NO_CRC = sizeof(PgmStorage) - sizeof(uint16_t);
 };  // namespace
 
-CycloManager::CycloManager() : selected{ 0 }, auto_start{ true }, state{ stopped }, counter{ 0 }
+CycloManager::CycloManager() : selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }
 {
    LOG_HEADER( DOM );
 
@@ -35,9 +45,9 @@ CycloManager::CycloManager() : selected{ 0 }, auto_start{ true }, state{ stopped
       if ( *marker_loc != 0xFF )
       {
          // Compute the crc for the slot. Add one for the marker
-         uint16_t crc = crc_io_checksum( marker_loc, STORAGE_MAX_LENGTH + 1, CRC_16BIT );
+         uint16_t crc = crc_io_checksum( marker_loc, PGM_STORAGE_DATA_SIZE_NO_CRC, CRC_16BIT );
 
-         uint16_t actual_crc = *( (uint16_t *)( marker_loc + STORAGE_MAX_LENGTH + 1 ) );
+         uint16_t actual_crc = *( (uint16_t *)( marker_loc + PGM_STORAGE_DATA_SIZE_NO_CRC ) );
 
          if ( crc == actual_crc )
          {
@@ -128,20 +138,16 @@ void CycloManager::write_pgm_at( uint8_t pos, const char *string )
 {
    LOG_HEADER( DOM );
 
-   static struct
-   {
-      char     marker;
-      char     pgm[ STORAGE_MAX_LENGTH ];
-      uint16_t crc;
-   } buffer;
+   static PgmStorage buffer;
 
+   // Reset the buffer content to all zero
    memset( &buffer, 0, sizeof( buffer ) );
 
    buffer.marker = 'A';
    strncpy( buffer.pgm, string, STORAGE_MAX_LENGTH );
 
-   // Compute CRC
-   buffer.crc = crc_io_checksum( &buffer, STORAGE_MAX_LENGTH + 1, CRC_16BIT );
+   // Compute CRC - the whole buffer excluding the crc itself
+   buffer.crc = crc_io_checksum( &buffer, PGM_STORAGE_DATA_SIZE_NO_CRC, CRC_16BIT );
 
    // Write eeprom
    nvm_eeprom_load_page_to_buffer( reinterpret_cast<const uint8_t *>( &buffer ) );

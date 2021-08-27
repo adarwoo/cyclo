@@ -32,7 +32,8 @@ class CycloManager
 {
 public:
    using Pgms                                 = etl::bitset<10>;
-   constexpr static size_t STORAGE_MAX_LENGTH = 60;
+   /** The storage for the program must fit 2 pages of eeprom - header, spare and crc (2 bytes) */
+   constexpr static size_t STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
 
    enum program_state_t : uint8_t { stopped, paused, running };
 

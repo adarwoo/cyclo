@@ -24,7 +24,7 @@ typedef uint16_t ioport_pin_t;
 
 // EEProm address
 typedef uint16_t eeprom_addr_t;
-extern uintptr_t MAPPED_EEPROM_START;
+extern const uintptr_t MAPPED_EEPROM_START;
 
 //
 // APIs
