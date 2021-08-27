@@ -1,0 +1,10 @@
+<d>? o <d> c <d> [*]
+<n> = Run pgm
+<enter> = Pause
+resume
+list
+help
+save <n>
+rm <n>
+rm *
+auto <n>

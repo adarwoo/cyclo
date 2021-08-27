@@ -2,4 +2,5 @@
 # Ignore build directories
 Debug
 Release
+build
 

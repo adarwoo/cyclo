@@ -1,0 +1,2 @@
+int testLog( int level );
+

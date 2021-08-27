@@ -1,0 +1,928 @@
+!! Start the regression test
+!! C/C++: Checking level error
+## testLog 
+##########################################################################
+--> Checking mapping
+  - Error level is 0
+  - Warn level is 1
+  - Mile level is 2
+  - Info level is 3
+  - Trace level is 4
+  - Log level is 5
+--> Checking basic messages (results vary according to command line)
+# (0xXXXX){<dom.A>test_cplusplus.cpp testCore 82} ERROR level
+--> Checking C++ regulator and std::string output
+--> Checking domain level filtering
+  - Found 0 settings
+ --> Adding more domain filtering
+ + Setting domains X Y Z at trace, info and mile
+  - Found 3 settings
+   - X : 4
+   - Y : 3
+   - Z : 2
+ + Overriding X with error
+  - Found 3 settings
+   - X : 0
+   - Y : 3
+   - Z : 2
+ + Removing X filtering
+  - Found 2 settings
+   - Z : 2
+   - Y : 3
+ + Removing all
+  - Found 0 settings
+--> Checking level settings
+  -Level is : 0
+  +Setting level to ERROR
+  +Setting level to WARN
+  +Setting level to MILE
+  +Setting level to INFO
+  +Setting level to TRACE
+  +Setting level to DEBUG
+  +Restoring level
+--> Checking masks (domain filtering) setting
+  - Shown masks are 
+  - Hidden masks are 
+  + Setting mask to A:B:C
+  + Setting not mask to D:E:F
+  + Restoring mask filtering
+        Testing indent
+        Adding a ERROR comment
+# {<main>main 301} Starting the test for log
+Adding a MILE comment
+Current debug level is  0
+Adding a TRACE comment
+Calling function1
+Adding a DEBUG comment
+Adding a TRACE comment
+Adding a DEBUG comment
+Creating an object
+Creating an object with a long name (should be truncated)
+Adding a TRACE comment
+Adding a DEBUG comment
+Adding a TRACE comment
+Adding a DEBUG comment
+Current debug level is  0
+Adding a MILE comment
+Activating domains F1 and MAIN
+Debug 3 domains
+Activating too many domains...
+Debug 3 domains
+Setting all domains...
+Debug 3 domains
+Testing streaming
+Adding a DEBUG stream comment
+Adding a TRACE stream comment
+Testing wildcard
+   -> Simple domain 'root'
+. {<root>domainsLog 272} root
+   -> Exact domain 'root.node1.leaf1'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+#   {280} root.node1.leaf1
+   -> Simple wild '*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple wild 'root.*'
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple domain 'root*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Use of ? 'root.node1.*'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Use of ? 'root.node?.leaf*'
+.   {274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Mixing levels. root.*=root.node?.*=trace and root.node1.*=debug
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Mixing domain redirection. root.node1.*=other_test_results.txt
+.  {<root.node1>273} root.node1
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node2.leaf1>284} root.node2.leaf1
+!! C/C++: Checking level warn
+## testLog 
+##########################################################################
+--> Checking mapping
+  - Error level is 0
+  - Warn level is 1
+  - Mile level is 2
+  - Info level is 3
+  - Trace level is 4
+  - Log level is 5
+--> Checking basic messages (results vary according to command line)
+# (0xXXXX){<dom.A>test_cplusplus.cpp testCore 82} ERROR level
+!   {83} WARN level
+--> Checking C++ regulator and std::string output
+--> Checking domain level filtering
+  - Found 0 settings
+ --> Adding more domain filtering
+ + Setting domains X Y Z at trace, info and mile
+  - Found 3 settings
+   - X : 4
+   - Y : 3
+   - Z : 2
+ + Overriding X with error
+  - Found 3 settings
+   - X : 0
+   - Y : 3
+   - Z : 2
+ + Removing X filtering
+  - Found 2 settings
+   - Z : 2
+   - Y : 3
+ + Removing all
+  - Found 0 settings
+--> Checking level settings
+  -Level is : 1
+  +Setting level to ERROR
+  +Setting level to WARN
+  +Setting level to MILE
+  +Setting level to INFO
+  +Setting level to TRACE
+  +Setting level to DEBUG
+  +Restoring level
+--> Checking masks (domain filtering) setting
+  - Shown masks are 
+  - Hidden masks are 
+  + Setting mask to A:B:C
+  + Setting not mask to D:E:F
+  + Restoring mask filtering
+        Testing indent
+        Adding a ERROR comment
+# {<main>main 301} Starting the test for log
+Adding a MILE comment
+Current debug level is  1
+Adding a TRACE comment
+Calling function1
+Adding a DEBUG comment
+Adding a TRACE comment
+! {<f1>function1 240} a warning message
+Adding a DEBUG comment
+Creating an object
+Creating an object with a long name (should be truncated)
+Adding a TRACE comment
+Adding a DEBUG comment
+Adding a TRACE comment
+!   {240} a warning message
+Adding a DEBUG comment
+Current debug level is  1
+Adding a MILE comment
+Activating domains F1 and MAIN
+Debug 3 domains
+Activating too many domains...
+Debug 3 domains
+Setting all domains...
+Debug 3 domains
+Testing streaming
+Adding a DEBUG stream comment
+Adding a TRACE stream comment
+Testing wildcard
+   -> Simple domain 'root'
+. {<root>domainsLog 272} root
+   -> Exact domain 'root.node1.leaf1'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+#   {280} root.node1.leaf1
+   -> Simple wild '*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple wild 'root.*'
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple domain 'root*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Use of ? 'root.node1.*'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Use of ? 'root.node?.leaf*'
+.   {274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Mixing levels. root.*=root.node?.*=trace and root.node1.*=debug
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Mixing domain redirection. root.node1.*=other_test_results.txt
+.  {<root.node1>273} root.node1
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node2.leaf1>284} root.node2.leaf1
+!! C/C++: Checking level mile
+## testLog 
+##########################################################################
+--> Checking mapping
+  - Error level is 0
+  - Warn level is 1
+  - Mile level is 2
+  - Info level is 3
+  - Trace level is 4
+  - Log level is 5
+--> Checking basic messages (results vary according to command line)
+# (0xXXXX){<dom.A>test_cplusplus.cpp testCore 82} ERROR level
+!   {83} WARN level
++   {84} MILE level
+--> Checking C++ regulator and std::string output
+--> Checking domain level filtering
+  - Found 0 settings
+ --> Adding more domain filtering
+ + Setting domains X Y Z at trace, info and mile
+  - Found 3 settings
+   - X : 4
+   - Y : 3
+   - Z : 2
+ + Overriding X with error
+  - Found 3 settings
+   - X : 0
+   - Y : 3
+   - Z : 2
+ + Removing X filtering
+  - Found 2 settings
+   - Z : 2
+   - Y : 3
+ + Removing all
+  - Found 0 settings
+--> Checking level settings
+  -Level is : 2
+  +Setting level to ERROR
+  +Setting level to WARN
+  +Setting level to MILE
+  +Setting level to INFO
+  +Setting level to TRACE
+  +Setting level to DEBUG
+  +Restoring level
+--> Checking masks (domain filtering) setting
+  - Shown masks are 
+  - Hidden masks are 
+  + Setting mask to A:B:C
+  + Setting not mask to D:E:F
+  + Restoring mask filtering
+        Testing indent
+        Adding a ERROR comment
+# {<main>main 301} Starting the test for log
+Adding a MILE comment
++   {304} Starting the test for log
+Current debug level is  2
+Adding a TRACE comment
+Calling function1
+Adding a DEBUG comment
+Adding a TRACE comment
+! {<f1>function1 240} a warning message
+Adding a DEBUG comment
+Creating an object
+Creating an object with a long name (should be truncated)
+Adding a TRACE comment
+Adding a DEBUG comment
+Adding a TRACE comment
+!   {240} a warning message
+Adding a DEBUG comment
+Current debug level is  2
+Adding a MILE comment
++ {<main>main 334} End of the test for log
+Activating domains F1 and MAIN
+Debug 3 domains
++   {340} domain is main
++  {<f1>341} domain is f1
+Activating too many domains...
+Debug 3 domains
++  {<main>351} domain is main
++  {<f1>352} domain is f1
+Setting all domains...
+Debug 3 domains
++  {<main>359} domain is main
++  {<f1>360} domain is f1
++  {<obj>361} domain is obj
+Testing streaming
+Adding a DEBUG stream comment
+Adding a TRACE stream comment
+Testing wildcard
+   -> Simple domain 'root'
+. {<root>domainsLog 272} root
+   -> Exact domain 'root.node1.leaf1'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+#   {280} root.node1.leaf1
+   -> Simple wild '*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple wild 'root.*'
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple domain 'root*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Use of ? 'root.node1.*'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Use of ? 'root.node?.leaf*'
+.   {274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Mixing levels. root.*=root.node?.*=trace and root.node1.*=debug
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Mixing domain redirection. root.node1.*=other_test_results.txt
+.  {<root.node1>273} root.node1
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node2.leaf1>284} root.node2.leaf1
+!! C/C++: Checking level info
+## testLog 
+##########################################################################
+--> Checking mapping
+  - Error level is 0
+  - Warn level is 1
+  - Mile level is 2
+  - Info level is 3
+  - Trace level is 4
+  - Log level is 5
+--> Checking basic messages (results vary according to command line)
+# (0xXXXX){<dom.A>test_cplusplus.cpp testCore 82} ERROR level
+!   {83} WARN level
++   {84} MILE level
+>   {85} INFO level
+--> Checking C++ regulator and std::string output
+>   {91} cpp string
+>   {92} cpp string2String
+--> Checking domain level filtering
+  - Found 0 settings
+ --> Adding more domain filtering
+ + Setting domains X Y Z at trace, info and mile
+  - Found 3 settings
+   - X : 4
+   - Y : 3
+   - Z : 2
+ + Overriding X with error
+  - Found 3 settings
+   - X : 0
+   - Y : 3
+   - Z : 2
+ + Removing X filtering
+  - Found 2 settings
+   - Z : 2
+   - Y : 3
+ + Removing all
+  - Found 0 settings
+--> Checking level settings
+  -Level is : 3
+  +Setting level to ERROR
+  +Setting level to WARN
+  +Setting level to MILE
+  +Setting level to INFO
+  +Setting level to TRACE
+  +Setting level to DEBUG
+  +Restoring level
+--> Checking masks (domain filtering) setting
+  - Shown masks are 
+  - Hidden masks are 
+  + Setting mask to A:B:C
+  + Setting not mask to D:E:F
+  + Restoring mask filtering
+        Testing indent
+        Adding a ERROR comment
+# {<main>main 301} Starting the test for log
+Adding a MILE comment
++   {304} Starting the test for log
+Current debug level is  3
+Adding a TRACE comment
+Calling function1
+Adding a DEBUG comment
+Adding a TRACE comment
+! {<f1>function1 240} a warning message
+Adding a DEBUG comment
+Creating an object
+Creating an object with a long name (should be truncated)
+Adding a TRACE comment
+Adding a DEBUG comment
+Adding a TRACE comment
+!   {240} a warning message
+Adding a DEBUG comment
+Current debug level is  3
+Adding a MILE comment
++ {<main>main 334} End of the test for log
+Activating domains F1 and MAIN
+Debug 3 domains
++   {340} domain is main
++  {<f1>341} domain is f1
+Activating too many domains...
+Debug 3 domains
++  {<main>351} domain is main
++  {<f1>352} domain is f1
+Setting all domains...
+Debug 3 domains
++  {<main>359} domain is main
++  {<f1>360} domain is f1
++  {<obj>361} domain is obj
+Testing streaming
+Adding a DEBUG stream comment
+Adding a TRACE stream comment
+Testing wildcard
+   -> Simple domain 'root'
+. {<root>domainsLog 272} root
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Exact domain 'root.node1.leaf1'
+.   {274} root.node1.leaf1
+#   {280} root.node1.leaf1
+   -> Simple wild '*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple wild 'root.*'
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple domain 'root*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Use of ? 'root.node1.*'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Use of ? 'root.node?.leaf*'
+.   {274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Mixing levels. root.*=root.node?.*=trace and root.node1.*=debug
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Mixing domain redirection. root.node1.*=other_test_results.txt
+.  {<root.node1>273} root.node1
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node2.leaf1>284} root.node2.leaf1
+!! C/C++: Checking level trace
+## testLog 
+##########################################################################
+--> Checking mapping
+  - Error level is 0
+  - Warn level is 1
+  - Mile level is 2
+  - Info level is 3
+  - Trace level is 4
+  - Log level is 5
+--> Checking basic messages (results vary according to command line)
+# (0xXXXX){<dom.A>test_cplusplus.cpp testCore 82} ERROR level
+!   {83} WARN level
++   {84} MILE level
+>   {85} INFO level
+-   {86} TRACE level
+--> Checking C++ regulator and std::string output
+>   {91} cpp string
+>   {92} cpp string2String
+--> Checking domain level filtering
+  - Found 0 settings
+ --> Adding more domain filtering
+ + Setting domains X Y Z at trace, info and mile
+  - Found 3 settings
+   - X : 4
+   - Y : 3
+   - Z : 2
+ + Overriding X with error
+  - Found 3 settings
+   - X : 0
+   - Y : 3
+   - Z : 2
+ + Removing X filtering
+  - Found 2 settings
+   - Z : 2
+   - Y : 3
+ + Removing all
+  - Found 0 settings
+--> Checking level settings
+  -Level is : 4
+  +Setting level to ERROR
+  +Setting level to WARN
+  +Setting level to MILE
+  +Setting level to INFO
+  +Setting level to TRACE
+  +Setting level to DEBUG
+  +Restoring level
+--> Checking masks (domain filtering) setting
+  - Shown masks are 
+  - Hidden masks are 
+  + Setting mask to A:B:C
+  + Setting not mask to D:E:F
+  + Restoring mask filtering
+        Testing indent
+        Adding a ERROR comment
+# {<main>main 301} Starting the test for log
+Adding a MILE comment
++   {304} Starting the test for log
+Current debug level is  4
+Adding a TRACE comment
+-   {310} Tracing some text
+Calling function1
+- {<f1>function1 234} --> IN
+Adding a DEBUG comment
+Adding a TRACE comment
+!  {function1 240} a warning message
+Adding a DEBUG comment
+-  {function1 0} <-- OUT
+Creating an object
+- {<obj>testClass_c::testClass_c this=(0xXXXX) 35} --> IN
+-  {testClass_c::testClass_c this=(0xXXXX) 0} <-- OUT
+-  {testClass_c::method this=(0xXXXX) 26} --> IN
+-  {testClass_c::method this=(0xXXXX) 0} <-- OUT
+-  {testClass_c::...background_of_the_system this=(0xXXXX) 29} --> IN
+-  {testClass_c::...background_of_the_system this=(0xXXXX) 0} <-- OUT
+Creating an object with a long name (should be truncated)
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 47} --> IN
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 0} <-- OUT
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 57} --> IN
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 0} <-- OUT
+-  {...very_very_stupingly_long_name::method this=(0xXXXX) 60} --> IN
+-  {...very_very_stupingly_long_name::method this=(0xXXXX) 0} <-- OUT
+Adding a TRACE comment
+- {<main>main 326} Between calls
+- {<f1>function1 234} --> IN
+Adding a DEBUG comment
+Adding a TRACE comment
+!  {function1 240} a warning message
+Adding a DEBUG comment
+-  {function1 0} <-- OUT
+Current debug level is  4
+Adding a MILE comment
++ {<main>main 334} End of the test for log
+Activating domains F1 and MAIN
+Debug 3 domains
++   {340} domain is main
++  {<f1>341} domain is f1
+Activating too many domains...
+Debug 3 domains
++  {<main>351} domain is main
++  {<f1>352} domain is f1
+Setting all domains...
+Debug 3 domains
++  {<main>359} domain is main
++  {<f1>360} domain is f1
++  {<obj>361} domain is obj
+Testing streaming
+Adding a DEBUG stream comment
+Adding a TRACE stream comment
+- {<main>test_streams 252} Stream test 4 TRACE
+Testing wildcard
+   -> Simple domain 'root'
+. {<root>domainsLog 272} root
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Exact domain 'root.node1.leaf1'
+.   {274} root.node1.leaf1
+#   {280} root.node1.leaf1
+   -> Simple wild '*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple wild 'root.*'
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple domain 'root*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Use of ? 'root.node1.*'
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Use of ? 'root.node?.leaf*'
+.   {274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Mixing levels. root.*=root.node?.*=trace and root.node1.*=debug
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Mixing domain redirection. root.node1.*=other_test_results.txt
+.  {<root.node1>273} root.node1
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node2.leaf1>284} root.node2.leaf1
+- {<obj>...pingly_long_name::~...ingly_long_name this=(0xXXXX) 52} --> IN
+-  {...pingly_long_name::~...ingly_long_name this=(0xXXXX) 0} <-- OUT
+-  {testClass_c::~testClass_c this=(0xXXXX) 40} --> IN
+-  {testClass_c::~testClass_c this=(0xXXXX) 0} <-- OUT
+!! C/C++: Checking level debug
+## testLog 
+##########################################################################
+--> Checking mapping
+  - Error level is 0
+  - Warn level is 1
+  - Mile level is 2
+  - Info level is 3
+  - Trace level is 4
+  - Log level is 5
+--> Checking basic messages (results vary according to command line)
+# (0xXXXX){<dom.A>test_cplusplus.cpp testCore 82} ERROR level
+!   {83} WARN level
++   {84} MILE level
+>   {85} INFO level
+-   {86} TRACE level
+.   {87} DEBUG level
+--> Checking C++ regulator and std::string output
+>   {91} cpp string
+>   {92} cpp string2String
+--> Checking domain level filtering
+  - Found 0 settings
+ --> Adding more domain filtering
+ + Setting domains X Y Z at trace, info and mile
+  - Found 3 settings
+   - X : 4
+   - Y : 3
+   - Z : 2
+ + Overriding X with error
+  - Found 3 settings
+   - X : 0
+   - Y : 3
+   - Z : 2
+ + Removing X filtering
+  - Found 2 settings
+   - Z : 2
+   - Y : 3
+ + Removing all
+  - Found 0 settings
+--> Checking level settings
+  -Level is : 5
+  +Setting level to ERROR
+  +Setting level to WARN
+  +Setting level to MILE
+  +Setting level to INFO
+  +Setting level to TRACE
+  +Setting level to DEBUG
+  +Restoring level
+--> Checking masks (domain filtering) setting
+  - Shown masks are 
+  - Hidden masks are 
+  + Setting mask to A:B:C
+  + Setting not mask to D:E:F
+  + Restoring mask filtering
+        Testing indent
+. {<main>test_indent_main 262} New thread, no indent
+.  {test_indent_f1 257} Different function
+.  {test_indent_main 264} Back in context
+.   {265} Same function, different line
+.  {<f1>266} Change domain
+.{<test>test_C.c short_c_function 5} Short message
+.{<main>test_cplusplus.cpp main 297} Checking truncation
+.{<a_very_long_domain_name>test_C_file_with_a_very_long_file_name.c a_c_function_with_a_very_long_name 5} Heureux qui, comme Ulysse, a fait un beau voyage,
+Ou comme cestuy-la qui conquit la toison,
+Et puis est retourne, plein d'usage et raison,
+Vivre entre ses parents le reste de son age !
+Quand reverrai-je, helas, de mon petit village
+Fumer la cheminee, et en quelle saison
+Reverrai-je le clos de ma pauvre maison,
+Qui m'est une province, et beaucoup davantage ?
+Plus me plait le sejour qu'ont bati mes aieux,
+Que des palais Romains le front audacieux,
+Plus que le marbre dur me plait l'ardoise fine :
+Plus mon Loir gaulois, que le Tibre latin,
+Plus mon petit Lire, que le mont Palatin,
+Et plus que l'air marin la doulceur angevine.
+Heureux qui, comme Ulysse, a fait un beau voyage,
+Ou comme cestuy-la qui conquit la toison,
+Et puis est retourne, plein d'usage et raison,
+Vivre entre ses parents le reste de son age !
+Quand reverrai-je, helas, de mon petit village
+Fumer la cheminee, et en quelle saison
+Reverrai-je l
+        Adding a ERROR comment
+#{<main>test_cplusplus.cpp main 301} Starting the test for log
+Adding a MILE comment
++   {304} Starting the test for log
+Current debug level is  5
+Adding a TRACE comment
+-   {310} Tracing some text
+Calling function1
+- {<f1>function1 234} --> IN
+Adding a DEBUG comment
+.  {function1 237} Entering
+Adding a TRACE comment
+!   {240} a warning message
+Adding a DEBUG comment
+.   {243} Leaving
+-  {function1 0} <-- OUT
+Creating an object
+- {<obj>testClass_c::testClass_c this=(0xXXXX) 35} --> IN
+-  {testClass_c::testClass_c this=(0xXXXX) 0} <-- OUT
+-  {testClass_c::method this=(0xXXXX) 26} --> IN
+-  {testClass_c::method this=(0xXXXX) 0} <-- OUT
+-  {testClass_c::...background_of_the_system this=(0xXXXX) 29} --> IN
+-  {testClass_c::...background_of_the_system this=(0xXXXX) 0} <-- OUT
+Creating an object with a long name (should be truncated)
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 47} --> IN
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 0} <-- OUT
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 57} --> IN
+-  {...pingly_long_name::...pingly_long_name this=(0xXXXX) 0} <-- OUT
+-  {...very_very_stupingly_long_name::method this=(0xXXXX) 60} --> IN
+-  {...very_very_stupingly_long_name::method this=(0xXXXX) 0} <-- OUT
+Adding a TRACE comment
+- {<main>main 326} Between calls
+- {<f1>function1 234} --> IN
+Adding a DEBUG comment
+.  {function1 237} Entering
+Adding a TRACE comment
+!   {240} a warning message
+Adding a DEBUG comment
+.   {243} Leaving
+-  {function1 0} <-- OUT
+Current debug level is  5
+Adding a MILE comment
++ {<main>main 334} End of the test for log
+Activating domains F1 and MAIN
+Debug 3 domains
++   {340} domain is main
++  {<f1>341} domain is f1
+Activating too many domains...
+Debug 3 domains
++  {<main>351} domain is main
++  {<f1>352} domain is f1
+Setting all domains...
+Debug 3 domains
++  {<main>359} domain is main
++  {<f1>360} domain is f1
++  {<obj>361} domain is obj
+Testing streaming
+Adding a DEBUG stream comment
+. {<main>test_streams 249} Stream test 5 DEBUG
+Adding a TRACE stream comment
+-   {252} Stream test 4 TRACE
+Testing wildcard
+   -> Simple domain 'root'
+. {<root>domainsLog 272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Exact domain 'root.node1.leaf1'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple wild '*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple wild 'root.*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Simple domain 'root*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Use of ? 'root.node1.*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Use of ? 'root.node?.leaf*'
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+#  {<root.node2.leaf1>284} root.node2.leaf1
+   -> Mixing levels. root.*=root.node?.*=trace and root.node1.*=debug
+.  {<root>272} root
+.  {<root.node1.leaf1>274} root.node1.leaf1
+.  {<root.node1.leaf2>275} root.node1.leaf2
+#  {<root.node1.leaf1>280} root.node1.leaf1
+   -> Mixing domain redirection. root.node1.*=other_test_results.txt
+.  {<root>272} root
+.  {<root.node1>273} root.node1
+.  {<root.node2.leaf1>276} root.node2.leaf1
+.  {<root.node2.leaf2>277} root.node2.leaf2
+#  {<root.node2.leaf1>284} root.node2.leaf1
+- {<obj>...pingly_long_name::~...ingly_long_name this=(0xXXXX) 52} --> IN
+-  {...pingly_long_name::~...ingly_long_name this=(0xXXXX) 0} <-- OUT
+-  {testClass_c::~testClass_c this=(0xXXXX) 40} --> IN
+-  {testClass_c::~testClass_c this=(0xXXXX) 0} <-- OUT

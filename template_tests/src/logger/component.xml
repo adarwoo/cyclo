@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component xmlns:make="tools.xpact.make">
+  Generic logger component for the following targets:
+    C code, embedded and nes
+    C++
+    Python
+
+  For Linux, Unix, Windows, VxWorks, no-os, AVR, ARM, Intel, PPC etc.
+
+  <make:include visibility="public">include</make:include>
+
+  <!-- This component does create a dynamic and static version of the library -->
+
+  <!-- For pactMake compatibility -->
+  <make:export name="logger.PATH" value="$(generic.logger.PATH)"/>
+
+  <!-- Add to runpy a path to the LOG.so -->
+  <make:export name="PYTHON_PATH" override="true" value="$(EXPORT_TREE)/$(LIBDIR)"/>
+</component>
