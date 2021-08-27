@@ -1,3 +1,5 @@
+#ifndef trace_h_was_included
+#define trace_h_was_included
 /*
  * trace.h
  *
@@ -5,29 +7,21 @@
  *  Author: micro
  */
 
-#ifndef TRACE_H_
-#define TRACE_H_
-
-#include <asf.h>
-#include <ioport.h>
+#include "asx.h"
 
 static inline void trace_set(ioport_pin_t pin) { ioport_set_pin_level(pin, true); }
 static inline void trace_clear(ioport_pin_t pin) { ioport_set_pin_level(pin, false); }
 static inline void trace_tgl(ioport_pin_t pin) { ioport_toggle_pin_level(pin); }
-   
-static inline void trace_assert(bool test, ioport_pin_t pin)
-{
-   if ( not test )
-   {
-      trace_set(pin);
 
-      while (1)
-      {
-      	asm("break");
-         continue;
-      }
-   }
-}
+#ifdef __cplusplus
+extern "C"
+#endif
+void trace_assert(bool test, ioport_pin_t pin);
+
+// Overwrite the assert macro
+// TRACE_ERR must be configured
+#undef assert
+#define assert(cond) trace_assert(cond, TRACE_ERR)
 
 #ifdef __cplusplus
 /**
@@ -49,9 +43,11 @@ struct Trace
 };
 #endif
 
-// Overwrite the assert macro
-// TRACE_ERR must be configured
-#undef assert
-#define assert(cond) trace_assert(cond, TRACE_ERR)
+#ifdef __cplusplus
+extern "C"
+#endif
 
-#endif /* TRACE_H_ */
+void trace_inspect(const void *p, size_t len);
+
+
+#endif /* ndef trace_h_was_included */

@@ -16,8 +16,6 @@ struct keypad_key_t
     uint8_t mask;             ///< ID of the key
 };
 
-//static uint8_t KEYPAD_NUMBER_OF_KEYS;
-
 // Register a timer for sampling the keypad_pins
 constexpr ioport_pin_t keypad_pins[] = {KEYPAD_PINS};
 constexpr uint8_t KEYPAD_NUMBER_OF_KEYS = sizeof(keypad_pins) / sizeof(ioport_pin_t);

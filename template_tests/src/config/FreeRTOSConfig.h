@@ -9,9 +9,11 @@
  * FreeRTOS task control block type (TCB_t) and the
  * AVR Timer Counter B type (TCB_t)
  */
-#define TCB_t avrTCB_t
-#include <avr/io.h>
-#undef TCB_t
+#ifndef _POSIX
+#  define TCB_t avrTCB_t
+#  include <avr/io.h>
+#  undef TCB_t
+#endif
 
 /*-----------------------------------------------------------
  * Application specific definitions.

@@ -216,60 +216,62 @@ using tycat
 //*~ part4 : Let's give some logic with a -DUSE_TYPESTRING flag!
 
 #ifdef USE_TYPESTRING
-#if USE_TYPESTRING == 0
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING1(,x)>()))
-#elif USE_TYPESTRING == 1
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING2(,x)>()))
-#elif USE_TYPESTRING == 2
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING4(,x)>()))
-#elif USE_TYPESTRING == 3
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING8(,x)>()))
-#elif USE_TYPESTRING == 4
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING16(,x)>()))
-#elif USE_TYPESTRING == 5
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING32(,x)>()))
-#elif USE_TYPESTRING == 6
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
-#elif USE_TYPESTRING == 7
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING128(,x)>()))
-#elif USE_TYPESTRING == 8
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING256(,x)>()))
-#elif USE_TYPESTRING == 9
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING512(,x)>()))
-#elif USE_TYPESTRING == 10
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING1024(,x)>()))
-#elif USE_TYPESTRING > 10
+   #if USE_TYPESTRING == 0
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING1(,x)>()))
+   #elif USE_TYPESTRING == 1
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING2(,x)>()))
+   #elif USE_TYPESTRING == 2
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING4(,x)>()))
+   #elif USE_TYPESTRING == 3
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING8(,x)>()))
+   #elif USE_TYPESTRING == 4
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING16(,x)>()))
+   #elif USE_TYPESTRING == 5
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING32(,x)>()))
+   #elif USE_TYPESTRING == 6
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
+   #elif USE_TYPESTRING == 7
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING128(,x)>()))
+   #elif USE_TYPESTRING == 8
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING256(,x)>()))
+   #elif USE_TYPESTRING == 9
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING512(,x)>()))
+   #elif USE_TYPESTRING == 10
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING1024(,x)>()))
+   #elif USE_TYPESTRING > 10
 
-#warning !!!: custom typestring length exceeded allowed (1024)            !!!
-#warning !!!: all typestrings to default maximum typestring length of 64  !!!
-#warning !!!: you can use -DUSE_TYPESTRING=<power of two> to set length   !!!
+   #warning !!!: custom typestring length exceeded allowed (1024)            !!!
+   #warning !!!: all typestrings to default maximum typestring length of 64  !!!
+   #warning !!!: you can use -DUSE_TYPESTRING=<power of two> to set length   !!!
 
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
 
-#elif USE_TYPESTRING < 0
+   #elif USE_TYPESTRING < 0
 
-#warning !!!: You used USE_TYPESTRING with a negative size specified      !!!
-#warning !!!: all typestrings to default maximum typestring length of 64  !!!
-#warning !!!: you can use -DUSE_TYPESTRING=<power of two> to set length   !!!
+   #warning !!!: You used USE_TYPESTRING with a negative size specified      !!!
+   #warning !!!: all typestrings to default maximum typestring length of 64  !!!
+   #warning !!!: you can use -DUSE_TYPESTRING=<power of two> to set length   !!!
 
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
 
-#endif
+   #endif
 #else
-#define typestring_is(x) \
-    decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
+   #define typestring_is(x) \
+       decltype(irqus::typeek(irqus::typestring<TYPESTRING64(,x)>()))
 #endif
+
+
 #endif /* IRQUS_TYPESTRING_HH_ */
