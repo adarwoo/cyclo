@@ -23,11 +23,11 @@
 //  Local variables
 //----------------------------------------------------------------------------
 /** The log lock for access to container etc.. */
-#ifdef PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
-static pthread_mutex_t _log_mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
-#else
-static pthread_mutex_t _log_mutex;
+static pthread_mutex_t _log_mutex
+#if defined _REENTRANT && defined PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
+   = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
 #endif
+/* Common semicolon ending */;
 
 /** Remember the last time the timestamp was displayed */
 static time_t _log_last_timestamp;

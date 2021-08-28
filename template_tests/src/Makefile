@@ -50,13 +50,14 @@ CXX_SRCS              += ${SIMULATION_DIR}/src/sim.cpp
 # Main
 CXX_SRCS              += keypad_tasklet.cpp \
                          nonc_tasklet.cpp \
-                         cyclo_manager.cpp \
+                         program_manager.cpp \
                          sequencer_worker.cpp \
                          contact.cpp ui_view.cpp \
                          ui_worker.cpp \
+						 ui_model.cpp \
                          main.cpp
 
-CFLAGS                :=    -ggdb3
+CFLAGS                :=    -ggdb3 -Wall
 LDFLAGS               :=    -ggdb3 -pthread
 CPPFLAGS              :=    $(INCLUDE_DIRS) -DBUILD_DIR=\"$(BUILD_DIR_ABS)\"
 CPPFLAGS              +=    -D_WINDOWS_ -D_POSIX

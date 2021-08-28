@@ -1,10 +1,4 @@
-/*
- * cyclo_manager.cpp
- *
- * Created: 23/08/2021 22:43:41
- *  Author: micro
- */
-#include "cyclo_manager.hpp"
+#include "program_manager.hpp"
 
 #include "asx.h"
 
@@ -15,13 +9,10 @@ namespace
 {
    const char *const DOM = "cyclo_man";
 
-   /** The default manual program for when the EEPROM is blank */
-   constexpr static char default_man_pgm[] = "c 60 o 5 *";
-
    struct PgmStorage
    {
       char     marker; ///< Marker, must be a value other than 255 to be analysed
-      char     pgm[ CycloManager::STORAGE_MAX_LENGTH ]; ///< Actual program in ASCII storage area
+      char     pgm[ ProgramManager::STORAGE_MAX_LENGTH ]; ///< Actual program in ASCII storage area
       char     spare; 
       uint16_t crc;
    };
@@ -29,7 +20,7 @@ namespace
    constexpr size_t PGM_STORAGE_DATA_SIZE_NO_CRC = sizeof(PgmStorage) - sizeof(uint16_t);
 };  // namespace
 
-CycloManager::CycloManager() : selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }
+ProgramManager::ProgramManager() : selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }
 {
    LOG_HEADER( DOM );
 
@@ -65,23 +56,13 @@ CycloManager::CycloManager() : selected{ 0 }, auto_start{ false }, state{ stoppe
          }
       }
    }
-
-   // If pgm[0] is not set, create a default content for the auto program
-   if ( occupancy_map[ 0 ] == 0 )
-   {
-      // Write the auto program
-      write_pgm_at( 0, default_man_pgm );
-
-      // Mark as set
-      occupancy_map.set( 0, true );
-   }
 }
 
 /**
  * @param from The position to start from. 0 is OK as 0 always exists
  * @returns The next available position - which could be the same
  */
-uint8_t CycloManager::get_next( uint8_t from )
+uint8_t ProgramManager::get_next( uint8_t from )
 {
    uint8_t pos = from;
 
@@ -100,7 +81,7 @@ uint8_t CycloManager::get_next( uint8_t from )
  * @param from The position to start from. 0 is OK as 0 always exists
  * @returns The previous valid position or the same if no previous was found
  */
-uint8_t CycloManager::get_prev( uint8_t from )
+uint8_t ProgramManager::get_prev( uint8_t from )
 {
    while ( from != 0 )
    {
@@ -117,7 +98,7 @@ uint8_t CycloManager::get_prev( uint8_t from )
  * @param index Index of the program to look for
  * @return a pointer to the program at the given index
  */
-const char *CycloManager::get_pgm( uint8_t index )
+const char *ProgramManager::get_pgm( uint8_t index )
 {
    LOG_HEADER( DOM );
 
@@ -134,7 +115,7 @@ const char *CycloManager::get_pgm( uint8_t index )
  * @param index Index of the program to look for
  * @return a pointer to the program at the given index
  */
-void CycloManager::write_pgm_at( uint8_t pos, const char *string )
+void ProgramManager::write_pgm_at( uint8_t pos, const char *string )
 {
    LOG_HEADER( DOM );
 
@@ -158,21 +139,25 @@ void CycloManager::write_pgm_at( uint8_t pos, const char *string )
 }
 
 /**
- * The program is loaded, parsed. If OK, the get_command() method gives access
+ * The program is loaded, parsed. If OK, the get_program() method gives access
  * to the command.
  * @param index Index of the program to load
  * @return true if all ok
  */
-bool CycloManager::load( uint8_t pgmIndex )
+bool ProgramManager::load( uint8_t pgmIndex )
 {
+   bool retval = false;
    LOG_HEADER( DOM );
 
    // Must have a program
-   assert( occupancy_map[ pgmIndex ] );
+   if ( occupancy_map[ pgmIndex ] )
+   {
+      // Get the string
+      etl::string_view pgm{ get_pgm( pgmIndex ) };
 
-   // Get the string
-   etl::string_view pgm{ get_pgm( pgmIndex ) };
+      // Parse
+      retval = parser.parse( pgm );
+   }
 
-   // Parse
-   return parser.parse( pgm );
+   return retval;
 }

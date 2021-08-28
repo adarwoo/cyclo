@@ -11,7 +11,7 @@
 #include <etl/limits.h>
 #include <etl/optional.h>
 
-#include "cyclo_manager.hpp"
+#include "program_manager.hpp"
 #include "msg_defs.hpp"
 #include "ui_controller.hpp"
 #include "ui_model.hpp"
@@ -49,10 +49,10 @@ class UIWorker
    UIController controller;
 
    // Access to the manager
-   CycloManager &cm;
+   ProgramManager &cm;
 
 public:
-   explicit UIWorker( CycloManager &cm );
+   explicit UIWorker( ProgramManager &cm );
 
    // @return true if the main screen can be updated with external changes
    bool can_update();

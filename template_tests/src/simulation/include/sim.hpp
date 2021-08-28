@@ -26,6 +26,10 @@ typedef uint16_t ioport_pin_t;
 typedef uint16_t eeprom_addr_t;
 extern const uintptr_t MAPPED_EEPROM_START;
 
+// Program memory is just plain memory
+#define PROGMEM_STRING( x ) x
+#define snprintf_P          snprintf
+
 //
 // APIs
 //

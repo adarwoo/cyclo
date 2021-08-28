@@ -8,7 +8,7 @@
  */
 #include <fx.hpp>
 
-#include "cyclo_manager.hpp"
+#include "program_manager.hpp"
 #include "msg_defs.hpp"
 
 
@@ -32,10 +32,10 @@ class SequencerWorker
    rtos::tick_t ticks_left;
 
    ///< Access to the command manager
-   CycloManager &pgm_man;
+   ProgramManager &pgm_man;
 
 public:
-   SequencerWorker( CycloManager &pgm_man );
+   SequencerWorker( ProgramManager &pgm_man );
 
    // Activate the sequencer. This resets the program
    void on_receive( const msg::StartProgram &msg );

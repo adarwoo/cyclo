@@ -6,7 +6,7 @@
  */
 #include "asx.h"
 #include "console_worker.hpp"
-#include "cyclo_manager.hpp"
+#include "program_manager.hpp"
 #include "keypad_tasklet.hpp"
 #include "nonc_tasklet.hpp"
 #include "sequencer_worker.hpp"
@@ -21,16 +21,16 @@ int main( void )
    board_init();
 
    // Create the manager required for all others
-   auto manager = CycloManager{};
+   auto pgm_manager = ProgramManager{};
 
    // Create the workers and their dispatchers
-   auto sequencer     = SequencerWorker{ manager };
+   auto sequencer     = SequencerWorker{ pgm_manager };
    auto sequencer_bus = fx::Dispatcher<msg::packet_t, typestring_is( "sq" ), 64>();
-   auto ui            = UIWorker{ manager };
+   auto ui            = UIWorker{ pgm_manager };
    auto ui_bus        = fx::Dispatcher<msg::packet_t, typestring_is( "ui" ), 64, 1, 8>();
 
 #if 0
-   auto console       = ConsoleWorker{manager};
+   auto console       = ConsoleWorker{pgm_manager};
    auto console_bus   = fx::Dispatcher<msg::packet_t, typestring_is("xt"), 64>();
 #endif
 
@@ -45,7 +45,7 @@ int main( void )
 
    // Create the tasklets instance to pump key and contact events into fx
    auto key_tasklet  = KeypadTasklet{};
-   auto nonc_tasklet = NoNcTasklet{ manager.get_contact() };
+   auto nonc_tasklet = NoNcTasklet{ pgm_manager.get_contact() };
 
    // GO!
    rtos::start_scheduler();

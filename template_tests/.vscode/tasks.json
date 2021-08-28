@@ -7,7 +7,10 @@
             "label": "Build all",
             "type": "shell",
             "command": "cd src; make -j8",
-            "problemMatcher": [],
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["relative", "${workspaceRoot}/src"]
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true

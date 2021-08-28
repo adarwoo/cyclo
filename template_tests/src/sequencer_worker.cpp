@@ -18,7 +18,7 @@ namespace
 }
 
 
-SequencerWorker::SequencerWorker( CycloManager &pgm_man )
+SequencerWorker::SequencerWorker( ProgramManager &pgm_man )
    : timer_counter{ 100 }, ticks_left{ 0 }, pgm_man{ pgm_man }
 {}
 
@@ -36,7 +36,7 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
       fx::publish( msg::CounterUpdate{} );
 
       // Start from the start
-      pgm_man.get_command().start();
+      pgm_man.get_program().start();
 
       ticks_left = 0;
    }
@@ -82,10 +82,10 @@ void SequencerWorker::execute_next()
    LOG_HEADER( DOM );
 
    // Pick the first command and apply it
-   auto &command = pgm_man.get_command();
+   auto &command = pgm_man.get_program();
 
    // Grab the first item and move the iterator
-   const CommandItem *item = command.iterate();
+   const Command *item = command.iterate();
 
    // Make sure not the last
    if ( item != nullptr )
@@ -93,14 +93,14 @@ void SequencerWorker::execute_next()
       // Execute the item
       switch ( item->command )
       {
-      case CommandItem::close: pgm_man.get_contact().set( Contact::close ); break;
-      case CommandItem::open: pgm_man.get_contact().set( Contact::open ); break;
-      case CommandItem::delay:
+      case Command::close: pgm_man.get_contact().set( Contact::close ); break;
+      case Command::open: pgm_man.get_contact().set( Contact::open ); break;
+      case Command::delay:
          // Do nothing
          break;
-      case CommandItem::loop:
+      case Command::loop:
          // Start all over
-         pgm_man.get_command().start();
+         pgm_man.get_program().start();
 
          pgm_man.set_counter( pgm_man.get_counter() + 1 );
          fx::publish( msg::CounterUpdate{} );

@@ -24,7 +24,7 @@
 #include <etl/tokenizer.h>
 #include <etl/vector.h>
 
-#include "command.hpp"
+#include "program.hpp"
 
 ///< Possible nom command interactions
 enum Interact : char { help = 'h', list = 'l', save = 's', del = 'd' };
@@ -43,7 +43,7 @@ class Parser
 {
    using ErrorString = etl::string<MAX_ERROR_BUFFER>;
 
-   Command                          live_;
+   Program                          live_;
    ErrorString                      err_;
    etl::string_view::const_iterator buffer_{ nullptr };
 
@@ -63,26 +63,26 @@ class Parser
       }
    }
 
-   void safe_insert( CommandItem::command_t c, etl::string_view token )
+   void safe_insert( Command::command_t c, etl::string_view token )
    {
       if ( live_.full() )
       {
          err_.assign( "Too many items" );
          error( token );
       }
-      else if ( live_.back().command == CommandItem::loop )
+      else if ( live_.back().command == Command::loop )
       {
          err_.assign( "No commands allowed past *" );
          error( token );
       }
-      else if ( live_.empty() and c == CommandItem::loop )
+      else if ( live_.empty() and c == Command::loop )
       {
          err_.assign( "Loop not allowed as first action" );
          error( token );
       }
       else
       {
-         if ( c != CommandItem::delay )
+         if ( c != Command::delay )
          {
             // Force a 1 second delay unless given
             if ( not live_.empty() and live_.back().delay_ms == 0 )
@@ -95,7 +95,7 @@ class Parser
          LOG_DEBUG("parser", "Adding item: %c", c);
 
          // Insert a new command
-         live_.push_back( CommandItem( c ) );
+         live_.push_back( Command( c ) );
       }
    }
 
@@ -150,7 +150,7 @@ public:
    Parser() = default;
 
    // Access the parser command. Use only within a thread after a succesfull parse
-   Command &get_command() { return live_; }
+   Program &get_program() { return live_; }
 
    // Access the error string
    const char *get_error( uint_least8_t &position )
@@ -199,23 +199,23 @@ public:
             }
             else
             {
-               safe_insert( CommandItem::delay, token );
+               safe_insert( Command::delay, token );
             }
          }
          else if ( err_.empty() )
          {
             if ( is_command( "open" ) )
             {
-               safe_insert( CommandItem::open, token );
+               safe_insert( Command::open, token );
             }
             else if ( is_command( "close" ) )
             {
-               safe_insert( CommandItem::close, token );
+               safe_insert( Command::close, token );
             }
             else if ( token == "*" )
             {
                // Loop - must be the last command
-               safe_insert( CommandItem::loop, token );
+               safe_insert( Command::loop, token );
             }
             else
             {
@@ -250,7 +250,7 @@ public:
       {
          auto &item = live_.back();
 
-         if ( item.delay_ms == 0 and ( live_.front().command != CommandItem::delay ) )
+         if ( item.delay_ms == 0 and ( live_.front().command != Command::delay ) )
          {
             LOG_DEBUG("parser", "Adding 1s delay");
 

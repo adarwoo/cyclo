@@ -16,7 +16,7 @@
 #include <etl/bitset.h>
 #include <etl/string_view.h>
 
-#include "command.hpp"
+#include "program.hpp"
 #include "conf_cyclo.hpp"
 #include "contact.hpp"
 #include "parser.hpp"
@@ -28,7 +28,7 @@
  * This manages the programs and the state of the system. It  is a model only.
  * It does not emit messages.
  */
-class CycloManager
+class ProgramManager
 {
 public:
    using Pgms                                 = etl::bitset<10>;
@@ -60,7 +60,7 @@ private:
    Contact contact;
 
 public:
-   CycloManager();
+   ProgramManager();
 
    //////////////////////////////////////////////////////////////////////////
    // Accessors
@@ -83,7 +83,7 @@ public:
    inline Contact &get_contact() { return contact; }
 
    // Grab the command
-   inline Command &get_command() { return parser.get_command(); }
+   inline Program &get_program() { return parser.get_program(); }
 
    /** Grab the next available slot from the given position */
    uint8_t get_next( uint8_t from );

@@ -125,7 +125,6 @@ char getch()
 {
    char           buf = 0;
    struct termios old = { 0 };
-   int            ret;
 
    tcgetattr( 0, &old );
    old.c_lflag &= ~ICANON;

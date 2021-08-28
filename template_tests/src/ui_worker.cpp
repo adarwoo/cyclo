@@ -28,7 +28,7 @@ void UIWorker::SplashTimer::run()
    fx::publish( msg::EndOfSplash{} );
 }
 
-UIWorker::UIWorker( CycloManager &cm )
+UIWorker::UIWorker( ProgramManager &cm )
    : model{ cm }, view{ model }, controller{ model, view }, cm{ cm }
 {
    LOG_HEADER( DOM );

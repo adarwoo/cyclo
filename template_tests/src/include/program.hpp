@@ -19,16 +19,16 @@
  * It carries the operation as well as a delay.
  * The delay is to be observed after the command
  */
-struct CommandItem
+struct Command
 {
-   ///< Command for the engine
+   ///< Program for the engine
    enum command_t : char { open = 'o', close = 'c', delay = 'd', loop = 'l' } command;
 
    ///< Delay after the command execution
    uint32_t delay_ms;
 
    ///< Simple constructor
-   explicit CommandItem( command_t type, uint32_t delay = 0 ) : command{ type }, delay_ms{ delay }
+   explicit Command( command_t type, uint32_t delay = 0 ) : command{ type }, delay_ms{ delay }
    {}
 };
 
@@ -36,13 +36,13 @@ struct CommandItem
 /**
  * Holds a complete program already parsed
  */
-class Command : public etl::vector<CommandItem, cyclo::max_items_per_command>
+class Program : public etl::vector<Command, cyclo::max_items_per_command>
 {
    const_iterator it;
 
 public:
-   // Command
-   Command() : it{ begin() } {}
+   // Program
+   Program() : it{ begin() } {}
 
    /**
     * Get the next item. This is the first item following a reset.
@@ -52,7 +52,7 @@ public:
     */
    auto iterate()
    {
-      const CommandItem *retval = nullptr;
+      const Command *retval = nullptr;
 
       if ( it != end() )
       {
