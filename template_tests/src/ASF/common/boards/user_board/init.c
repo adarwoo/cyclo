@@ -64,6 +64,6 @@ void board_init(void)
 
     sleepmgr_init();
 	
-	// Start the USB
-	//udc_start();
+    // Start the USB
+    udc_start();
 }
