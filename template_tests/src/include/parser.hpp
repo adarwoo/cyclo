@@ -63,42 +63,6 @@ class Parser
       }
    }
 
-   void safe_insert( Command::command_t c, etl::string_view token )
-   {
-      if ( live_.full() )
-      {
-         err_.assign( "Too many items" );
-         error( token );
-      }
-      else if ( live_.back().command == Command::loop )
-      {
-         err_.assign( "No commands allowed past *" );
-         error( token );
-      }
-      else if ( live_.empty() and c == Command::loop )
-      {
-         err_.assign( "Loop not allowed as first action" );
-         error( token );
-      }
-      else
-      {
-         if ( c != Command::delay )
-         {
-            // Force a 1 second delay unless given
-            if ( not live_.empty() and live_.back().delay_ms == 0 )
-            {
-               LOG_DEBUG("parser", "Adding 1s delay");
-               live_.back().delay_ms = 1000;
-            }
-         }
-
-         LOG_DEBUG("parser", "Adding item: %c", c);
-
-         // Insert a new command
-         live_.push_back( Command( c ) );
-      }
-   }
-
    /**
     * Check if the token is a delay.
     * An error can be triggered.
@@ -146,6 +110,42 @@ class Parser
       return retval;
    }
 
+   void safe_insert( Command::command_t c, etl::string_view token )
+   {
+      if ( live_.full() )
+      {
+         err_.assign( "Too many items" );
+         error( token );
+      }
+      else if ( live_.back().command == Command::loop )
+      {
+         err_.assign( "No commands allowed past *" );
+         error( token );
+      }
+      else if ( live_.empty() and c == Command::loop )
+      {
+         err_.assign( "Loop not allowed as first action" );
+         error( token );
+      }
+      else
+      {
+         if ( c != Command::delay )
+         {
+            // Force a 1 second delay unless given
+            if ( not live_.empty() and live_.back().delay_ms == 0 )
+            {
+               LOG_DEBUG("parser", "Adding 1s delay");
+               live_.back().delay_ms = 1000;
+            }
+         }
+
+         LOG_DEBUG("parser", "Adding item: '%c'", c);
+
+         // Insert a new command
+         live_.push_back( Command( c ) );
+      }
+   }
+
 public:
    Parser() = default;
 
@@ -169,7 +169,6 @@ public:
    bool parse(
       const etl::string_view &buffer, const InteractHandler &interact_handler = []( Interact ) {} )
    {
-      bool retval = false;
       buffer_     = buffer.begin();
       live_.clear();
       err_.clear();
@@ -245,22 +244,7 @@ public:
          }
       }
 
-      // If the last item is not idle - and there is no pause, add 1 second worth
-      if ( err_.empty() and not live_.empty() )
-      {
-         auto &item = live_.back();
-
-         if ( item.delay_ms == 0 and ( live_.front().command != Command::delay ) )
-         {
-            LOG_DEBUG("parser", "Adding 1s delay");
-
-            item.delay_ms = 1000;
-         }
-
-         retval = true;
-      }
-
-      return retval;
+      return err_.empty();
    }
 };
 

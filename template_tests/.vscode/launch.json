@@ -12,7 +12,7 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "environment": [{"name": "LOG", "value": "stdout debug"}],
+            "environment": [{"name": "LOG", "value": "stdout debug exclude=gfx.low"}],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [

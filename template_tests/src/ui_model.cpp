@@ -42,11 +42,16 @@ void ManualProgram::import_program( const Program &pgm )
    Command itemClose = pgm.at( 0 );
    Command itemOpen  = pgm.at( 1 );
 
-   on_min = itemClose.delay_ms / 60000;
-   on_sec = itemClose.delay_ms % 60000;
+   auto to_min_sec = []( uint32_t ms, uint8_t &minutes ) {
+      // Discard ms
+      uint16_t seconds = ms / 1000;
+      minutes          = seconds / 60;
+      return seconds % 60;
+   };
 
-   off_min = itemOpen.delay_ms / 60000;
-   off_sec = itemOpen.delay_ms % 60000;
+   // Work with seconds (not ms)
+   on_sec  = to_min_sec( itemClose.delay_ms, on_min );
+   off_sec = to_min_sec( itemOpen.delay_ms, off_min );
 }
 
 UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
@@ -60,7 +65,7 @@ UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
       // Load the auto program values into this model
       import_program( program_manager.get_program() );
    }
-   else // Store the default program
+   else  // Store the default program
    {
       store_manual_pgm();
    }

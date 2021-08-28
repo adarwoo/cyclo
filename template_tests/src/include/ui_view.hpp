@@ -6,11 +6,6 @@
  * Created: 29/06/2021 21:26:21
  * Author : software@arreckx.com
  */
-#include <cstdio>
-
-#include <etl/limits.h>
-#include <etl/optional.h>
-
 #include "ui_model.hpp"
 
 

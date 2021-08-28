@@ -7,7 +7,8 @@
 	"settings": {
 		"files.associations": {
 			"*.mak": "makefile",
-			"iosfwd": "cpp"
+			"iosfwd": "cpp",
+			"gfx_mono_generic.h": "c"
 		}
 	}
 }

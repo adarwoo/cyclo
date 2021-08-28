@@ -49,10 +49,10 @@ class UIWorker
    UIController controller;
 
    // Access to the manager
-   ProgramManager &cm;
+   ProgramManager &program_manager;
 
 public:
-   explicit UIWorker( ProgramManager &cm );
+   explicit UIWorker( ProgramManager &program_manager );
 
    // @return true if the main screen can be updated with external changes
    bool can_update();

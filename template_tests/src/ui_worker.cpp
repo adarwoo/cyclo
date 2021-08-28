@@ -28,8 +28,8 @@ void UIWorker::SplashTimer::run()
    fx::publish( msg::EndOfSplash{} );
 }
 
-UIWorker::UIWorker( ProgramManager &cm )
-   : model{ cm }, view{ model }, controller{ model, view }, cm{ cm }
+UIWorker::UIWorker( ProgramManager &program_manager )
+   : model{ program_manager }, view{ model }, controller{ model, view }, program_manager{ program_manager }
 {
    LOG_HEADER( DOM );
 }
@@ -39,8 +39,11 @@ bool UIWorker::can_update()
 {
    using namespace sml;
 
-   return not controller.is<decltype( state<program_selection> )>( state<program_setup> )
-          and not controller.is( "splash"_s );
+   bool is_in_splash = controller.is( "splash"_s );
+   bool is_in_program_setup = controller.is<decltype( state<program_selection> )>( state<program_setup> );
+   LOG_DEBUG(DOM, "%s", is_in_splash ? "X = is in splash" : is_in_program_setup ? "X = is in pgm setup" : "OK");
+
+   return not (is_in_splash or is_in_program_setup);
 }
 
 // --------------------------------------------------------------
@@ -63,15 +66,15 @@ void UIWorker::on_receive( const msg::EndOfSplash &msg )
    process_event( controller, splash_timeout{} );
 
    // Is there an auto_start program?
-   if ( cm.starts_automatically() )
+   if ( program_manager.starts_automatically() )
    {
       // Load it (unless it's 0)
-      uint8_t selected = cm.get_selected();
+      uint8_t selected = program_manager.get_selected();
 
       if ( selected > 0 )
       {
          // Parse it
-         cm.load( selected );
+         program_manager.load( selected );
       }
 
       // Start!

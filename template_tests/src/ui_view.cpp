@@ -4,86 +4,18 @@
  * Created: 23/08/2021 23:21:04
  *  Author: micro
  */
-
+#include <logger.h>
 
 #include "ui_view.hpp"
-
-#include "logger.h"
+#include "asx.h"
 
 namespace
 {
-   const char *const DOM = "view";
+   const char *const DOM = "ui.view";
 }
 
 using namespace rtos::tick;
 
-#ifdef _POSIX
-
-UIView::UIView( UIModel &model ) : model{ model }
-{}
-
-void UIView::draw()
-{
-   LOG_INFO( DOM, "In/Out" );
-}
-
-void UIView::draw_splash()
-{
-   LOG_INFO( DOM, "In/Out" );
-}
-
-void UIView::draw_prog( bool highlight )
-{
-   LOG_INFO( DOM, "Highlight %d", highlight );
-}
-
-void UIView::draw_contact()
-{
-   LOG_INFO( DOM, "In/Out" );
-}
-
-void UIView::draw_nonc()
-{
-   LOG_INFO( DOM, "In/Out" );
-}
-
-void UIView::draw_counter()
-{
-   LOG_INFO( DOM, "In/Out" );
-}
-
-void UIView::draw_walkman( uint8_t select )
-{
-   LOG_INFO( DOM, "Select %d", select );
-}
-
-void UIView::draw_box()
-{
-   LOG_INFO( DOM, "In/Out" );
-}
-
-void UIView::draw_cursor( uint8_t pos )
-{
-   LOG_INFO( DOM, "Pos %d", pos );
-}
-
-void UIView::erase_cursor( uint8_t pos )
-{
-   LOG_INFO( DOM, "Pos %d", pos );
-}
-
-void UIView::draw_program_setup_dialog()
-{
-   LOG_INFO( DOM, "In/Out" );
-}
-
-void UIView::manual_program_draw_digit( show_digit_t show, uint8_t row, uint8_t column )
-{
-   LOG_INFO( DOM, "Show %d, row=%d, column=%d", show, row, column );
-}
-
-#else
-#   include <asf.h>
 
 const gfx_mono_color_t PROGMEM logo_header[] = {
    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -372,4 +304,3 @@ void UIView::manual_program_draw_digit( show_digit_t show, uint8_t row, uint8_t 
       gfx_mono_draw_filled_rect( x, y, 12, 7, GFX_PIXEL_XOR );
    }
 }
-#endif

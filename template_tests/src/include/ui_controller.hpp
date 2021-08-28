@@ -39,7 +39,7 @@ namespace
 template<class TSM, class TEvent>
 void process_event( TSM &sm, TEvent &&evt )
 {
-   LOG_HEADER("sm");
+   LOG_HEADER( "sm" );
 
    sm.process_event( evt );
 
@@ -214,7 +214,10 @@ struct program_setup
                  []( UIModel &m, UIView &v ) {
                     --m.off_sec;
                     v.manual_program_draw_digit( UIView::next_highlight, 1, 1 );
-                 } );
+                 },
+         "setup_off_sec"_s + event<push> / [] { call_next(); } = X
+
+      );
    }
 };
 
@@ -250,6 +253,7 @@ struct program_selection
         , state<program_setup> + sml::on_exit<_> / [] (UIModel &m, UIView& v) { 
            m.store_manual_pgm(); 
            v.draw(); }
+         , state<program_setup> +           event<next> / [] { call_next(); } = X
     );
    }
 };
@@ -278,7 +282,7 @@ struct mode_manual
          ,
          state<walkman> + sml::on_exit<_> / []( UIView &v ) { v.draw_walkman(); },
          state<program_selection> + sml::on_exit<_> / []( UIView &v ) { v.erase_cursor( 1 ); },
-         state<program_selection> + event<push> / []( UIModel &m ) { m.load_command(); } =
+         state<program_selection> + event<next> / []( UIModel &m ) { m.load_command(); } =
             state<walkman>
 
          ,
