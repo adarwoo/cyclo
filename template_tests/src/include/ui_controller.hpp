@@ -50,11 +50,7 @@ void process_event( TSM &sm, TEvent &&evt )
    }
 };
 
-///< Call so a 'next' event is inserter immediately
-inline void call_next()
-{
-   controller_process_next = true;
-}
+auto call_next = []() { controller_process_next = true; };
 
 /*
  * Common guards
@@ -73,7 +69,7 @@ struct walkman
       };
 
       return make_transition_table(
-         *"select"_s + sml::on_entry<_> / [] { call_next(); },
+         *"select"_s + sml::on_entry<_> / call_next,
          "select"_s + event<next>[ is_running ] = "do_pause"_s,
          "select"_s + event<next>[ is_stopped ] = "do_play"_s,
          "select"_s + event<next>               = "do_play_or_stop"_s
@@ -215,7 +211,7 @@ struct program_setup
                     --m.off_sec;
                     v.manual_program_draw_digit( UIView::next_highlight, 1, 1 );
                  },
-         "setup_off_sec"_s + event<push> / [] { call_next(); } = X
+         "setup_off_sec"_s + event<push> / call_next = X
 
       );
    }
@@ -253,7 +249,7 @@ struct program_selection
         , state<program_setup> + sml::on_exit<_> / [] (UIModel &m, UIView& v) { 
            m.store_manual_pgm(); 
            v.draw(); }
-         , state<program_setup> +           event<next> / [] { call_next(); } = X
+         , state<program_setup> +           event<next> / call_next = X
     );
    }
 };
@@ -275,7 +271,7 @@ struct mode_manual
       };
 
       return make_transition_table(
-         *"select"_s + sml::on_entry<_> / [] { call_next(); },
+         *"select"_s + sml::on_entry<_> / call_next,
          "select"_s + event<next>[ is_running ] = state<walkman>,
          "select"_s + event<next>               = state<program_selection>
 
