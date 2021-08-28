@@ -149,7 +149,7 @@ class Parser
 public:
    Parser() = default;
 
-   // Access the parser command. Use only within a thread after a succesfull parse
+   // Access the parser command. Use only within a thread after a successfull parse
    Program &get_program() { return live_; }
 
    // Access the error string
