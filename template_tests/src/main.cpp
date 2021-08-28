@@ -25,9 +25,9 @@ int main( void )
 
    // Create the workers and their dispatchers
    auto sequencer     = SequencerWorker{ pgm_manager };
-   auto sequencer_bus = fx::Dispatcher<msg::packet_t, typestring_is( "sq" ), 64>();
+   auto sequencer_bus = fx::Dispatcher<msg::packet_t, typestring_is( "sq" ), 32>();
    auto ui            = UIWorker{ pgm_manager };
-   auto ui_bus        = fx::Dispatcher<msg::packet_t, typestring_is( "ui" ), 64, 1, 8>();
+   auto ui_bus        = fx::Dispatcher<msg::packet_t, typestring_is( "ui" ), 256, 1, 8>();
 
 #if 0
    auto console       = ConsoleWorker{pgm_manager};
