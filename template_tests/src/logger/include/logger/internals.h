@@ -281,10 +281,6 @@ extern char  **_log_public_domain_level_lookup;  /* Fake domain level lookup */
  *  These functions are never defined. They are here to satisfy the compiler
  *   when it sees the TRACE, WARN and LOG definitions below.
  */
-#ifdef __cplusplus
-extern "C"
-#endif
-
 #  define _LOG_INIT(...)                ((void)0)
 #  define _LOG_MASK(a)                  ((void)0)
 #  define _LOG_NOTMASK(a)               ((void)0)

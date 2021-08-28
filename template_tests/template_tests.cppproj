@@ -611,9 +611,6 @@
     <Compile Include="src\contact.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\cyclo_manager.cpp">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\config\conf_cyclo.hpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1649,9 +1646,6 @@
     <Compile Include="src\fx\src\fx.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\include\command.hpp">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\include\console_server.hpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1659,9 +1653,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\include\contact.hpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\include\cyclo_manager.hpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\include\keypad_tasklet.hpp">
@@ -1674,6 +1665,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\include\parser.hpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\include\program.hpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\include\program_manager.hpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\include\sequencer_worker.hpp">
@@ -1700,16 +1697,25 @@
     <Compile Include="src\nonc_tasklet.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\rtos++\include\rtos.hpp">
+    <Compile Include="src\program_manager.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\rtos++\rtos_hooks.c">
+    <Compile Include="src\rtos++\include\rtos.hpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\rtos++\src\rtos.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\rtos++\src\rtos_hooks.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\sequencer_worker.cpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\trace.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ui_model.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\ui_view.cpp">
