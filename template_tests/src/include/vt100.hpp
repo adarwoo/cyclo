@@ -73,7 +73,9 @@ namespace vt100
          // check to make sure we have a good pointer
          if ( str )
          {
-            while ( ( register char c = pgm_read_byte( str++ ) ) )
+            char c;
+            
+            while ( (c = pgm_read_byte( str++ )) )
             {
                TPutc( c );
             }
