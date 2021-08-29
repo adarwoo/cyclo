@@ -5,12 +5,13 @@
  * Author : software@arreckx.com
  */
 #include "asx.h"
-#include "console_worker.hpp"
+
 #include "program_manager.hpp"
 #include "keypad_tasklet.hpp"
 #include "nonc_tasklet.hpp"
 #include "sequencer_worker.hpp"
 #include "ui_worker.hpp"
+#include "console.hpp"
 
 #include <fx.hpp>
 
@@ -29,11 +30,6 @@ int main( void )
    auto ui            = UIWorker{ pgm_manager };
    auto ui_bus        = fx::Dispatcher<msg::packet_t, typestring_is( "ui" ), 256, 1, 8>();
 
-#if 0
-   auto console       = ConsoleWorker{pgm_manager};
-   auto console_bus   = fx::Dispatcher<msg::packet_t, typestring_is("xt"), 64>();
-#endif
-
    ///< The root dispatcher (un-threaded) with 3 sub-dispatchers
    auto root = fx::RootDispatcher<3>();
 
@@ -42,6 +38,9 @@ int main( void )
 
    // Add by priority orders
    root << sequencer_bus << ui_bus;
+   
+   // Create the console task
+   auto console = Console{ pgm_manager };
 
    // Create the tasklets instance to pump key and contact events into fx
    auto key_tasklet  = KeypadTasklet{};

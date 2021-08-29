@@ -6,6 +6,7 @@
  * Author: software@arreckx.com
  */
 #include <fx.hpp>
+#include <rtos.hpp>
 
 namespace msg
 {
@@ -14,13 +15,17 @@ namespace msg
    FX_MSG( ContactUpdate ){};
    FX_MSG( ShowActivity ){};
    FX_MSG( Keypad ) { uint8_t key_code; };
-   FX_MSG( CDCChar ) { char c; };
    FX_MSG( EndOfSplash ){};
    FX_MSG( CounterUpdate ){};
    FX_MSG( StartProgram )
    {
       bool from_start;
-      StartProgram( bool r ) : from_start{ r } {}
+      // TODO -> Need to make sure no race possible between sending and copying rtos::BinarySemaphore &read;
+   public:
+      //StartProgram( bool r, rtos::BinarySemaphore &read ) : from_start{ r }, read {read} {}
+       StartProgram( bool r ) : from_start{ r } {}
+      //void ack() { read.give(); }
+      //void wait_for_ack() { read.take(); }
    };
    FX_MSG( StopProgram ){};
    FX_MSG( USBConnected ){};
@@ -37,7 +42,7 @@ namespace msg
       StartProgram,
       StopProgram,
       SequenceNext,
-      CDCChar>;
+      USBConnected>;
 }  // namespace msg
 
 #endif  // ndef msg_defs_hpp__included

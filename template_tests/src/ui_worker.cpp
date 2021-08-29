@@ -131,3 +131,11 @@ void UIWorker::on_receive( const msg::ContactUpdate & )
       view.draw_contact();
    }
 }
+
+void UIWorker::on_receive( const msg::USBConnected& )
+{
+   LOG_HEADER( DOM );
+   LOG_TRACE( DOM, "USBConnected" );
+
+   process_event( controller, usb_on{} );
+}

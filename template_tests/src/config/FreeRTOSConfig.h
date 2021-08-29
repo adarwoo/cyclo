@@ -71,7 +71,7 @@
 
 // 4 levels of priorities only to reduce the eval cost during context switch
 #define configMAX_PRIORITIES                     4
-#define configMINIMAL_STACK_SIZE                 128
+#define configMINIMAL_STACK_SIZE                 256
 #define configTOTAL_HEAP_SIZE                    2048
 #ifdef DEBUG
     #define configUSE_MALLOC_FAILED_HOOK         1

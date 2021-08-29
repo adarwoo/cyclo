@@ -121,7 +121,19 @@ namespace rtos
 
       if ( handle == NULL )
       {
-         configASSERT( ! "CountingSemaphore Constructor Failed" );
+         configASSERT( ! "CountingSemaphore constructor Failed" );
+      }
+   }
+#endif
+
+#if ( ( configUSE_MUTEXES == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
+   Mutex::Mutex()
+   {
+      handle= xSemaphoreCreateMutexStatic( &xSemaphoreBuffer );
+
+      if ( handle == NULL )
+      {
+         configASSERT( ! "Mutex constructor Failed" );
       }
    }
 #endif

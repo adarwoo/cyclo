@@ -93,6 +93,9 @@ namespace rtos
 
       /** Release (give) a semaphore from ISR context */
       bool give_from_isr( BaseType_t *pxHigherPriorityTaskWoken );
+      
+      /** Get the count */
+      UBaseType_t get_count() { return uxSemaphoreGetCount(handle); } 
 
       virtual ~Semaphore();
 
@@ -131,6 +134,20 @@ namespace rtos
        *  Constructor to create a counting semaphore.
        */
       CountingSemaphore( UBaseType_t maxCount, UBaseType_t initialCount );
+   };
+#endif
+
+#if ( ( configUSE_MUTEXES == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
+   /**
+    *  Wrapper class for Counting Semaphores.
+    */
+   class Mutex : public Semaphore
+   {
+   public:
+      /**
+       *  Constructor to create a counting semaphore.
+       */
+      Mutex();
    };
 #endif
 
@@ -291,6 +308,7 @@ namespace rtos
    }
 
    static inline void delay( tick_t ticks ) { vTaskDelay( ticks ); }
+   static inline void sleep( tick_t ticks ) { vTaskDelay( ticks ); }
 
    /**
     * Static queue wrapper

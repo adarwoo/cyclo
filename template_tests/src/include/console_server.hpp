@@ -72,9 +72,18 @@ public:
       , input_state( input_state_t::normal )
    {}
 
-   virtual void print_prompt() { TTerminal::print_P( "> " ); }
+   virtual void print_prompt() { TTerminal::print_P( PSTR("> ") ); }
 
    etl::string_view get_line() { return etl::string_view( history_buffer.back() ); }
+      
+   /**
+    * Reset the internal state machine if the input is interrupted
+    */
+   void reset()
+   { 
+      input_state = input_state_t::normal;
+      input_buffer.clear(); 
+   }
 
    // process the received character
    optional_buffer_view_t process_input( char_t c )
@@ -118,7 +127,7 @@ public:
          default: break;
          }
 
-         // done, reset statea
+         // done, reset state
          input_state = input_state_t::normal;
 
          return retval;
@@ -200,7 +209,7 @@ public:
          // reset buffer
          return retval;
       }
-      else if ( c == ascii::del )
+      else if ( c == ascii::bs )
       {
          if ( input_buffer_position == input_buffer.begin() )
          {
@@ -272,8 +281,15 @@ protected:
    {
       if ( action == history_e::save )
       {
+         // Don't add if already in the buffer - rather move last
+         // TODO
+         // auto it = history_buffer.find(input_buffer);
+         // if ( it == history_buffer.end() )
+         // Move history back
+         
          // Save
          history_buffer.push( input_buffer );
+         
          // Points to the next available slot
          history_position = history_buffer.end();
 

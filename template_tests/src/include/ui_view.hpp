@@ -31,6 +31,7 @@ public:
    void erase_cursor( uint8_t pos );
    void draw_program_setup_dialog();
    void manual_program_draw_digit( show_digit_t show, uint8_t row, uint8_t column );
+   void draw_usb();
 };
 
 

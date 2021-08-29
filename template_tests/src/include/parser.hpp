@@ -156,7 +156,7 @@ public:
    const char *get_error( uint_least8_t &position )
    {
       position = this->distance;
-      return err_;
+      return err_.c_str();
    }
 
    /**

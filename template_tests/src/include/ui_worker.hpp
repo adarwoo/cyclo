@@ -28,7 +28,8 @@ class UIWorker
         msg::Keypad,
         msg::NoNcUpdate,
         msg::ContactUpdate,
-        msg::CounterUpdate>
+        msg::CounterUpdate,
+        msg::USBConnected>
 {
    using UIController = sml::sm<sm_cyclo>;
 
@@ -66,6 +67,8 @@ public:
    void on_receive( const msg::NoNcUpdate &msg );
    void on_receive( const msg::CounterUpdate & );
    void on_receive( const msg::ContactUpdate & );
+   void on_receive( const msg::USBConnected& );
+   
 };
 
 

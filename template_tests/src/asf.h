@@ -112,6 +112,16 @@
 // From module: TWI - Two-wire Master Interface
 #include <twim.h>
 
+// From module: USB CDC Protocol
+#include <usb_protocol_cdc.h>
+
+// From module: USB Device CDC (Single Interface Device)
+#include <udi_cdc.h>
+
+// From module: USB Device Stack Core (Common API)
+#include <udc.h>
+#include <udd.h>
+
 // From module: WDT - Watchdog Timer
 #include <wdt.h>
 

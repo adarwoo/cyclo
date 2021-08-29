@@ -30,6 +30,9 @@ class SequencerWorker
 
    ///< Store the time left when resuming from pause
    rtos::tick_t ticks_left;
+   
+   ///< Local copy of the program to avoid race
+   Program program;
 
    ///< Access to the command manager
    ProgramManager &pgm_man;

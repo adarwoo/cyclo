@@ -50,7 +50,8 @@ void process_event( TSM &sm, TEvent &&evt )
    }
 };
 
-auto call_next = []() { controller_process_next = true; };
+/** Set the next flag so the process event keeps pumping the SM */
+inline auto call_next = []() { controller_process_next = true; };
 
 /*
  * Common guards
@@ -67,6 +68,11 @@ struct walkman
       auto is_stopped = []( UIModel &m ) {
          return m.get_state() == UIModel::program_state_t::stopped;
       };
+      
+      // TODO - Let the program_manager handle the message as we have a lock
+      //  auto start_program = []( UIModel &m ) {
+      //   return m.program_manager.start
+      //}
 
       return make_transition_table(
          *"select"_s + sml::on_entry<_> / call_next,
@@ -325,9 +331,7 @@ struct sm_cyclo
                
             , state<mode_manual> + sml::on_entry<_> / [] (UIView &v){ 
                v.draw(); }
-            , state<mode_manual> + event<usb_on> = state<mode_usb>
-            , state<mode_usb> + sml::on_entry<_> / [] {
-               /* TODO */}
+            , state<mode_manual> + event<usb_on> / [] (UIView&v) { v.draw_usb(); } = state<mode_usb>
             , state<mode_usb> + event<usb_off> = state<mode_manual>
         );
    }

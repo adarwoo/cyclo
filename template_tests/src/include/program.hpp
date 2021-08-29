@@ -38,6 +38,7 @@ struct Command
  */
 class Program : public etl::vector<Command, cyclo::max_items_per_command>
 {
+   // Easy iterator
    const_iterator it;
 
 public:

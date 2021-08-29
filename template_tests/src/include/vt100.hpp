@@ -82,6 +82,20 @@ namespace vt100
          }
       }
 
+      static void puts( const char_t *str )
+      {
+         // check to make sure we have a good pointer
+         if ( str )
+         {
+            char c;
+            
+            while ( (c = *str++ ) )
+            {
+               TPutc( c );
+            }
+         }
+      }
+
       static inline void ring_bell() { putc( ascii::bel ); }
 
       static inline void move_to_start_of_next_line()
@@ -100,11 +114,11 @@ namespace vt100
 
       static inline void move_forward( size_t distance = 1 )
       {
-         static const char_t move_right_seq[] PROGMEM = { ascii::esc, '[', vt100::arrow::right };
-
          for ( size_t i = 0; i < distance; ++i )
          {
-            print_P( move_right_seq );
+            putc( ascii::esc );
+            putc(  '[' );
+            putc( vt100::arrow::right );
          }
       }
 
