@@ -4,20 +4,25 @@ Author: Guillaume (Bill) ARRECKX
 Intro
 =====
 As a professional embedded software architect, I always work on small pet
-projects to keep myself aware of the latest changes in languages.
+projects to keep myself up-to-date with the latest changes in languages.
 This project was the perfect excuse to get to try the latest C++20 features.
-Using a small, resource constrained, microcontroller, with C++20 is very
-revealing. The extensive use of templates, was an attempt, to meta model
-the application (clearly to shift in c++20), but was eventually downgraded
-to a more standard object approach.
-On top of the C++20 (in fact, 17 in the end), I added a port
-of FreeRTOS, the excellent ETL library, a message framework, and RTOS C++
+Using a small, resource constrained microcontroller, is far more very
+revealing of the compilers performance. 
+
+The project initially tried to create a meta modelled framework (using concepts et al.), but
+the effort required, the debug, the maintenability did not seem reasonable for now. C++20 brings
+many good things, but they perform best in libraries, and should not be used solely because they
+exist and are new! I also had some issues compiling existing code, so in the end, downgraded
+to a C++17 compiler.
+
+For good measured, the project uses a AVR xMega port of the latest FreeRTOS,
+the excellent ETL library, a message framework (on top of ETL messages), an RTOS C++
 abstraction and the excellent boost::sml state machine library.
 The software architecture was done in UML.
+No dynamic memory is used.
 
 Brief
 =====
-
 Cyclo is a local and remote controllable relay capable of handling 8A over 240V AC.
 It is housed in a DIN mountable enclosure, and offers 2 banana sockets as well as Molex connection.
 It is powered through a USB socket, which also allow to drive it remotely, using a VT100 terminal.
@@ -47,6 +52,11 @@ a gcc 4.7 (the latest at the time of writting this is the 11), but to get
 the c++17 feature, the compiler must be updated, and the debugging no
 longer works correctly.
 A makefile is also provided to compile in Linux or WSL2.
+The layout keeps the Microchip Studio layout - which is not ideal IMHO. 
+A makefile is added to build from the command line.
+The format of the files is managed by clang-format-10 which the clang config
+file added.
+Note: Gcc 8 or greater is required. I am using gcc 10.
 
 Licence
 =======
