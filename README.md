@@ -1,9 +1,8 @@
 # cyclo
-# Author: Guillaume (Bill) ARRECKX
-# -------------------------------------------------------------------------------------
+Author: Guillaume (Bill) ARRECKX
 
 Intro
-============================================================================
+=====
 As a professional embedded software architect, I always work on small pet
 projects to keep myself aware of the latest changes in languages.
 This project was the perfect excuse to get to try the latest C++20 features.
@@ -17,7 +16,7 @@ abstraction and the excellent boost::sml state machine library.
 The software architecture was done in UML.
 
 Brief
-============================================================================
+=====
 
 Cyclo is a local and remote controllable relay capable of handling 8A over 240V AC.
 It is housed in a DIN mountable enclosure, and offers 2 banana sockets as well as Molex connection.
@@ -39,7 +38,7 @@ When driving it from a computer, it is possible to create some custom profiles,
 using random numbers, or ramps to vary the timing to look for a specific problem.
 
 Software
-============================================================================
+========
 The software has been written for a gcc C++17 compiler. It can be compiled
 for an AVR xMega, or for a Linux PC, to run the simulator.
 The need for the simulator is to allow proper debugging, which is not
@@ -47,12 +46,11 @@ possible using the Microchip Studio since the latest supported compiler is
 a gcc 4.7 (the latest at the time of writting this is the 11), but to get
 the c++17 feature, the compiler must be updated, and the debugging no
 longer works correctly.
-
-This projct
+A makefile is also provided to compile in Linux or WSL2.
 
 Licence
-============================================================================
-Cyclo is licenced under MIT.
+=======
+Cyclo is licenced under MIT licence.
 
 Hardware
 ============================================================================
