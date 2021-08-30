@@ -70,3 +70,14 @@ the latest version of Eagle.
 
 The case was designed with open source CAD and is made available as 
 STL and STEP. It is 3D printer friendly.
+
+External links
+==============
+
+ETL : 
+Boost SML :
+
+Tools
+-----
+Toolchain for Windows
+Toolchain for Linux   https://avr.lumito.net/downloads/
