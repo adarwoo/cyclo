@@ -31,17 +31,20 @@
 class ProgramManager
 {
 public:
+   /** A bitset which determine which slot contains a valid program */
    using Pgms                                 = etl::bitset<10>;
-   /** The storage for the program must fit 2 pages of eeprom - header, spare and crc (2 bytes) */
-   constexpr static size_t STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
 
+   /** The state of the active program  */
    enum program_state_t : uint8_t { stopped, paused, running };
+
+   /** The storage for the program must fit 2 pages of eeprom - header, spare and crc (2 bytes) */
+   constexpr size_t STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
 
 private:
    ///< Current selected program. 0 is auto. 255 is none.
    uint8_t selected;
 
-   ///< Start the program right away
+   ///< Should the program starts right away?
    bool auto_start;
 
    ///< Current state of the active program
@@ -53,11 +56,18 @@ private:
    /** Bit field containing program slots taken */
    Pgms occupancy_map;
 
-   /** Parser to use for creating the command. The parser stores the resulting command */
+   /** The parser to be used by all */
    Parser<> parser;
 
    // Create the contact manager
    Contact contact;
+
+   ///< Avoid a race between the UI, the console and the sequencer
+   rtos::Mutex pgm_lock;
+
+   ///< Copy of the active program
+   Program active_program;
+
 
 public:
    ProgramManager();
@@ -82,8 +92,8 @@ public:
    // Grab the contact manager
    inline Contact &get_contact() { return contact; }
 
-   // Grab the command
-   inline Program &get_program() { return parser.get_program(); }
+   // Grab the program
+   inline Program &get_active_program();
 
    /** Grab the next available slot from the given position */
    uint8_t get_next( uint8_t from );
@@ -99,6 +109,9 @@ public:
 
    /** Load a program from the eeprom */
    bool load( uint8_t pgmIndex );
+
+   /** Parse a line, and make it the active_program */
+   bool parse( const char *command, bool force_as_active );
 
 protected:
    template<typename T>

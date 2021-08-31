@@ -18,7 +18,6 @@
 
 #include <etl/algorithm.h>
 #include <etl/basic_string.h>
-#include <etl/delegate.h>
 #include <etl/string.h>
 #include <etl/string_view.h>
 #include <etl/tokenizer.h>
@@ -26,30 +25,45 @@
 
 #include "program.hpp"
 
-///< Possible nom command interactions
-enum Interact : char { help = 'h', list = 'l', save = 's', del = 'd' };
-
-using InteractHandler = etl::delegate<void( Interact )>;
-
 
 /**
  * Parser for the command line.
  * Size correctly using the template args.
  * The command created from the interpretation is internal to parser and can therefore
  *  be used before any new parsing.
+ * Takes 8 bytes off the stack
  */
 template<const size_t MAX_SIZE = 16, const size_t MAX_ERROR_BUFFER = 40>
 class Parser
 {
-   using ErrorString = etl::string<MAX_ERROR_BUFFER>;
+public:
+   ///< Possible nom command interactions
+   enum Interact : char ;
 
-   Program                          live_;
-   ErrorString                      err_;
+   ///< Result of the parsing
+   enum Result : uint8_t {
+      error=0,
+      pgm = 255,
+      help = 'h',
+      list = 'l',
+      save = 's',
+      del = 'd',
+      run = 'r' };
+
+// Local data
+protected:
+   Program                          &live_;
+   etl::istring                     &err_;
    etl::string_view::const_iterator buffer_{ nullptr };
 
    ///< Position of the error
-   uint_least8_t distance;
+   uint8_t distance;
 
+   ///< Number of the program for program commands
+   uint8_t program_number;
+
+// Helpers
+protected:
    template<typename T>
    void error( T where )
    {
@@ -110,6 +124,25 @@ class Parser
       return retval;
    }
 
+   bool get_program_number( const etl::string_view token )
+   {
+      auto retval = false;
+
+      // Must be a single char 0->9
+      if ( not ::isdigit( token.front() ) or token.size() > 1 )
+      {
+         err_ = "Expecting a program number";
+         error( token.front() );
+      }
+      else
+      {
+         program_number = token.front() - '0';
+         retval = true;
+      }
+
+      return retval;
+   }
+
    void safe_insert( Command::command_t c, etl::string_view token )
    {
       if ( live_.full() )
@@ -147,31 +180,24 @@ class Parser
    }
 
 public:
-   Parser() = default;
-
-   // Access the parser command. Use only within a thread after a successfull parse
-   Program &get_program() { return live_; }
+   // Construct a parser
+   explicit Parser( Program &program, etl::istring &error) :  live_{program}, err_(error)
+   {}
 
    // Access the error string
-   const char *get_error( uint_least8_t &position )
-   {
-      position = this->distance;
-      return err_.c_str();
-   }
+   uint8_t get_error_position() { return this->distance; }
 
    /**
     * Parse a single line passed as a string_view buffer
-    * Since all the callbacks are in place, will call either:
-    *  interact to list or show the help
-    *  the command handler to handle the command
-    * @return true on success and the handler
+    * @return The parser result
     */
-   bool parse(
-      const etl::string_view &buffer, const InteractHandler &interact_handler = []( Interact ) {} )
+   Result parse(const etl::string_view &buffer)
    {
+      auto retval = Result{error};
       buffer_     = buffer.begin();
       live_.clear();
       err_.clear();
+      int8_t items_to_follow{0}; // 0 is open, -1 is no more, n is n
 
       LOG_INFO("parser", "Parsing: %s", etl::string<60>(buffer).c_str());
 
@@ -227,11 +253,12 @@ public:
                }
                else if ( is_command( "help" ) )
                {
-                  interact_handler( Interact::help );
+                  last_item = true;
+
                }
                else if ( is_command( "list" ) )
                {
-                  interact_handler( Interact::list );
+                  return list;
                }
                else
                {
@@ -244,7 +271,9 @@ public:
          }
       }
 
-      return err_.empty();
+      if ( not live_.empty )
+
+      return retval;
    }
 };
 

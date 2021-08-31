@@ -54,7 +54,7 @@ CXX_SRCS              += keypad_tasklet.cpp \
                          sequencer_worker.cpp \
                          contact.cpp ui_view.cpp \
                          ui_worker.cpp \
-						 ui_model.cpp \
+                         ui_model.cpp \
                          main.cpp
 
 CFLAGS                :=    -ggdb3 -Wall

@@ -38,13 +38,19 @@ int main( void )
 
    // Add by priority orders
    root << sequencer_bus << ui_bus;
-   
+
    // Create the console task
    auto console = Console{ pgm_manager };
 
    // Create the tasklets instance to pump key and contact events into fx
    auto key_tasklet  = KeypadTasklet{};
    auto nonc_tasklet = NoNcTasklet{ pgm_manager.get_contact() };
+
+   // Do we need to start a program?
+   if ( pgm_manager.starts_automatically() )
+   {
+      fx::publish(msg::StartProgram{true});
+   }
 
    // GO!
    rtos::start_scheduler();

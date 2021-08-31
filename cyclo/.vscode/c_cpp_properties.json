@@ -9,7 +9,7 @@
             "compilerPath": "/usr/bin/g++",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64",
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4
