@@ -1,7 +1,7 @@
 # By default, build for the AVR target. Export sim to build a simulator
 target := $(if $(SIM),linux,avr)
 build_type := $(if $(DEBUG),debug,release)
-mute := $(if $(VERBOSE),@set -x;,)
+mute := $(if $(VERBOSE),@set -x;,@)
 
 include make/$(target).mak
 
@@ -18,7 +18,11 @@ CFLAGS          += -ggdb3 -Wall -O$(if $(DEBUG),g,s)
 CXXFLAGS        += $(CFLAGS) -std=c++17 -Wno-subobject-linkage -fno-exceptions
 
 # Flag for the linker
-LDFLAGS         += -ggdb3 -pthread -O$(if $(DEBUG),g,s)
+LDFLAGS         += -ggdb3 -O$(if $(DEBUG),g,s)
+
+ifdef SIM
+LDFLAGS         += -pthread 
+endif
 
 # Pre-processor flags
 CPPFLAGS        += $(foreach p, $(INCLUDE_DIRS), -I$(SRC_DIR)/$(p))
@@ -29,6 +33,7 @@ POSTCOMPILE      = mv -f $(BUILD_DIR)/$*.Td $(BUILD_DIR)/$*.d && touch $@
 
 OBJS.c           = $(foreach p, $(SRCS.c), $(BUILD_DIR)/$(p:%.c=%.o))
 OBJS.cxx         = $(foreach p, $(SRCS.cxx), $(BUILD_DIR)/$(p:%.cpp=%.o))
+OBJS.as          = $(foreach p, $(SRCS.cxx), $(BUILD_DIR)/$(p:%.as=%.o))
 OBJ_FILES        = $(OBJS.c) $(OBJS.cxx)
 DEP_FILES        = $(OBJ_FILES:%.o=%.d)
 
@@ -53,6 +58,10 @@ $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c $(BUILD_DIR)/%.d | $(@D)
 ${BUILD_DIR}/%.o : $(SRC_DIR)/%.cpp $(BUILD_DIR)/%.d | $(@D)
 	@echo "Compiling C++ $<"
 	$(mute)$(COMPILE.cxx) $< -o $@
+
+$(BUILD_DIR)/%.o : $(SRC_DIR)/%.s $(BUILD_DIR)/%.d | $(@D)
+	@echo "Assembling $<"
+	$(mute)$(CXX) -Wa,-gdwarf2 -x assembler-with-cpp $(CPPFLAGS) -c -mmcu=atxmega128a4u -Wa,-g $< -o $@
 
 $(DEP_FILES):
 	@[ -d $(@D) ] || mkdir -p $(@D)
