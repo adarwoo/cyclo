@@ -3,7 +3,7 @@
  *
  * Created: 28/08/2021 20:27:07
  *  Author: micro
- */ 
+ */
 #include <fx.hpp>
 
 #include "console_server.hpp"
@@ -15,6 +15,7 @@
 
 using rtos::tick_t;
 
+// USB static management
 namespace
 {
    auto cdc_available_semaphore = rtos::BinarySemaphore{};
@@ -32,11 +33,11 @@ extern "C" bool console_cdc_enabled(uint8_t port)
    cdc_transfert_allowed = true;
    cdc_available_semaphore.give_from_isr(nullptr);
    trace_set(TRACE_INFO);
-   
+
    return true;
 }
 
-extern "C" void console_cdc_disabled(uint8_t port) 
+extern "C" void console_cdc_disabled(uint8_t port)
 {
    UNUSED(port);
    cdc_transfert_allowed = false;
@@ -49,44 +50,35 @@ void console_putc(vt100::char_t c)
 }
 
 /** Create the timer for the splash */
-Console::Console(ProgramManager &program_manager) : program_manager(program_manager)
+Console::Console(ProgramManager &program_manager) :
+   program_manager(program_manager), parser(temp_program, error_buffer)
 {
    // Start the thread
    this->run();
-}
-
-/**
- * The console is requesting interaction
- */
-void Console::interact(Interact i)
-{
-   
 }
 
 void Console::show_error()
 {
    using T = TTerminal;
 
-   uint_least8_t err_position;
-   auto err_message = parser.get_error(err_position);
-            
+   uint8_t err_position = parser.get_error_position();
+
    // Display the error message
    T::putc('#');
-   
-   // Insert spaces         
+
+   // Insert spaces
    for (uint8_t i=0; i<=err_position; ++i)
    {
       T::putc(' ');
-   }               
-   
+   }
+
    T::putc('^');
    T::move_to_start_of_next_line();
    T::putc('#');
    T::putc(' ');
-   T::puts(err_message);            
+   T::puts(error_buffer);
    T::move_to_start_of_next_line();
 }
-
 
 /**
  * The task entry point
@@ -94,11 +86,11 @@ void Console::show_error()
 void Console::default_handler()
 {
    using T = TTerminal;
-   
+
    while (true)
    {
       optional_buffer_view_t v;
-      
+
       // Wait for the cdc to become available
       if ( ! cdc_transfert_allowed )
       {
@@ -114,11 +106,11 @@ void Console::default_handler()
       }
 
       server.print_prompt();
-      
+
       while ( ! v )
       {
          v = server.process_input((vt100::char_t)udi_cdc_getc());
-         
+
          rtos::delay(1);
 
          if ( ! cdc_transfert_allowed )
@@ -126,30 +118,72 @@ void Console::default_handler()
             break;
          }
       }
-      
+
       // Process the line
       if ( v )
       {
-         bool valid = parser.parse(*v);
-         
-         if ( valid )
-         {
-            if ( ! usb_mode )
-            {
-               // TODO -> Only if command mode (interactive  does not trigger usb)
-               // First valid command - disable manual mode
-               usb_mode = true;
-               fx::publish(msg::USBConnected{});
-            }
-            // Execute with the sequencer
-           
-            T::print_P( PSTR("# Good!"));
-            T::move_to_start_of_next_line();
-         }
-         else
-         {
-            show_error();
-         }
-      }         
+         process(v);
+         T::move_to_start_of_next_line();
+      }
    }
+}
+
+void Console::process(optional_buffer_view_t buffer)
+{
+   auto res = parser.parse(v, error_buffer);
+
+   switch (res)
+   {
+   case Parser::Result::nothing:
+      continue;
+   case Parser::Result::error:
+      show_error();
+      break;
+   case Parser::Result::program:
+      if ( ! usb_mode )
+      {
+         usb_mode = true;
+         fx::publish(msg::USBConnected{});
+      }
+
+      program_manager.load(temp_program);
+      break;
+   case Parser::Result::help:
+      show_help();
+      break;
+   case Parser::Result::list:
+      show_list();
+      break;
+   case Parser::Result::quit:
+      usb_mode = false;
+      fx::publish(msg::USBDisconnected{});
+
+      break;
+   case Parser::Result::del:
+      program_manager.erase(parser.get_program_number());
+      break;
+   case Parser::Result::run:
+      program_manager.load(parser.get_program_number());
+      break;
+   case Parser::Result::save:
+      program_manager.write_pgm_at(parser.get_program_number(), v);
+      break;
+   case Parser::Result::autostart:
+      // Revoke current autostart
+      // Mark autostart
+      program_manager.set_autostart(parser.get_program_number());
+      break;
+   default:
+      LOG_ERROR(DOM, "Unexpected");
+   }
+}
+
+void Console::show_help()
+{
+   T::print_P( PSTR("# TODO\r\n"));
+}
+
+void Console::show_list()
+{
+   T::print_P( PSTR("# TODO\r\n"));
 }

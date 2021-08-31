@@ -9,18 +9,23 @@ namespace
 {
    const char *const DOM = "cyclo_man";
 
+   // Set the storage to use the maximum space, matching an EEProm page size
+   constexpr auto STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
+
    struct PgmStorage
    {
       char     marker; ///< Marker, must be a value other than 255 to be analysed
-      char     pgm[ ProgramManager::STORAGE_MAX_LENGTH ]; ///< Actual program in ASCII storage area
-      char     spare; 
+      char     pgm[ STORAGE_MAX_LENGTH ]; ///< Actual program in ASCII storage area
+      char     spare;
       uint16_t crc;
    };
 
+   // Actual length of the data - excluding the CRC
    constexpr size_t PGM_STORAGE_DATA_SIZE_NO_CRC = sizeof(PgmStorage) - sizeof(uint16_t);
 };  // namespace
 
-ProgramManager::ProgramManager() : selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }
+ProgramManager::ProgramManager() :
+   selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }, parser{active_program}
 {
    LOG_HEADER( DOM );
 
@@ -47,8 +52,8 @@ ProgramManager::ProgramManager() : selected{ 0 }, auto_start{ false }, state{ st
             // Is it the default?
             if ( *marker_loc == '*' )
             {
-               // Make it the default program
-               selected = i;
+               // Load it!
+               load(i);
 
                // Indicate the program is auto_start
                auto_start = true;
@@ -112,7 +117,8 @@ const char *ProgramManager::get_pgm( uint8_t index )
 }
 
 /**
- * @param index Index of the program to look for
+ * @param pos Index of the program
+ * @stirng The content to write. The CRC is automatically added
  * @return a pointer to the program at the given index
  */
 void ProgramManager::write_pgm_at( uint8_t pos, const char *string )
@@ -120,6 +126,9 @@ void ProgramManager::write_pgm_at( uint8_t pos, const char *string )
    LOG_HEADER( DOM );
 
    static PgmStorage buffer;
+
+   // Convert the program index into EEProm page
+   pos *= 2;
 
    // Reset the buffer content to all zero
    memset( &buffer, 0, sizeof( buffer ) );
@@ -136,18 +145,25 @@ void ProgramManager::write_pgm_at( uint8_t pos, const char *string )
    nvm_eeprom_load_page_to_buffer(
       reinterpret_cast<const uint8_t *>( &buffer ) + EEPROM_PAGE_SIZE );
    nvm_eeprom_atomic_write_page( pos + 1 );
+
+   // Mark as available
+   occupancy_map.set(pos);
 }
 
 /**
  * The program is loaded, parsed. If OK, the get_program() method gives access
  * to the command.
+ * Errors are ignored, but logged.
+ * If OK, start the sequencer
  * @param index Index of the program to load
  * @return true if all ok
  */
-bool ProgramManager::load( uint8_t pgmIndex )
+void ProgramManager::load( uint8_t pgmIndex )
 {
-   bool retval = false;
    LOG_HEADER( DOM );
+
+   // As different tasks using this method, make it safe
+   rtos::Lock_guard{lock};
 
    // Must have a program
    if ( occupancy_map[ pgmIndex ] )
@@ -156,8 +172,53 @@ bool ProgramManager::load( uint8_t pgmIndex )
       etl::string_view pgm{ get_pgm( pgmIndex ) };
 
       // Parse
-      retval = parser.parse( pgm );
-   }
+      auto res = parser.parse( pgm );
 
-   return retval;
+      if ( res == Parser::Result::program )
+      {
+         fx::publish(msg::StartProgram{true});
+      }
+   }
+}
+
+/**
+ * Load a program into the active program and start
+ * The given program is copied.
+ * @param The program to load.
+ */
+void ProgramManager::load( const Program &pgm )
+{
+   LOG_HEADER( DOM );
+
+   // As different tasks using this method, make it safe
+   rtos::Lock_guard{lock};
+
+   // Make a copy
+   etl::copy(pgm.begin(), pgm.end(), active_program);
+
+   // Let the sequencer know
+   fx::publish(msg::StartProgram{true});
+}
+
+void ProgramManager::stop()
+{
+   // Let the sequencer know
+   fx::publish(msg::StopProgram{});
+}
+
+void ProgramManager::resume()
+{
+   // Let the sequencer know
+   fx::publish(msg::StartProgram{false});
+}
+
+void ProgramManager::erase( uint8_t pgmIndex )
+{
+   nvm_eeprom_erase_page( pgmIndex * 2);
+   occupancy_map.clear(page);
+}
+
+void ProgramManager::set_autostart( uint8_t pgmIndex )
+{
+   // TODO
 }

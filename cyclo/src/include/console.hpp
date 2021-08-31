@@ -15,22 +15,34 @@ extern void console_putc(vt100::char_t);
 class Console : public rtos::Task<typestring_is("console"), 256>
 {
    using TTerminal = vt100::Terminal<console_putc>;
-   using TParser = Parser<>;
    using TConsoleServer = ConsoleServer<TTerminal>;
-   
    using optional_buffer_view_t = TConsoleServer::optional_buffer_view_t;
 
+   ///< Console error buffer
+   etl::string<80> error_buffer;
+
+   ///< Console own program place holder during parsing
+   Program temp_program;
+
+   ///< Console parser
+   Parser parser;
+
+   ///< Console server
    ConsoleServer<TTerminal> server;
-   TParser parser;
+
+   ///< THE program manager
    ProgramManager &program_manager;
 
 public:
    explicit Console( ProgramManager &program_manager );
    virtual void default_handler() final;
-   void interact(Interact i);
-   
+
 protected:
+   ///< Display the parsing error
    void show_error();
+
+   ///< Process a full command line
+   void process(optional_buffer_view_t line);
 };
 
 

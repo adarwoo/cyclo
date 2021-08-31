@@ -68,11 +68,6 @@ struct walkman
       auto is_stopped = []( UIModel &m ) {
          return m.get_state() == UIModel::program_state_t::stopped;
       };
-      
-      // TODO - Let the program_manager handle the message as we have a lock
-      //  auto start_program = []( UIModel &m ) {
-      //   return m.program_manager.start
-      //}
 
       return make_transition_table(
          *"select"_s + sml::on_entry<_> / call_next,
@@ -236,24 +231,24 @@ struct program_selection
       return make_transition_table(
         * "program_selection_initial"_s + event<push> / [] (UIView &v) {
            v.draw_prog(true); } = "program_selected"_s
-        , "program_selection_initial"_s + sml::on_entry<_> / [] (UIView &v) { 
+        , "program_selection_initial"_s + sml::on_entry<_> / [] (UIView &v) {
            v.draw_cursor(0); }
-        , "program_selection_initial"_s + sml::on_exit<_> / [] (UIView &v) { 
+        , "program_selection_initial"_s + sml::on_exit<_> / [] (UIView &v) {
            v.erase_cursor(0); }
         , "program_selected"_s + event<up> [ prev_is_same ]
-        , "program_selected"_s + event<up> / [] (UIModel &m, UIView &v) { 
-           m.set_pgm(m.get_prev()); 
+        , "program_selected"_s + event<up> / [] (UIModel &m, UIView &v) {
+           m.set_pgm(m.get_prev());
            v.draw_prog(true); }
         , "program_selected"_s + event<down> [ next_is_same ]
-        , "program_selected"_s + event<down> / [] (UIModel &m, UIView &v) { 
-           m.set_pgm(m.get_next()); 
+        , "program_selected"_s + event<down> / [] (UIModel &m, UIView &v) {
+           m.set_pgm(m.get_next());
            v.draw_prog(true); }
         , "program_selected"_s + event<push> [ program_is_man ] = state<program_setup>
 
-        , state<program_setup> + sml::on_entry<_> / [] (UIView& v) { 
+        , state<program_setup> + sml::on_entry<_> / [] (UIView& v) {
            v.draw_program_setup_dialog(); }
-        , state<program_setup> + sml::on_exit<_> / [] (UIModel &m, UIView& v) { 
-           m.store_manual_pgm(); 
+        , state<program_setup> + sml::on_exit<_> / [] (UIModel &m, UIView& v) {
+           m.store_manual_pgm();
            v.draw(); }
          , state<program_setup> +           event<next> / call_next = X
     );
@@ -326,10 +321,10 @@ struct sm_cyclo
 
       return make_transition_table(
             * "splash"_s + event<splash_timeout> = state<mode_manual>
-            , "splash"_s + sml::on_entry<_> / [] (UIView &v) { 
+            , "splash"_s + sml::on_entry<_> / [] (UIView &v) {
                v.draw_splash(); }
-               
-            , state<mode_manual> + sml::on_entry<_> / [] (UIView &v){ 
+
+            , state<mode_manual> + sml::on_entry<_> / [] (UIView &v){
                v.draw(); }
             , state<mode_manual> + event<usb_on> / [] (UIView&v) { v.draw_usb(); } = state<mode_usb>
             , state<mode_usb> + event<usb_off> = state<mode_manual>

@@ -8,7 +8,13 @@
 		"files.associations": {
 			"*.mak": "makefile",
 			"iosfwd": "cpp",
-			"gfx_mono_generic.h": "c"
+			"gfx_mono_generic.h": "c",
+			"*.tcc": "cpp",
+			"deque": "cpp",
+			"string": "cpp",
+			"vector": "cpp",
+			"system_error": "cpp",
+			"array": "cpp"
 		}
 	}
 }

@@ -56,18 +56,17 @@ private:
    /** Bit field containing program slots taken */
    Pgms occupancy_map;
 
-   /** The parser to be used by all */
-   Parser<> parser;
-
    // Create the contact manager
    Contact contact;
 
    ///< Avoid a race between the UI, the console and the sequencer
-   rtos::Mutex pgm_lock;
+   rtos::Mutex lock;
 
    ///< Copy of the active program
    Program active_program;
 
+   ///< Parser instance used when loading a program. Allow reuse, and save the stack
+   Parser parser;
 
 public:
    ProgramManager();
@@ -107,11 +106,23 @@ public:
    /** Write the given program at the given slot. 0 is the auto slot */
    void write_pgm_at( uint8_t pos, const char *string );
 
-   /** Load a program from the eeprom */
-   bool load( uint8_t pgmIndex );
+   /** Load a program from the eeprom - and start it */
+   void load( uint8_t pgmIndex );
 
-   /** Parse a line, and make it the active_program */
-   bool parse( const char *command, bool force_as_active );
+   /** Load a program and start it */
+   void load( const Program &pgm )
+
+   /** Set a program has auto start */
+   void set_autostart(uint8_t index );
+
+   //
+   // Drive the sequencer
+   //
+   void stop();
+   void resume();
+
+   ///< Erase a program
+   void erase( uint8_t pgmIndex );
 
 protected:
    template<typename T>

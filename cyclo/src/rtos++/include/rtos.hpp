@@ -93,9 +93,9 @@ namespace rtos
 
       /** Release (give) a semaphore from ISR context */
       bool give_from_isr( BaseType_t *pxHigherPriorityTaskWoken );
-      
+
       /** Get the count */
-      UBaseType_t get_count() { return uxSemaphoreGetCount(handle); } 
+      UBaseType_t get_count() { return uxSemaphoreGetCount(handle); }
 
       virtual ~Semaphore();
 
@@ -148,6 +148,20 @@ namespace rtos
        *  Constructor to create a counting semaphore.
        */
       Mutex();
+   };
+
+   /**
+    * RAII mutex lock guard
+    * Create an instance of the lock guard locks the given mutex.
+    * When the instance goes out of scope, the destructor releases
+    *  the mutex
+    */
+   class Lock_guard
+   {
+      Mutex &m;
+   public:
+      Lock_guard(Mutex &m) : m{m} { m.take(); }
+      ~Lock_guard() { m.give(); }
    };
 #endif
 
