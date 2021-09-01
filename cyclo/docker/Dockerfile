@@ -9,12 +9,6 @@ LABEL "author"="software@arreckx.com"
 ##############################################################################
 ENV PKG_CLEANUP "set -xe && apt-get autoclean && apt-get clean && rm -rf /var/lib/apt/lists/*"
 
-### Configure locale for Polyspace needs
-##############################################################################
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
 ### Build
 ##############################################################################
 
@@ -27,19 +21,19 @@ RUN set -xe \
   && apt-get -y install --no-install-recommends \
     apt-utils make bash quilt rsync tree vim less curl \
     python3 python3-pip git binutils build-essential gdb \
-    sed gawk wget bc coreutils zip unzip realpath chrpath \
+    sed gawk wget bc coreutils zip unzip chrpath \
     ca-certificates locales file iproute2 inetutils-ping \
   && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
   && locale-gen en_US.UTF-8 \
   && ${PKG_CLEANUP}
 
-COPY "entrypoint.sh" "/bin/entrypoint.sh"
-RUN set -xe && chmod a+x "/bin/entrypoint.sh"
-COPY "bash.bashrc" /etc/
+#COPY "entrypoint.sh" "/bin/entrypoint.sh"
+#RUN set -xe && chmod a+x "/bin/entrypoint.sh"
+#COPY "bash.bashrc" /etc/
 
 ### Entry point
 ##############################################################################
-ENTRYPOINT ["/bin/entrypoint.sh"]
+#ENTRYPOINT ["/bin/entrypoint.sh"]
 
 # Setting the command to launch
 CMD ["bash", "-l"]
