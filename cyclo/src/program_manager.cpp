@@ -22,10 +22,13 @@ namespace
 
    // Actual length of the data - excluding the CRC
    constexpr size_t PGM_STORAGE_DATA_SIZE_NO_CRC = sizeof(PgmStorage) - sizeof(uint16_t);
+
+   // Zero string
+   etl::string<0> zs;
 };  // namespace
 
 ProgramManager::ProgramManager() :
-   selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }, parser{active_program}
+   selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }, parser{active_program, zs}
 {
    LOG_HEADER( DOM );
 
@@ -179,6 +182,16 @@ void ProgramManager::load( uint8_t pgmIndex )
          fx::publish(msg::StartProgram{true});
       }
    }
+   else
+   {
+      // Create a default
+      active_program.clear();
+
+      // Insert items
+      active_program.push_back(Command{Command::open, 60000});
+      active_program.push_back(Command{Command::close, 5000});
+      active_program.push_back(Command{Command::loop});
+   }
 }
 
 /**
@@ -194,7 +207,7 @@ void ProgramManager::load( const Program &pgm )
    rtos::Lock_guard{lock};
 
    // Make a copy
-   etl::copy(pgm.begin(), pgm.end(), active_program);
+   etl::copy(pgm.begin(), pgm.end(), active_program.begin());
 
    // Let the sequencer know
    fx::publish(msg::StartProgram{true});
@@ -215,7 +228,7 @@ void ProgramManager::resume()
 void ProgramManager::erase( uint8_t pgmIndex )
 {
    nvm_eeprom_erase_page( pgmIndex * 2);
-   occupancy_map.clear(page);
+   occupancy_map.set(pgmIndex, false);
 }
 
 void ProgramManager::set_autostart( uint8_t pgmIndex )

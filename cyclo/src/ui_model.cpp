@@ -60,15 +60,7 @@ UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
    program_index = program_manager.get_selected();
 
    // Load the manual program to cache the values
-   if ( program_manager.load( 0 ) )
-   {
-      // Load the auto program values into this model
-      import_program( program_manager.get_program() );
-   }
-   else  // Store the default program
-   {
-      store_manual_pgm();
-   }
+   program_manager.load( 0 );
 }
 
 

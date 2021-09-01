@@ -48,14 +48,18 @@ CXX_SRCS              += ${FX_DIR}/src/fx.cpp
 CXX_SRCS              += ${SIMULATION_DIR}/src/sim.cpp
 
 # Main
-CXX_SRCS              += keypad_tasklet.cpp \
+CXX_SRCS              += console.cpp \
+                         contact.cpp \
+                         keypad.cpp \
+                         keypad_tasklet.cpp \
                          nonc_tasklet.cpp \
+                         parser.cpp \
                          program_manager.cpp \
                          sequencer_worker.cpp \
-                         contact.cpp ui_view.cpp \
-                         ui_worker.cpp \
                          ui_model.cpp \
-                         main.cpp
+                         ui_view.cpp \
+                         ui_worker.cpp \
+                         main.cpp \
 
 CFLAGS                :=    -ggdb3 -Wall
 LDFLAGS               :=    -ggdb3 -pthread
@@ -76,7 +80,6 @@ ifdef SANITIZE_LEAK
 endif
 
 OBJ_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
-
 OBJ_FILES += $(CXX_SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 DEP_FILE = $(OBJ_FILES:%.o=%.d)

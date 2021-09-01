@@ -36,7 +36,7 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
       fx::publish( msg::CounterUpdate{} );
 
       // Start from the start
-      pgm_man.get_program().start();
+      pgm_man.get_active_program().start();
 
       ticks_left = 0;
    }
@@ -82,16 +82,16 @@ void SequencerWorker::execute_next()
    LOG_HEADER( DOM );
 
    // Pick the first command and apply it
-   auto &command = pgm_man.get_program();
+   auto &pgm = pgm_man.get_active_program();
 
    // Grab the first item and move the iterator
-   const Command *item = command.iterate();
+   const Command *cmd = pgm.iterate();
 
    // Make sure not the last
-   if ( item != nullptr )
+   if ( cmd != nullptr )
    {
       // Execute the item
-      switch ( item->command )
+      switch ( cmd->command )
       {
       case Command::close: pgm_man.get_contact().set( Contact::close ); break;
       case Command::open: pgm_man.get_contact().set( Contact::open ); break;
@@ -100,7 +100,7 @@ void SequencerWorker::execute_next()
          break;
       case Command::loop:
          // Start all over
-         pgm_man.get_program().start();
+         pgm_man.get_active_program().start();
 
          pgm_man.set_counter( pgm_man.get_counter() + 1 );
          fx::publish( msg::CounterUpdate{} );
@@ -112,7 +112,7 @@ void SequencerWorker::execute_next()
 
       // Fire a new timers
       timer.set_param( ++timer_counter );
-      timer.set_period( rtos::tick::from_ms( item->delay_ms ) );
+      timer.set_period( rtos::tick::from_ms( cmd->delay_ms ) );
       timer.start();
    }
 }

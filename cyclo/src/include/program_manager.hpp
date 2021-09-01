@@ -38,7 +38,7 @@ public:
    enum program_state_t : uint8_t { stopped, paused, running };
 
    /** The storage for the program must fit 2 pages of eeprom - header, spare and crc (2 bytes) */
-   constexpr size_t STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
+   static constexpr size_t STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
 
 private:
    ///< Current selected program. 0 is auto. 255 is none.
@@ -92,7 +92,7 @@ public:
    inline Contact &get_contact() { return contact; }
 
    // Grab the program
-   inline Program &get_active_program();
+   inline Program &get_active_program() { return active_program; }
 
    /** Grab the next available slot from the given position */
    uint8_t get_next( uint8_t from );
@@ -110,7 +110,7 @@ public:
    void load( uint8_t pgmIndex );
 
    /** Load a program and start it */
-   void load( const Program &pgm )
+   void load( const Program &pgm );
 
    /** Set a program has auto start */
    void set_autostart(uint8_t index );

@@ -5,10 +5,8 @@
  * See the readme for the syntax
  */
 #include <etl/algorithm.h>
-#include <etl/basic_string.h>
 #include <etl/string.h>
 #include <etl/string_view.h>
-#include <etl/vector.h>
 
 #include "program.hpp"
 
@@ -54,7 +52,7 @@ protected:
 
 public:
    ///< Construct a parser
-   explicit Parser( Program &program, etl::istring &error = etl::string<0>{});
+   explicit Parser( Program &program, etl::istring &error );
 
    ///< Access the error string
    uint8_t get_error_position() { return distance; }

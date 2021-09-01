@@ -54,8 +54,8 @@ INCLUDE_DIRS = \
 
 ifdef SIM
 INCLUDE_DIRS += \
-  ${KERNEL_DIR}/portable/ThirdParty/GCC/Posix \
-  ${KERNEL_DIR}/portable/ThirdParty/GCC/Posix/utils \
+  $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix \
+  $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix/utils \
   ${SIMULATION_DIR}/include \
 
 else
@@ -77,7 +77,11 @@ endif
 # C source files
 SRCS.c := \
    ${RTOS_DIR}/src/rtos_hooks.c \
-   $(wildcard ${FREERTOS_DIR}/Source/*.c) \
+   $(KERNEL_DIR)/list.c \
+   $(KERNEL_DIR)/queue.c \
+   $(KERNEL_DIR)/stream_buffer.c \
+   $(KERNEL_DIR)/tasks.c \
+   $(KERNEL_DIR)/timers.c
 
 ifdef SIM
 SRCS.c += \
@@ -88,6 +92,7 @@ SRCS.c += \
 else
 # ASF sources
 SRCS.c += \
+   ${KERNEL_DIR}/portable/ThirdParty/GCC/ATxmega/port.c \
    $(ASF_DIR)/common/components/display/ssd1306/font.c \
    $(ASF_DIR)/common/services/usb/class/cdc/device/udi_cdc.c  \
    $(ASF_DIR)/common/services/usb/class/cdc/device/udi_cdc_desc.c \
@@ -118,16 +123,20 @@ endif
 
 # C++ source files
 SRCS.cxx := \
-  ${RTOS_DIR}/src/rtos.cpp \
-  ${FX_DIR}/src/fx.cpp \
-  keypad_tasklet.cpp \
-  nonc_tasklet.cpp \
-  program_manager.cpp \
-  sequencer_worker.cpp \
-  contact.cpp ui_view.cpp \
-  ui_worker.cpp \
-  ui_model.cpp \
-  main.cpp
+   ${RTOS_DIR}/src/rtos.cpp \
+   ${FX_DIR}/src/fx.cpp \
+   console.cpp \
+   contact.cpp \
+   keypad.cpp \
+   keypad_tasklet.cpp \
+   main.cpp \
+   nonc_tasklet.cpp \
+   parser.cpp \
+   program_manager.cpp \
+   sequencer_worker.cpp \
+   ui_model.cpp \
+   ui_view.cpp \
+   ui_worker.cpp
 
 ifdef SIM
 SRCS.cxx += \

@@ -33,8 +33,8 @@ POSTCOMPILE      = mv -f $(BUILD_DIR)/$*.Td $(BUILD_DIR)/$*.d && touch $@
 
 OBJS.c           = $(foreach p, $(SRCS.c), $(BUILD_DIR)/$(p:%.c=%.o))
 OBJS.cxx         = $(foreach p, $(SRCS.cxx), $(BUILD_DIR)/$(p:%.cpp=%.o))
-OBJS.as          = $(foreach p, $(SRCS.cxx), $(BUILD_DIR)/$(p:%.as=%.o))
-OBJ_FILES        = $(OBJS.c) $(OBJS.cxx)
+OBJS.as          = $(foreach p, $(SRCS.as), $(BUILD_DIR)/$(p:%.s=%.o))
+OBJ_FILES        = $(OBJS.c) $(OBJS.cxx) $(OBJS.as)
 DEP_FILES        = $(OBJ_FILES:%.o=%.d)
 
 COMPILE.c        = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
