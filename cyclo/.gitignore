@@ -2,5 +2,8 @@
 # Ignore build directories
 Debug
 Release
-build
+avr_release
+avr_debug
+sim_release
+sim_debug
 
