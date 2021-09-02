@@ -20,6 +20,9 @@ INCLUDE_DIRS = \
    ${BOOST_DIR} \
    ${FX_DIR}/include \
    ${RTOS_DIR}/include \
+
+ifndef SIM
+INCLUDE_DIRS += \
    $(ASF_DIR)/common/boards/user_board \
    $(ASF_DIR)/common/boards \
    $(ASF_DIR)/xmega/utils/preprocessor \
@@ -52,7 +55,8 @@ INCLUDE_DIRS = \
    $(ASF_DIR)/thirdparty/wireless/addons/sio2host/usb \
    $(ASF_DIR)/xmega/drivers/usb \
    $(CXX_DIR)/include \
-   avr-libstdcpp/include/ \
+
+endif
 
 ifdef SIM
 INCLUDE_DIRS += \

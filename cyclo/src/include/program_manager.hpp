@@ -44,8 +44,8 @@ private:
    ///< Current selected program. 0 is auto. 255 is none.
    uint8_t selected;
 
-   ///< Should the program starts right away?
-   bool auto_start;
+   ///< Which program should be started right away or -1
+   int8_t auto_start;
 
    ///< Current state of the active program
    program_state_t state;
@@ -86,7 +86,10 @@ public:
    inline void     set_counter( uint16_t newValue ) { counter = newValue; }
 
    // @return true if a program starts automatically
-   inline bool starts_automatically() const { return auto_start; }
+   inline bool starts_automatically() const { return (auto_start > 0); }
+
+   // @return true if a program starts automatically
+   inline int8_t get_autostart_index() const { return auto_start; }
 
    // Grab the contact manager
    inline Contact &get_contact() { return contact; }

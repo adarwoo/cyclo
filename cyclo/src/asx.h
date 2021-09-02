@@ -12,6 +12,7 @@
 #   include "sim.hpp"
 #else
 #   include "asf.h"
+#   include <avr/pgmspace.h>
 #endif
 
 #endif /* ndef asx_h_was_included */

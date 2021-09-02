@@ -64,6 +64,10 @@ ProgramManager::ProgramManager() :
          }
       }
    }
+
+   // We need at least 1 program and this is zero (manual program)
+   // If it does not exists, a default is provided
+   occupancy_map.set(0, true);
 }
 
 /**

@@ -4,7 +4,8 @@
 #include <cstddef>
 #include <cstdint>
 
-#include <avr/pgmspace.h>
+#include "asx.h"
+
 
 /** ASCII constants */
 namespace ascii
@@ -74,7 +75,7 @@ namespace vt100
          if ( str )
          {
             char c;
-            
+
             while ( (c = pgm_read_byte( str++ )) )
             {
                TPutc( c );
@@ -88,7 +89,7 @@ namespace vt100
          if ( str )
          {
             char c;
-            
+
             while ( (c = *str++ ) )
             {
                TPutc( c );

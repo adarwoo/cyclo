@@ -37,7 +37,12 @@ RUN set -xe \
   && ln -s /opt/avr-gcc-* /opt/avr-gcc \
   && echo 'PATH=$PATH:/opt/avr-gcc/bin' >> /etc/bash.bashrc
 
+# Add the path for all processes
 ENV PATH='PATH=/usr/sbin:/usr/bin:/sbin:/bin:/opt/avr-gcc/bin'
+
+# Set the prompt
+RUN set -xe \
+  && echo "PS1='\n\[\e[0;36m\]\T \[\e[1;30m\][\H\[\e[1;30m\]:\[\e[0;37m\]o \[\e[0;32m\]+4\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n$ '" > /etc/bash.bashrc
 
 # Setting the command to launch
 CMD ["bash", "-l"]

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 readonly image=cyclo:latest
+readonly hostname_=cyclo
 
 # Exit with error on interrupt, or failure
 set -e
@@ -30,7 +31,7 @@ core_count=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
 # Run make or start a shell
 if [[ "$1" == "shell" ]]; then
    shift
-   docker run -ti --rm --init --name $container_name $base_opts -w $workdir $image $@
+   docker run -ti --rm --init --name $container_name -h $hostname_ $base_opts -w $workdir $image $@
 else
-   docker run -ti --rm --init --name $container_name $base_opts -w $workdir $image make -j$core_count $@
+   docker run -ti --rm --init --name $container_name -h $hostname_ $base_opts -w $workdir $image make -j$core_count $@
 fi

@@ -189,5 +189,16 @@ void Console::show_help()
 
 void Console::show_list()
 {
-   TTerminal::print_P( PSTR("# TODO\r\n"));
+   // Iterate the bitset
+   uint8_t old, index = 0;
+
+   do
+   {
+      old = index;
+      index = program_manager.get_next(index);
+      TTerminal::print_P( PSTR(" # TODO\r\n"));
+      TTerminal::puts( program_manager.get_pgm(index) );
+   } while ( old != index);
+
+
 }
