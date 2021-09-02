@@ -10,6 +10,7 @@ RTOS_DIR              := rtos++
 SIMULATION_DIR        := simulation
 FX_DIR                := fx
 ASF_DIR               := ASF
+CXX_DIR               := c++
 
 # -I throughout (C and C++)
 INCLUDE_DIRS = \
@@ -50,6 +51,7 @@ INCLUDE_DIRS = \
    $(ASF_DIR)/common/utils/stdio/stdio_usb \
    $(ASF_DIR)/thirdparty/wireless/addons/sio2host/usb \
    $(ASF_DIR)/xmega/drivers/usb \
+   $(CXX_DIR)/include \
    avr-libstdcpp/include/ \
 
 ifdef SIM
@@ -67,7 +69,7 @@ endif
 CPPFLAGS = -DBOARD=USER_BOARD -DCPP_FREERTOS_NO_EXCEPTIONS -DGFX_MONO_UG_2832HSWEG04=1
 
 ifndef SIM
-CPPFLAGS += -DFORCE_NODEBUG 
+CPPFLAGS += -DFORCE_NODEBUG
 endif
 
 ifdef DEBUG
@@ -114,6 +116,7 @@ SRCS.c += \
    $(ASF_DIR)/common/services/clock/xmega/sysclk.c \
    $(ASF_DIR)/xmega/drivers/tc/tc.c \
    $(ASF_DIR)/common/boards/user_board/init.c \
+   trace.c \
 
 SRCS.as =  \
    $(ASF_DIR)/xmega/drivers/nvm/nvm_asm.s  \
@@ -147,8 +150,8 @@ SRCS.cxx += \
   ${SIMULATION_DIR}/src/sim.cpp \
 
 else
-#SRCS.cxx += \
-#    c++/src/new.cpp \
+SRCS.cxx += \
+    c++/src/new.cpp \
 
 endif
 

@@ -4,6 +4,7 @@
  * Created: 28/08/2021 20:27:07
  *  Author: micro
  */
+#include <logger.h>
 #include <fx.hpp>
 
 #include "console_server.hpp"
@@ -18,6 +19,8 @@ using rtos::tick_t;
 // USB static management
 namespace
 {
+   const char * const DOM = "console";
+
    auto cdc_available_semaphore = rtos::BinarySemaphore{};
    bool cdc_transfert_allowed{false};
    bool first_time{true};
@@ -51,7 +54,7 @@ void console_putc(vt100::char_t c)
 
 /** Create the timer for the splash */
 Console::Console(ProgramManager &program_manager) :
-   program_manager(program_manager), parser(temp_program, error_buffer)
+   parser{temp_program, error_buffer}, program_manager{program_manager}
 {
    // Start the thread
    this->run();
@@ -76,7 +79,7 @@ void Console::show_error()
    T::move_to_start_of_next_line();
    T::putc('#');
    T::putc(' ');
-   T::puts(error_buffer);
+   T::puts(error_buffer.c_str());
    T::move_to_start_of_next_line();
 }
 
@@ -122,20 +125,20 @@ void Console::default_handler()
       // Process the line
       if ( v )
       {
-         process(v);
+         process(*v);
          T::move_to_start_of_next_line();
       }
    }
 }
 
-void Console::process(optional_buffer_view_t buffer)
+void Console::process(etl::string_view line)
 {
-   auto res = parser.parse(v, error_buffer);
+   auto res = parser.parse(line);
 
    switch (res)
    {
    case Parser::Result::nothing:
-      continue;
+      break;
    case Parser::Result::error:
       show_error();
       break;
@@ -166,7 +169,8 @@ void Console::process(optional_buffer_view_t buffer)
       program_manager.load(parser.get_program_number());
       break;
    case Parser::Result::save:
-      program_manager.write_pgm_at(parser.get_program_number(), v);
+      // TODO
+      //program_manager.write_pgm_at(parser.get_program_number(), line);
       break;
    case Parser::Result::autostart:
       // Revoke current autostart
@@ -180,10 +184,10 @@ void Console::process(optional_buffer_view_t buffer)
 
 void Console::show_help()
 {
-   T::print_P( PSTR("# TODO\r\n"));
+   TTerminal::print_P( PSTR("# TODO\r\n"));
 }
 
 void Console::show_list()
 {
-   T::print_P( PSTR("# TODO\r\n"));
+   TTerminal::print_P( PSTR("# TODO\r\n"));
 }

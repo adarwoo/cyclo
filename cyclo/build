@@ -13,7 +13,7 @@ fi
 
 # If the docker image does not yet exists, build it
 if (($(docker images -q $image | wc -l) == 0)); then
-   (cd docker && docker build -t $image .) || { echo "Failed to build the docker image"; exit; }
+   docker build -t $image docker || { echo "Failed to build the docker image"; exit; }
 fi
 
 # Variables
@@ -27,5 +27,10 @@ container_name="AVR_$(id -u)_$(date +%Y%m%d-%H%M%S)"
 # Detect number of CPUs
 core_count=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
 
-# Run make
-docker run -ti --rm --init --name $container_name $base_opts -w $workdir $image make -j$core_count $@
+# Run make or start a shell
+if [[ "$1" == "shell" ]]; then
+   shift
+   docker run -ti --rm --init --name $container_name $base_opts -w $workdir $image $@
+else
+   docker run -ti --rm --init --name $container_name $base_opts -w $workdir $image make -j$core_count $@
+fi

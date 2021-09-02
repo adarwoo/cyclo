@@ -19,21 +19,25 @@ RUN set -xe && apt-get update && apt-get -y upgrade && ${PKG_CLEANUP}
 RUN set -xe \
   && apt-get update \
   && apt-get -y install --no-install-recommends \
-    apt-utils make bash quilt rsync tree vim less curl \
+    apt-utils make bash quilt rsync tree vim less \
     python3 python3-pip git binutils build-essential gdb \
-    sed gawk wget bc coreutils zip unzip chrpath \
+    sed gawk wget bc coreutils chrpath \
     ca-certificates locales file iproute2 inetutils-ping \
   && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
   && locale-gen en_US.UTF-8 \
   && ${PKG_CLEANUP}
 
-#COPY "entrypoint.sh" "/bin/entrypoint.sh"
-#RUN set -xe && chmod a+x "/bin/entrypoint.sh"
-#COPY "bash.bashrc" /etc/
+# Install the avr toolchain
+RUN set -xe \
+  && wget https://avr.lumito.net/download/4940/ -O /tmp/avr-gcc.tar.xz \
+  && cd /opt \
+  && tar xJvf /tmp/avr-gcc.tar.xz \
+  && rm -f /tmp/avr-gcc.tar.xz \
+  && cd /opt \
+  && ln -s /opt/avr-gcc-* /opt/avr-gcc \
+  && echo 'PATH=$PATH:/opt/avr-gcc/bin' >> /etc/bash.bashrc
 
-### Entry point
-##############################################################################
-#ENTRYPOINT ["/bin/entrypoint.sh"]
+ENV PATH='PATH=/usr/sbin:/usr/bin:/sbin:/bin:/opt/avr-gcc/bin'
 
 # Setting the command to launch
 CMD ["bash", "-l"]

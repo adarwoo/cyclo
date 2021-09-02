@@ -34,7 +34,7 @@ class Console : public rtos::Task<typestring_is("console"), 256>
    ProgramManager &program_manager;
 
 public:
-   explicit Console( ProgramManager &program_manager );
+   explicit Console( ProgramManager &);
    virtual void default_handler() final;
 
 protected:
@@ -42,7 +42,10 @@ protected:
    void show_error();
 
    ///< Process a full command line
-   void process(optional_buffer_view_t line);
+   void process(etl::string_view line);
+
+   void show_help();
+   void show_list();
 };
 
 
