@@ -1,8 +1,30 @@
-/*
- * ui_worker.cpp
+/******************************************************************************
+The MIT License(MIT)
+https://github.com/adarwoo/cyclo
+
+Copyright(c) 2021 Guillaume ARRECKX - software@arreckx.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+/**
+ * The user interface worker
  *
- * Created: 24/08/2021 00:49:30
- *  Author: micro
+ * @author guillaume.arreckx
  */
 #include "ui_worker.hpp"
 
@@ -29,7 +51,10 @@ void UIWorker::SplashTimer::run()
 }
 
 UIWorker::UIWorker( ProgramManager &program_manager )
-   : model{ program_manager }, view{ model }, controller{ model, view }, program_manager{ program_manager }
+   : model{ program_manager }
+   , view{ model }
+   , controller{ model, view }
+   , program_manager{ program_manager }
 {
    LOG_HEADER( DOM );
 }
@@ -40,10 +65,14 @@ bool UIWorker::can_update()
    using namespace sml;
 
    bool is_in_splash = controller.is( "splash"_s );
-   bool is_in_program_setup = controller.is<decltype( state<program_selection> )>( state<program_setup> );
-   LOG_DEBUG(DOM, "%s", is_in_splash ? "X = is in splash" : is_in_program_setup ? "X = is in pgm setup" : "OK");
+   bool is_in_program_setup =
+      controller.is<decltype( state<program_selection> )>( state<program_setup> );
 
-   return not (is_in_splash or is_in_program_setup);
+   LOG_DEBUG(
+      DOM, "%s",
+      is_in_splash ? "X = is in splash" : is_in_program_setup ? "X = is in pgm setup" : "OK" );
+
+   return not ( is_in_splash or is_in_program_setup );
 }
 
 // --------------------------------------------------------------
@@ -132,10 +161,26 @@ void UIWorker::on_receive( const msg::ContactUpdate & )
    }
 }
 
-void UIWorker::on_receive( const msg::USBConnected& )
+void UIWorker::on_receive( const msg::USBConnected & )
 {
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBConnected" );
 
    process_event( controller, usb_on{} );
+}
+
+void UIWorker::on_receive( const msg::USBDisconnected & )
+{
+   LOG_HEADER( DOM );
+   LOG_TRACE( DOM, "USBDisconnected" );
+
+   process_event( controller, usb_off{} );
+}
+
+void UIWorker::on_receive( const msg::ProgramIsStopped & )
+{
+   LOG_HEADER( DOM );
+   LOG_TRACE( DOM, "ProgramIsStopped" );
+
+   process_event( controller, pgm_stopped{} );
 }

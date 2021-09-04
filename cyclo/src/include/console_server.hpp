@@ -1,3 +1,25 @@
+/******************************************************************************
+The MIT License(MIT)
+https://github.com/adarwoo/cyclo
+
+Copyright(c) 2021 Guillaume ARRECKX - software@arreckx.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
 #ifndef console_server_hpp_was_included
 #define console_server_hpp_was_included
 /**
@@ -80,14 +102,14 @@ public:
    virtual void print_prompt() { TTerminal::print_P( PSTR("> ") ); }
 
    etl::string_view get_line() { return etl::string_view( history_buffer.back() ); }
-      
+
    /**
     * Reset the internal state machine if the input is interrupted
     */
    void reset()
-   { 
+   {
       input_state = input_state_t::normal;
-      input_buffer.clear(); 
+      input_buffer.clear();
       skip_first_if = 0;
    }
 
@@ -103,7 +125,7 @@ public:
          c = '\0';
          return retval;
       }
-      
+
       // Be deterministic and reset
       skip_first_if = '\0';
 
@@ -211,7 +233,7 @@ public:
          // user pressed [ENTER] - echo CR and LF to terminal
          TTerminal::move_to_start_of_next_line();
 
-         // Skip the incomming opposite char 
+         // Skip the incomming opposite char
          skip_first_if = c == ascii::lf ? c == ascii::cr : ascii::lf;
 
          if ( not input_buffer.empty() )
@@ -306,10 +328,10 @@ protected:
          // auto it = history_buffer.find(input_buffer);
          // if ( it == history_buffer.end() )
          // Move history back
-         
+
          // Save
          history_buffer.push( input_buffer );
-         
+
          // Points to the next available slot
          history_position = history_buffer.end();
 

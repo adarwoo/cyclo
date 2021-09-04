@@ -6,7 +6,7 @@
  * at https://github.com/irrequietus/typestring. Conceptually stemming from
  * own implementation of the same thing (but in a more complicated manner to
  * be revised) in 'clause': https://github.com/irrequietus/clause.
- * 
+ *
  * File subject to the terms and conditions of the Mozilla Public License v 2.0.
  * If a copy of the MPLv2 license text was not distributed with this file, you
  * can obtain it at: http://mozilla.org/MPL/2.0/.
@@ -34,16 +34,16 @@ private:
     static constexpr char const   vals[sizeof...(C)+1] = { C...,'\0' };
     static constexpr unsigned int sval = sizeof...(C);
 public:
-    
+
     static constexpr char const * data() noexcept
     { return &vals[0]; }
-    
+
     static constexpr unsigned int size() noexcept
     { return sval; };
-    
+
     static constexpr char const * cbegin() noexcept
     { return &vals[0]; }
-    
+
     static constexpr char const * cend() noexcept
     { return &vals[sval]; }
 };
@@ -61,23 +61,23 @@ constexpr char const typestring<C...>::vals[sizeof...(C)+1];
  *       metaprogramming constitutes a pure, non-strict, untyped functional
  *       programming language with pattern matching where declarative semantics
  *       can really shine.
- * 
+ *
  *       Currently, there is no feature in C++ that offers the opportunity to
  *       use strings as type parameter types themselves, despite there are
  *       several, different library implementations. This implementation is a
  *       fast, short, single-header, stupid-proof solution that works with any
  *       C++11 compliant compiler and up, with the resulting type being easily
  *       reusable throughout the code.
- * 
+ *
  * @usge Just include the header and enable -std=c++11 or -std=c++14 etc, use
  *       like in the following example:
- * 
+ *
  *            typestring_is("Hello!")
- *       
+ *
  *       is essentially identical to the following template instantiation:
- *          
+ *
  *            irqus::typestring<'H', 'e', 'l', 'l', 'o', '!'>
- * 
+ *
  *       By passing -DUSE_TYPESTRING=<power of 2> during compilation, you can
  *       set the maximum length of the 'typestring' from 1 to 1024 (2^0 to 2^10).
  *       Although all preprocessor implementations tested are capable of far
@@ -133,8 +133,8 @@ using tycat
 
 
 //*~ part3: some necessary code generation using preprocessor metaprogramming!
-//          There is functional nature in preprocessor metaprogramming as well.  
-    
+//          There is functional nature in preprocessor metaprogramming as well.
+
 /*~
  * @note Code generation block. Undoubtedly, the preprocessor implementations
  *       of both clang++ and g++ are relatively competent in producing a
@@ -153,19 +153,19 @@ using tycat
 #define TYPESTRING1(n,x) irqus::tygrab<0x##n##0>(x)
 
 /* 2^1 = 2 */
-#define TYPESTRING2(n,x) irqus::tygrab<0x##n##0>(x), irqus::tygrab<0x##n##1>(x) 
+#define TYPESTRING2(n,x) irqus::tygrab<0x##n##0>(x), irqus::tygrab<0x##n##1>(x)
 
 /* 2^2 = 2 */
 #define TYPESTRING4(n,x) \
         irqus::tygrab<0x##n##0>(x), irqus::tygrab<0x##n##1>(x) \
-      , irqus::tygrab<0x##n##2>(x), irqus::tygrab<0x##n##3>(x)    
+      , irqus::tygrab<0x##n##2>(x), irqus::tygrab<0x##n##3>(x)
 
 /* 2^3 = 8 */
 #define TYPESTRING8(n,x) \
         irqus::tygrab<0x##n##0>(x), irqus::tygrab<0x##n##1>(x) \
       , irqus::tygrab<0x##n##2>(x), irqus::tygrab<0x##n##3>(x) \
       , irqus::tygrab<0x##n##4>(x), irqus::tygrab<0x##n##5>(x) \
-      , irqus::tygrab<0x##n##6>(x), irqus::tygrab<0x##n##7>(x) 
+      , irqus::tygrab<0x##n##6>(x), irqus::tygrab<0x##n##7>(x)
 
 /* 2^4 = 16 */
 #define TYPESTRING16(n,x) \
@@ -181,7 +181,7 @@ using tycat
 /* 2^5 = 32 */
 #define TYPESTRING32(n,x) \
         TYPESTRING16(n##0,x),TYPESTRING16(n##1,x)
-      
+
 /* 2^6 = 64 */
 #define TYPESTRING64(n,x) \
         TYPESTRING16(n##0,x), TYPESTRING16(n##1,x), TYPESTRING16(n##2,x) \
