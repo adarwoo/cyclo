@@ -8,11 +8,11 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/cyclo",
+            "program": "${workspaceFolder}/sim_debug/cyclo",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "environment": [{"name": "LOG", "value": "stdout debug exclude=gfx.low"}],
+            "environment": [{"name": "LOG", "value": "file=/tmp/cyclo.log debug exclude=gfx*"}],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [

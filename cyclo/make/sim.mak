@@ -1,15 +1,18 @@
-tc_prefix:=
+# Make rules specific to the simulator
 
+tc_prefix:=
 CPPFLAGS = -D_POSIX
+LDFLAGS += -pthread
 
 ifdef DEBUG
-  CFLAGS := \
+  CPPFLAGS += -DDEBUG
+  CFLAGS += \
     -fsanitize=address \
     -fsanitize=alignment \
     -fno-omit-frame-pointer \
-    -static-libstdc++ \
-    -static-libasan
+	-O$(if $(DEBUG),0,3)
 
-  LDFLAGS += -lrt -fsanitize=address -fsanitize=alignment
+  LDFLAGS += -lrt -fsanitize=address -fsanitize=alignment -static-libasan -static-libstdc++
 endif
 
+OBJS = $(foreach file, $(SRCS.common) $(SRCS.sim), $(BUILD_DIR)/$(basename $(file)).o)

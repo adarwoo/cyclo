@@ -9,7 +9,7 @@
  */
 
 #ifdef _POSIX
-#   include "sim.hpp"
+#   include "sim.h"
 #else
 #   include "asf.h"
 #   include <avr/pgmspace.h>

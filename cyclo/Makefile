@@ -12,17 +12,31 @@ FX_DIR                := fx
 ASF_DIR               := ASF
 CXX_DIR               := c++
 
+# -D for all
+CPPFLAGS = \
+   -DBOARD=USER_BOARD \
+   -DCPP_FREERTOS_NO_EXCEPTIONS \
+   -DGFX_MONO_UG_2832HSWEG04=1
+
 # -I throughout (C and C++)
 INCLUDE_DIRS = \
-   . include config \
+   . \
+   include config \
    ${KERNEL_DIR}/include \
    ${LOGGER_DIR}/include \
    ${BOOST_DIR} \
    ${FX_DIR}/include \
    ${RTOS_DIR}/include \
 
-ifndef SIM
+ifdef SIM
 INCLUDE_DIRS += \
+  $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix \
+  $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix/utils \
+  ${SIMULATION_DIR}/include \
+
+else
+INCLUDE_DIRS += \
+   ${KERNEL_DIR}/portable/ThirdParty/GCC/ATxmega \
    $(ASF_DIR)/common/boards/user_board \
    $(ASF_DIR)/common/boards \
    $(ASF_DIR)/xmega/utils/preprocessor \
@@ -58,46 +72,43 @@ INCLUDE_DIRS += \
 
 endif
 
-ifdef SIM
-INCLUDE_DIRS += \
-  $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix \
-  $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix/utils \
-  ${SIMULATION_DIR}/include \
-
-else
-INCLUDE_DIRS += \
-  ${KERNEL_DIR}/portable/ThirdParty/GCC/ATxmega \
-
-endif
-
-CPPFLAGS = -DBOARD=USER_BOARD -DCPP_FREERTOS_NO_EXCEPTIONS -DGFX_MONO_UG_2832HSWEG04=1
-
-ifndef SIM
-CPPFLAGS += -DFORCE_NODEBUG
-endif
-
-ifdef DEBUG
-CPPFLAGS += -DDEBUG
-endif
-
-# C source files
-SRCS.c := \
+# Command source files (AVR and simulation)
+SRCS.common := \
    ${RTOS_DIR}/src/rtos_hooks.c \
    $(KERNEL_DIR)/list.c \
    $(KERNEL_DIR)/queue.c \
    $(KERNEL_DIR)/stream_buffer.c \
    $(KERNEL_DIR)/tasks.c \
-   $(KERNEL_DIR)/timers.c
+   $(KERNEL_DIR)/timers.c \
+   ${RTOS_DIR}/src/rtos.cpp \
+   ${FX_DIR}/src/fx.cpp \
+   console.cpp \
+   contact.cpp \
+   keypad_tasklet.cpp \
+   main.cpp \
+   nonc_tasklet.cpp \
+   parser.cpp \
+   program_manager.cpp \
+   sequencer_worker.cpp \
+   ui_model.cpp \
+   ui_view.cpp \
+   ui_worker.cpp
 
-ifdef SIM
-SRCS.c += \
+SRCS.sim += \
    ${KERNEL_DIR}/portable/ThirdParty/GCC/Posix/utils/wait_for_event.c \
    ${KERNEL_DIR}/portable/ThirdParty/GCC/Posix/port.c \
    ${LOGGER_DIR}/src/logger_common.c \
+   ${LOGGER_DIR}/src/logger_cxx.cpp \
+   ${LOGGER_DIR}/src/logger_init_unix.cpp \
+   ${LOGGER_DIR}/src/logger_os_linux.cpp \
+   ${LOGGER_DIR}/src/logger_trace_stack_linux.cpp \
+   ${SIMULATION_DIR}/src/sim.cpp \
+   ${SIMULATION_DIR}/src/gfx.cpp \
+   ${SIMULATION_DIR}/src/nvm.cpp \
+   ${SIMULATION_DIR}/src/logger.c \
 
-else
 # ASF sources
-SRCS.c += \
+SRCS.avr += \
    ${KERNEL_DIR}/portable/ThirdParty/GCC/ATxmega/port.c \
    $(ASF_DIR)/common/components/display/ssd1306/font.c \
    $(ASF_DIR)/common/services/usb/class/cdc/device/udi_cdc.c  \
@@ -120,43 +131,11 @@ SRCS.c += \
    $(ASF_DIR)/common/services/clock/xmega/sysclk.c \
    $(ASF_DIR)/xmega/drivers/tc/tc.c \
    $(ASF_DIR)/common/boards/user_board/init.c \
-   trace.c \
-
-SRCS.as =  \
    $(ASF_DIR)/xmega/drivers/nvm/nvm_asm.s  \
    $(ASF_DIR)/xmega/drivers/cpu/ccp.s \
-
-endif
-
-# C++ source files
-SRCS.cxx := \
-   ${RTOS_DIR}/src/rtos.cpp \
-   ${FX_DIR}/src/fx.cpp \
-   console.cpp \
-   contact.cpp \
+   trace.c \
    keypad.cpp \
-   keypad_tasklet.cpp \
-   main.cpp \
-   nonc_tasklet.cpp \
-   parser.cpp \
-   program_manager.cpp \
-   sequencer_worker.cpp \
-   ui_model.cpp \
-   ui_view.cpp \
-   ui_worker.cpp
+   c++/src/new.cpp \
 
-ifdef SIM
-SRCS.cxx += \
-  ${LOGGER_DIR}/src/logger_cxx.cpp \
-  ${LOGGER_DIR}/src/logger_init_unix.cpp \
-  ${LOGGER_DIR}/src/logger_os_linux.cpp \
-  ${LOGGER_DIR}/src/logger_trace_stack_linux.cpp \
-  ${SIMULATION_DIR}/src/sim.cpp \
-
-else
-SRCS.cxx += \
-    c++/src/new.cpp \
-
-endif
-
+# Inlude the actual build rules
 include make/rules.mak

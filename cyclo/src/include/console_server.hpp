@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
+#include "logger.h"
 
 // include project-specific configuration
 #include <etl/circular_buffer.h>
@@ -65,11 +66,15 @@ protected:
    /** State of the input for control character */
    input_state_t input_state;
 
+   /** To cope with CR and LF in different shells, skip if the char is this value */
+   char_t skip_first_if;
+
 public:
    ConsoleServer()
       : input_buffer_position( input_buffer.begin() )
       , history_position()
       , input_state( input_state_t::normal )
+      , skip_first_if( '\0' )
    {}
 
    virtual void print_prompt() { TTerminal::print_P( PSTR("> ") ); }
@@ -83,12 +88,24 @@ public:
    { 
       input_state = input_state_t::normal;
       input_buffer.clear(); 
+      skip_first_if = 0;
    }
 
    // process the received character
    optional_buffer_view_t process_input( char_t c )
    {
       etl::optional<etl::string_view> retval;
+
+      // Once - Skip a LF following a CR or vice versa
+      if ( c == skip_first_if )
+      {
+         // Reset
+         c = '\0';
+         return retval;
+      }
+      
+      // Be deterministic and reset
+      skip_first_if = '\0';
 
       // Are we processing a VT100 command?
       switch ( input_state )
@@ -188,11 +205,14 @@ public:
             TTerminal::ring_bell();
          }
       }
-      // handle special characters
-      else if ( c == ascii::cr )
+      // handle special characters - LineFeed or CarriageReturn?
+      else if ( c == ascii::lf or c == ascii::cr)
       {
          // user pressed [ENTER] - echo CR and LF to terminal
          TTerminal::move_to_start_of_next_line();
+
+         // Skip the incomming opposite char 
+         skip_first_if = c == ascii::lf ? c == ascii::cr : ascii::lf;
 
          if ( not input_buffer.empty() )
          {

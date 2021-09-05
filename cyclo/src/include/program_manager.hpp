@@ -138,7 +138,7 @@ protected:
 
    eeprom_addr_t pgm_at( const size_t index )
    {
-      return EEPROM_PAGE_SIZE * index * ( STORAGE_MAX_LENGTH / EEPROM_PAGE_SIZE );
+      return EEPROM_PAGE_SIZE * index * 2;
    }
 };
 

@@ -1,17 +1,11 @@
-#include <algorithm>
 #include <cassert>
 #include <cstdlib>
-#include <fstream>
 #include <thread>
 
 // For the getch
+#include <logger.h>
 #include <termios.h>
 #include <unistd.h>
-
-// For the CRC
-#include <etl/crc.h>
-
-#include <logger.h>
 
 // For the logger
 #include "asx.h"
@@ -19,27 +13,17 @@
 
 #include <rtos.hpp>
 
-#include <logger/logger_os.h>
-
-#include <FreeRTOS.h>
-#include <task.h>
+extern "C" void nvm_init( void );
+extern "C" bool console_cdc_enabled( uint8_t port );
 
 namespace
 {
    // Logger domain
    const char *const DOM = "sim";
-   const char *const GFX = "gfx";
-   const char *const GFX_LOW = "gfx.low";
 
-   // EEProm content
-   uint8_t eeprom_memory[ 2048 ];
-
-   // EEProm page buffer
-   uint8_t eeprom_page_buffer[ EEPROM_PAGE_SIZE ];
+   // Synchronous queue to send to the UDC
+   rtos::Queue<char, 16> key_queue;
 }  // namespace
-
-// EEProm simulated memory
-const uintptr_t MAPPED_EEPROM_START = (uintptr_t)eeprom_memory;
 
 extern "C"
 {
@@ -47,9 +31,8 @@ extern "C"
 
    void board_init()
    {
-      std::fill_n( eeprom_memory, sizeof( eeprom_memory ), 0xff );
-
-      // TODO -> Init the GUI?
+      nvm_init();
+      console_cdc_enabled( 0 );
    }
 
    bool ioport_get_pin_level( ioport_pin_t pin )
@@ -78,11 +61,16 @@ extern "C"
       LOG_TRACE(
          DOM, "PORT%c,%d %s > %s", portLetter, bitpos, from ? "on" : "off", level ? "ON" : "OFF" );
 
-      // Clear the bit
-      ports[ port ] &= ~bitmask;
-
-      // Mask with value
-      ports[ port ] |= bitmask;
+      if ( level )
+      {
+         // Mask with value
+         ports[ port ] |= bitmask;
+      }
+      else
+      {
+         // Clear the bit
+         ports[ port ] &= ~bitmask;
+      }
    }
 
    void ioport_toggle_pin_level( ioport_pin_t pin )
@@ -145,34 +133,50 @@ extern "C"
    {
       LOG_TRACE( DOM, "Task key scanning running" );
 
-      char c = 0;
+      char c           = 0;
+      bool send_to_cdc = true;
 
       while ( c != 'q' )
       {
          uint8_t key = 0;
 
-         switch ( c )
+         if ( c == '/' )
          {
-         case 'w': key = KEY_UP; break;
-         case 's': key = KEY_DOWN; break;
-         case '\n': key = KEY_SELECT; break;
-         default: break;
+            send_to_cdc = ! send_to_cdc;
+            c           = 0;
+            continue;
          }
 
-         if ( key != 0 )
+         if ( send_to_cdc )
          {
-            LOG_DEBUG(
-               DOM, "Handling %s",
-               key == KEY_UP     ? "UP"
-               : key == KEY_DOWN ? "DOWN"
-                                 : "SELECT" );
-
-            for ( size_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i )
+            if ( c != 0 )
+               key_queue.send( c );
+         }
+         else
+         {
+            switch ( c )
             {
-               if ( keypad_keys[ i ].mask & key )
+            case 'w': key = KEY_UP; break;
+            case 's': key = KEY_DOWN; break;
+            case '\n': key = KEY_SELECT; break;
+            default: break;
+            }
+
+            if ( key != 0 )
+            {
+               LOG_DEBUG(
+                  DOM, "Handling %s",
+                  key == KEY_UP     ? "UP"
+                  : key == KEY_DOWN ? "DOWN"
+                                    : "SELECT" );
+
+               for ( size_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i )
                {
-                  // Call the handler
-                  keypad_keys[ i ].handler( key, keypad_keys[ i ].param );
+                  if ( keypad_keys[ i ].mask & key )
+                  {
+                     // Call the handler
+                     keypad_keys[ i ].handler( key, keypad_keys[ i ].param );
+                  }
                }
             }
          }
@@ -189,6 +193,24 @@ extern "C"
       // Start a thread which scan the keypad and calls the callback
       static auto keypad = rtos::Task<typestring_is( "keypad" )>();
       keypad.run( scan_keys );
+   }
+
+   // UDI
+   int udi_cdc_multi_putc( uint8_t port, int value )
+   {
+      UNUSED( port );
+      putchar( value );
+      fflush( stdout );
+      return 0;
+   }
+
+   int udi_cdc_getc( void )
+   {
+      char c;
+      key_queue.receive( c );
+      LOG_DEBUG( DOM, "Sending %#.2x", c );
+
+      return (int)c;
    }
 
    /**
@@ -209,164 +231,6 @@ extern "C"
             keypad_keys[ i ].param   = param;
          }
       }
-   }
-
-   //
-   // EEProm emulation
-   //
-   void nvm_wait_until_ready() {}
-
-   void eeprom_enable_mapping()
-   {
-      using ifs_t = std::ifstream;
-
-      // Read the whole file into the buffer
-      auto ifs = ifs_t( "/tmp/eeprom.bin", ifs_t::binary );
-
-      if ( ifs )
-      {
-         ifs.read( reinterpret_cast<char *>( eeprom_memory ), sizeof( eeprom_memory ) );
-      }
-      else
-      {
-         LOG_WARN( DOM, "Failed to read eeprom.bin" );
-      }
-   }
-
-   void nvm_eeprom_atomic_write_page( uint8_t page_addr )
-   {
-      using ofs_t = std::ofstream;
-
-      // Transfer the buffer to the main memory
-      memcpy( eeprom_memory + EEPROM_PAGE_SIZE * page_addr, eeprom_page_buffer, EEPROM_PAGE_SIZE );
-
-      // Write to whole buffer back
-      auto ofs = ofs_t( "/tmp/eeprom.bin", ofs_t::binary | ofs_t::out );
-
-      if ( ! ofs.good() )
-      {
-         LOG_ERROR( DOM, "Failed to create eeprom.bin" );
-         return;
-      }
-
-      ofs.write( reinterpret_cast<char *>( eeprom_memory ), sizeof( eeprom_memory ) );
-   }
-
-   void nvm_eeprom_load_page_to_buffer( const uint8_t *values )
-   {
-      memcpy( eeprom_page_buffer, values, EEPROM_PAGE_SIZE );
-   }
-
-   // CRC Emulation
-   uint32_t crc_io_checksum( void *data, uint16_t len, enum crc_16_32_t crc_16_32 )
-   {
-      auto crc = etl::crc16{};
-
-      // Write data to DATAIN register
-      while ( len-- )
-      {
-         crc.add( *(uint8_t *)data );
-         data = (uint8_t *)data + 1;
-      }
-
-      return crc.value();
-   }
-
-   //
-   // Logger - enhance
-   //
-
-   /**
-    * Get the name of the thread instead
-    */
-   void _log_copy_thread_id( char *buffer, size_t count, _LOG_THREAD_ID id )
-   {
-      TaskHandle_t h = xTaskGetCurrentTaskHandle();
-
-      if ( h != 0 )
-      {
-         snprintf( buffer, count, " %s ", pcTaskGetName( h ) );
-      }
-      else
-      {
-         snprintf( buffer, count, " main " );
-      }
-   }
-
-   //
-   // GFX library
-   //
-
-   // Dummy font instance
-   struct font sysfont;
-
-   void gfx_mono_draw_horizontal_line(
-      gfx_coord_t x, gfx_coord_t y, gfx_coord_t length, enum gfx_mono_color color )
-   {
-      LOG_HEADER(GFX_LOW);
-      LOG_INFO(GFX_LOW, "*** HLINE @[%2d, %2d] len: %2d", x, y, length);
-   }
-
-   void gfx_mono_draw_filled_rect(
-      gfx_coord_t         x,
-      gfx_coord_t         y,
-      gfx_coord_t         width,
-      gfx_coord_t         height,
-      enum gfx_mono_color color )
-   {
-      LOG_HEADER(GFX_LOW);
-      if ( height == 0 )
-      {
-         /* Nothing to do. Move along. */
-         return;
-      }
-
-      while ( height-- > 0 )
-      {
-         gfx_mono_draw_horizontal_line( x, y + height, width, color );
-      }
-   }
-
-   void gfx_mono_draw_line(
-      gfx_coord_t x1, gfx_coord_t y1, gfx_coord_t x2, gfx_coord_t y2, enum gfx_mono_color color )
-   {
-      LOG_HEADER(GFX_LOW);
-      LOG_INFO(GFX_LOW, "*** LINE [%2d, %2d] [%2d, %2d]", x1, y1, x2, y2);
-   }
-
-   void gfx_mono_put_bitmap( struct gfx_mono_bitmap *bitmap, gfx_coord_t x, gfx_coord_t y )
-   {
-      LOG_HEADER(GFX);
-      LOG_INFO(GFX, "*** BITMAP %p [%2d, %2d]", bitmap, x, y);
-   }
-
-   void gfx_mono_draw_rect(
-      gfx_coord_t         x,
-      gfx_coord_t         y,
-      gfx_coord_t         width,
-      gfx_coord_t         height,
-      enum gfx_mono_color color )
-   {
-      LOG_HEADER(GFX_LOW);
-      LOG_INFO(GFX_LOW, "*** RECT @[%2d, %2d] W[%2d, %2d]", x, y, width, height);
-   }
-
-   void gfx_mono_draw_pixel( gfx_coord_t x, gfx_coord_t y, gfx_coord_t color )
-   {
-      LOG_HEADER(GFX_LOW);
-      LOG_INFO(GFX_LOW, "*** PIXEL [%2d, %2d]", x, y);
-   }
-
-   void gfx_mono_init()
-   {
-      LOG_HEADER(GFX);
-   }
-
-   void gfx_mono_draw_string(
-      const char *str, gfx_coord_t x, gfx_coord_t y, const struct font *font )
-   {
-      LOG_HEADER(GFX);
-      LOG_INFO(GFX, "*** TEXT [%2d, %2d] %s", x, y, str);
    }
 
 

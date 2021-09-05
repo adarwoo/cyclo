@@ -154,7 +154,7 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
    enum : uint8_t { more, no_more, program, program_1_to_9 } expects = more;
 
 
-   auto retval = Result{ program }; // Default is to expect a program
+   auto retval = Result::program; // Default is to expect a program
 
    // Reset all to allow multiple calls
    buffer_     = buffer.begin();
@@ -215,7 +215,7 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
             expects = no_more;
          }
       }
-      if ( get_delay( number, token ) )
+      else if ( get_delay( number, token ) )
       {
          if ( not live_.empty() )
          {

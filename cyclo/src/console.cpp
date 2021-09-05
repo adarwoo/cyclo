@@ -7,6 +7,8 @@
 #include <logger.h>
 #include <fx.hpp>
 
+#include "asx.h"
+
 #include "console_server.hpp"
 #include "program_manager.hpp"
 #include "parser.hpp"
@@ -126,7 +128,6 @@ void Console::default_handler()
       if ( v )
       {
          process(*v);
-         T::move_to_start_of_next_line();
       }
    }
 }

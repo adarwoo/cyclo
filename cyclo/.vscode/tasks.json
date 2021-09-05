@@ -6,7 +6,7 @@
         {
             "label": "Build all",
             "type": "shell",
-            "command": "cd src; make -j8",
+            "command": "build SIM=1 DEBUG=1",
             "problemMatcher": {
                 "base": "$gcc",
                 "fileLocation": ["relative", "${workspaceRoot}/src"]

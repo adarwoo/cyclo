@@ -110,9 +110,13 @@ void SequencerWorker::execute_next()
          return;
       }
 
-      // Fire a new timers
-      timer.set_param( ++timer_counter );
-      timer.set_period( rtos::tick::from_ms( cmd->delay_ms ) );
-      timer.start();
+      // If a delay exists
+      if ( cmd->delay_ms )
+      {
+         // Fire a new timers
+         timer.set_param( ++timer_counter );
+         timer.set_period( rtos::tick::from_ms( cmd->delay_ms ) );
+         timer.start();
+      }
    }
 }

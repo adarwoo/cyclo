@@ -7,7 +7,9 @@
  *  Author: micro
  */
 
+#include <stddef.h>
 #include "asx.h"
+
 
 static inline void trace_set( ioport_pin_t pin )
 {

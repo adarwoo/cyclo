@@ -3,8 +3,9 @@
 #include "trace.h"
 
 #include <FreeRTOS.h>
-#include <asf.h>
 #include <string.h>
+
+#include "asx.h"
 
 struct keypad_key_t
 {

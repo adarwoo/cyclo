@@ -10,25 +10,29 @@ namespace
    const char *const DOM = "cyclo_man";
 
    // Set the storage to use the maximum space, matching an EEProm page size
-   constexpr auto STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
+   constexpr auto STORAGE_MAX_LENGTH = ( EEPROM_PAGE_SIZE * 2 ) - 4;
 
    struct PgmStorage
    {
-      char     marker; ///< Marker, must be a value other than 255 to be analysed
-      char     pgm[ STORAGE_MAX_LENGTH ]; ///< Actual program in ASCII storage area
+      char     marker;  ///< Marker, must be a value other than 255 to be analysed
+      char     pgm[ STORAGE_MAX_LENGTH ];  ///< Actual program in ASCII storage area
       char     spare;
       uint16_t crc;
    };
 
    // Actual length of the data - excluding the CRC
-   constexpr size_t PGM_STORAGE_DATA_SIZE_NO_CRC = sizeof(PgmStorage) - sizeof(uint16_t);
+   constexpr size_t PGM_STORAGE_DATA_SIZE_NO_CRC = sizeof( PgmStorage ) - sizeof( uint16_t );
 
    // Zero string
    etl::string<0> zs;
 };  // namespace
 
-ProgramManager::ProgramManager() :
-   selected{ 0 }, auto_start{ false }, state{ stopped }, counter{ 0 }, parser{active_program, zs}
+ProgramManager::ProgramManager()
+   : selected{ 0 }
+   , auto_start{ false }
+   , state{ stopped }
+   , counter{ 0 }
+   , parser{ active_program, zs }
 {
    LOG_HEADER( DOM );
 
@@ -56,7 +60,7 @@ ProgramManager::ProgramManager() :
             if ( *marker_loc == '*' )
             {
                // Load it!
-               load(i);
+               load( i );
 
                // Indicate the program is auto_start
                auto_start = true;
@@ -64,10 +68,6 @@ ProgramManager::ProgramManager() :
          }
       }
    }
-
-   // We need at least 1 program and this is zero (manual program)
-   // If it does not exists, a default is provided
-   occupancy_map.set(0, true);
 }
 
 /**
@@ -154,7 +154,7 @@ void ProgramManager::write_pgm_at( uint8_t pos, const char *string )
    nvm_eeprom_atomic_write_page( pos + 1 );
 
    // Mark as available
-   occupancy_map.set(pos);
+   occupancy_map.set( pos );
 }
 
 /**
@@ -170,7 +170,7 @@ void ProgramManager::load( uint8_t pgmIndex )
    LOG_HEADER( DOM );
 
    // As different tasks using this method, make it safe
-   rtos::Lock_guard{lock};
+   rtos::Lock_guard{ lock };
 
    // Must have a program
    if ( occupancy_map[ pgmIndex ] )
@@ -183,7 +183,7 @@ void ProgramManager::load( uint8_t pgmIndex )
 
       if ( res == Parser::Result::program )
       {
-         fx::publish(msg::StartProgram{true});
+         fx::publish( msg::StartProgram{ true } );
       }
    }
    else
@@ -192,9 +192,9 @@ void ProgramManager::load( uint8_t pgmIndex )
       active_program.clear();
 
       // Insert items
-      active_program.push_back(Command{Command::open, 60000});
-      active_program.push_back(Command{Command::close, 5000});
-      active_program.push_back(Command{Command::loop});
+      active_program.push_back( Command{ Command::open, 60000 } );
+      active_program.push_back( Command{ Command::close, 5000 } );
+      active_program.push_back( Command{ Command::loop } );
    }
 }
 
@@ -208,31 +208,31 @@ void ProgramManager::load( const Program &pgm )
    LOG_HEADER( DOM );
 
    // As different tasks using this method, make it safe
-   rtos::Lock_guard{lock};
+   rtos::Lock_guard{ lock };
 
    // Make a copy
-   etl::copy(pgm.begin(), pgm.end(), active_program.begin());
+   active_program.assign( pgm.begin(), pgm.end() );
 
    // Let the sequencer know
-   fx::publish(msg::StartProgram{true});
+   fx::publish( msg::StartProgram{ true } );
 }
 
 void ProgramManager::stop()
 {
    // Let the sequencer know
-   fx::publish(msg::StopProgram{});
+   fx::publish( msg::StopProgram{} );
 }
 
 void ProgramManager::resume()
 {
    // Let the sequencer know
-   fx::publish(msg::StartProgram{false});
+   fx::publish( msg::StartProgram{ false } );
 }
 
 void ProgramManager::erase( uint8_t pgmIndex )
 {
-   nvm_eeprom_erase_page( pgmIndex * 2);
-   occupancy_map.set(pgmIndex, false);
+   nvm_eeprom_erase_page( pgmIndex * 2 );
+   occupancy_map.set( pgmIndex, false );
 }
 
 void ProgramManager::set_autostart( uint8_t pgmIndex )

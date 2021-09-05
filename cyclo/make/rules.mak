@@ -12,8 +12,11 @@ SIZE ?= size
 BUILD_DIR       := $(target)_$(build_type)
 SRC_DIR         := src
 
+# Pre-processor flags
+CPPFLAGS        += $(foreach p, $(INCLUDE_DIRS), -I$(SRC_DIR)/$(p))
+
 # Flags for the compilation of C files
-CFLAGS          += -ggdb3 -Wall -O$(if $(DEBUG),g,s)
+CFLAGS          += -ggdb3 -Wall
 
 # Flags for the compilation of C++ files
 CXXFLAGS        += $(CFLAGS) -std=c++17 -Wno-subobject-linkage -fno-exceptions
@@ -21,22 +24,11 @@ CXXFLAGS        += $(CFLAGS) -std=c++17 -Wno-subobject-linkage -fno-exceptions
 # Flag for the linker
 LDFLAGS         += -ggdb3
 
-ifdef SIM
-LDFLAGS         += -pthread
-endif
-
-# Pre-processor flags
-CPPFLAGS        += $(foreach p, $(INCLUDE_DIRS), -I$(SRC_DIR)/$(p))
-
 # Dependencies creation flags
 DEPFLAGS         = -MT $@ -MMD -MP -MF $(BUILD_DIR)/$*.d
 POSTCOMPILE      = mv -f $(BUILD_DIR)/$*.Td $(BUILD_DIR)/$*.d && touch $@
 
-OBJS.c           = $(foreach p, $(SRCS.c), $(BUILD_DIR)/$(p:%.c=%.o))
-OBJS.cxx         = $(foreach p, $(SRCS.cxx), $(BUILD_DIR)/$(p:%.cpp=%.o))
-OBJS.as          = $(foreach p, $(SRCS.as), $(BUILD_DIR)/$(p:%.s=%.o))
-OBJ_FILES        = $(OBJS.c) $(OBJS.cxx) $(OBJS.as)
-DEP_FILES        = $(OBJ_FILES:%.o=%.d)
+DEP_FILES        = $(OBJS:%.o=%.d)
 
 COMPILE.c        = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 COMPILE.cxx      = $(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
@@ -46,7 +38,7 @@ all : $(BUILD_DIR)/$(BIN)
 # Create the build directory
 $(BUILD_DIR): ; @-mkdir -p $@
 
-$(BUILD_DIR)/$(BIN) : $(OBJ_FILES)
+$(BUILD_DIR)/$(BIN) : $(OBJS)
 	@echo "Linking $^"
 	$(mute)$(CXX) -Wl,--start-group $^ -Wl,--end-group ${LDFLAGS} -o $@
 	$(mute)$(SIZE) $@

@@ -68,7 +68,7 @@ UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
 void UIModel::store_manual_pgm()
 {
    char buffer[ 22 ];  // 'c 00M 01s o 00M 00s *' = 21 + 1 \0
-   auto fmt = PROGMEM_STRING( "c %.2dM %.2ds o %.2dM %.2ds *" );
+   auto fmt = PROGMEM_STRING( "c %.2hhuM %.2hhus o %.2hhuM %.2hhus *" );
    snprintf_P( buffer, sizeof( buffer ), fmt, on_min, on_sec, off_min, off_sec );
 
    program_manager.write_pgm_at( 0, buffer );
