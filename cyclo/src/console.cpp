@@ -194,7 +194,35 @@ void Console::process( etl::string_view line )
 
 void Console::show_help()
 {
-   TTerminal::print_P( PSTR( "# TODO\r\n" ) );
+   auto help = PSTR(
+      "Basic commands:\r\n"
+      "  open  .. Open the contact\r\n"
+      "  close .. Close the contact\r\n"
+      "\r\n"
+      "A valid program is a series of open/close with some delay added.\r\n"
+      "A minimum delay of 1 second is automatically added if none is specified.\r\n"
+      "Delays can have units (no units indicate seconds) as:\r\n"
+      "  H .. hour\r\n"
+      "  M .. minutes\r\n"
+      "  s .. seconds\r\n"
+      "  m .. milliseconds\r\n"
+      "\r\n"
+      "Example:\r\n"
+      "  o 1 500m c 1H 30M\r\n"
+      "To loop a sequence, add '*' at the end.\r\n"
+      "\r\n"
+      "Other commands:\r\n"
+      "  list       : List saved programs\n\r"
+      "  save [1-9] <*> : Save the last valid program\r\n"
+      "                   If '*' is added, make it start automatically on power-up"
+      "  del [1-9]  : Delete the program at the given location\r\n"
+      "  run [0-9]  : Run the given program\r\n"
+      "  quit       : Leave this shell and re-enable manual mode\r\n"
+      "Fast program:\r\n"
+      "  [0-9] <*>  : Type a valid program number to run it.\r\n"
+      "               Add a '*' to loop it. Ignored for looped programs.\r\n");
+
+   TTerminal::print_P( help );
 }
 
 void Console::show_list()
