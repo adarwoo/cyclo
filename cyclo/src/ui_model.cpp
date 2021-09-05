@@ -58,9 +58,6 @@ UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
 {
    // Get the index of the selected program
    program_index = program_manager.get_selected();
-
-   // Load the manual program to cache the values
-   program_manager.load( 0 );
 }
 
 

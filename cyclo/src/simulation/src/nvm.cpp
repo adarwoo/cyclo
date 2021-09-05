@@ -50,12 +50,13 @@ extern "C"
       }
    }
 
-   void nvm_eeprom_atomic_write_page( uint8_t page_addr )
+   void nvm_eeprom_atomic_write_page( uint8_t page )
    {
+      LOG_TRACE(DOM, "Writing page %d", page);
       using ofs_t = std::ofstream;
 
       // Transfer the buffer to the main memory
-      memcpy( eeprom_memory + EEPROM_PAGE_SIZE * page_addr, eeprom_page_buffer, EEPROM_PAGE_SIZE );
+      memcpy( eeprom_memory + EEPROM_PAGE_SIZE * page, eeprom_page_buffer, EEPROM_PAGE_SIZE );
 
       // Write to whole buffer back
       auto ofs = ofs_t( "/tmp/eeprom.bin", ofs_t::binary | ofs_t::out );

@@ -35,6 +35,12 @@ ProgramManager::ProgramManager()
    , parser{ active_program, zs }
 {
    LOG_HEADER( DOM );
+   scan();
+}
+
+void ProgramManager::scan()
+{
+   LOG_HEADER( DOM );
 
    nvm_wait_until_ready();
    eeprom_enable_mapping();
@@ -128,30 +134,27 @@ const char *ProgramManager::get_pgm( uint8_t index )
  * @stirng The content to write. The CRC is automatically added
  * @return a pointer to the program at the given index
  */
-void ProgramManager::write_pgm_at( uint8_t pos, const char *string )
+void ProgramManager::write_pgm_at( uint8_t pos, etl::string_view view )
 {
    LOG_HEADER( DOM );
 
    static PgmStorage buffer;
 
-   // Convert the program index into EEProm page
-   pos *= 2;
-
    // Reset the buffer content to all zero
    memset( &buffer, 0, sizeof( buffer ) );
 
    buffer.marker = 'A';
-   strncpy( buffer.pgm, string, STORAGE_MAX_LENGTH );
+   strncpy( buffer.pgm, view.data(), etl::min(view.size(), STORAGE_MAX_LENGTH) );
 
    // Compute CRC - the whole buffer excluding the crc itself
    buffer.crc = crc_io_checksum( &buffer, PGM_STORAGE_DATA_SIZE_NO_CRC, CRC_16BIT );
 
    // Write eeprom
    nvm_eeprom_load_page_to_buffer( reinterpret_cast<const uint8_t *>( &buffer ) );
-   nvm_eeprom_atomic_write_page( pos );
+   nvm_eeprom_atomic_write_page( pos * 2 );
    nvm_eeprom_load_page_to_buffer(
       reinterpret_cast<const uint8_t *>( &buffer ) + EEPROM_PAGE_SIZE );
-   nvm_eeprom_atomic_write_page( pos + 1 );
+   nvm_eeprom_atomic_write_page( (pos*2) + 1 );
 
    // Mark as available
    occupancy_map.set( pos );

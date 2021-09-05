@@ -76,7 +76,7 @@ bool Parser::get_delay( uint32_t &value, const etl::string_view token )
  * @param token String containing the value to convert
  * @return true on success. If false, err_ contains the error descruption
  */
-bool Parser::get_program_number( const etl::string_view token )
+bool Parser::parse_program_number( const etl::string_view token )
 {
    auto retval = false;
 
@@ -192,7 +192,7 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
 
       if ( expects == program or expects == program_1_to_9 )
       {
-         if ( not get_program_number() )
+         if ( not parse_program_number(token) )
          {
             err_ = "Expecting a number ";
 

@@ -72,7 +72,7 @@ protected:
    bool get_delay( uint32_t &value, const etl::string_view token );
 
    ///< Get the expected program number from the token
-   bool get_program_number( const etl::string_view token );
+   bool parse_program_number( const etl::string_view token );
 
    ///< Build the program checking for error conditions
    void safe_insert( Command::command_t c, etl::string_view token );

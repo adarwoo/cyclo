@@ -107,13 +107,16 @@ public:
    const char *get_pgm( uint8_t index );
 
    /** Write the given program at the given slot. 0 is the auto slot */
-   void write_pgm_at( uint8_t pos, const char *string );
+   void write_pgm_at( uint8_t pos, etl::string_view view );
 
    /** Load a program from the eeprom - and start it */
    void load( uint8_t pgmIndex );
 
    /** Load a program and start it */
    void load( const Program &pgm );
+
+   /** Scan the whole eeprom for valid programs */
+   void scan();
 
    /** Set a program has auto start */
    void set_autostart(uint8_t index );

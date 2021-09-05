@@ -33,6 +33,9 @@ class Console : public rtos::Task<typestring_is("console"), 256>
    ///< THE program manager
    ProgramManager &program_manager;
 
+   ///< Copy of the last valid program string
+   TConsoleServer::buffer_t last_program;
+
 public:
    explicit Console( ProgramManager &);
    virtual void default_handler() final;
@@ -40,6 +43,9 @@ public:
 protected:
    ///< Display the parsing error
    void show_error();
+
+   ///< Print a simple error
+   void print_error(const char *error);
 
    ///< Process a full command line
    void process(etl::string_view line);
