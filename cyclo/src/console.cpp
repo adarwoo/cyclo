@@ -209,7 +209,7 @@ void Console::show_help()
       "  s .. seconds\r\n"
       "  m .. milliseconds\r\n"
       "\r\n"
-      ">> Example:\r\n"
+      "Example:\r\n"
       "  o 1 500m c 1H 30M\r\n"
       "To loop a sequence, add '*' at the end.\r\n"
       "  close 250m open 10 c o *\r\n"
