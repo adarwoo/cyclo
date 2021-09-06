@@ -83,7 +83,7 @@ Building the hardware
 The PCB can be done as a single or double sided !
 Cyclo has been designed with an old Cadsoft Eagle (v7.x) using a non-profile licence.
 Since, CadSoft was acquired by Autodesk, but the files remain compatible with
-the latest version of Eagle.
+the latest version of Eagle. Given the size of the PCB, the free edition is enough.
 
 I have added the .brd and .sch which must PCB house will take.
 If you plan on making the PCB yourself - you will need a production method which can achieve 
@@ -105,13 +105,15 @@ Cyclo is licenced under MIT licence.
 
 External links
 ==============
-FreeRTOS              : https://freertos.org
-ETL                   : https://www.etlcpp.com
-Boost SML             : https://boost-ext.github.io/sml/index.html
-Typestring library    : https://github.com/irrequietus/typestring
-Toolchain for Windows : https://blog.zakkemble.net/avr-gcc-builds/
-Toolchain for Linux   : https://avr.lumito.net/downloads/
-Docker                : https://www.docker.com
-VSCode                : https://code.visualstudio.com
-Git                   : https://git-scm.com
-GNU Make              : https://www.gnu.org/software/make/
+
+* FreeRTOS              : https://freertos.org
+* ETL                   : https://www.etlcpp.com
+* Boost SML             : https://boost-ext.github.io/sml/index.html
+* Typestring library    : https://github.com/irrequietus/typestring
+* Toolchain for Windows : https://blog.zakkemble.net/avr-gcc-builds/
+* Toolchain for Linux   : https://avr.lumito.net/downloads/
+* Docker                : https://www.docker.com
+* VSCode                : https://code.visualstudio.com
+* Git                   : https://git-scm.com
+* GNU Make              : https://www.gnu.org/software/make/
+* Eagle                 : https://www.autodesk.fr/products/eagle/overview
