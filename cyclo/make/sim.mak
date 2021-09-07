@@ -1,7 +1,13 @@
 # Make rules specific to the simulator
 
+# Forcing debug in all cases - what's the point of the simulator otherwise?
+# Turn it of with NDEBUG=1
+ifndef NDEBUG
+DEBUG=1
+endif
+
 tc_prefix:=
-CPPFLAGS = -D_POSIX
+CPPFLAGS += -D_POSIX
 LDFLAGS += -pthread
 
 ifdef DEBUG

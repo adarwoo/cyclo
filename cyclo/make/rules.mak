@@ -1,6 +1,6 @@
 # By default, build for the AVR target. Export sim to build a simulator
 target := $(if $(SIM),sim,avr)
-build_type := $(if $(DEBUG),debug,release)
+build_type = $(if $(NDEBUG),release,$(if $(DEBUG),debug,release))
 mute := $(if $(VERBOSE),@set -x;,@)
 
 include make/$(target).mak
@@ -39,7 +39,7 @@ all : $(BUILD_DIR)/$(BIN)
 $(BUILD_DIR): ; @-mkdir -p $@
 
 $(BUILD_DIR)/$(BIN) : $(OBJS)
-	@echo "Linking $^"
+	@echo "Linking to $@"
 	$(mute)$(CXX) -Wl,--start-group $^ -Wl,--end-group ${LDFLAGS} -o $@
 	$(mute)$(SIZE) $@
 

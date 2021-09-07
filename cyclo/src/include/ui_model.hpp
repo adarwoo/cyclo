@@ -50,9 +50,6 @@ struct ManualProgram
    };
 
    ManualProgram();
-
-   // Set the cached manual value from a internal program
-   void import_program( const Program &program_index );
 };
 
 
@@ -65,7 +62,6 @@ class UIModel : public ManualProgram
    ProgramManager &program_manager;
    ///< The program being displayed
    uint8_t program_index;
-
 
 public:
    using program_state_t = ProgramManager::program_state_t;

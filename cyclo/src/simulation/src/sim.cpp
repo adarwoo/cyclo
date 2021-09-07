@@ -151,6 +151,8 @@ extern "C"
       return buf;
    }
 
+   extern void ssd1306_print();
+
    void scan_keys()
    {
       LOG_TRACE( DOM, "Task key scanning running" );
@@ -168,6 +170,15 @@ extern "C"
             c           = 0;
             continue;
          }
+
+         if ( c == 'P' )
+         {
+            ssd1306_print();
+            c = 0;
+            continue;
+         }
+
+
 
          if ( send_to_cdc )
          {

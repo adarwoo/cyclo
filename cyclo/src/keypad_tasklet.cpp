@@ -28,9 +28,9 @@ SOFTWARE.
  *
  * @author guillaume.arreckx
  */
-#include "keypad_tasklet.hpp"
-
 #include "asx.h"
+
+#include "keypad_tasklet.hpp"
 #include "keypad.h"
 #include "msg_defs.hpp"
 

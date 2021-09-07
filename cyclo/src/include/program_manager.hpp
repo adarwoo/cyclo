@@ -119,6 +119,9 @@ public:
    // Grab the program
    inline Program &get_active_program() { return active_program; }
 
+   // Grab the map
+   inline Pgms get_map() { return occupancy_map; }
+
    /** Grab the next available slot from the given position */
    uint8_t get_next( uint8_t from );
 

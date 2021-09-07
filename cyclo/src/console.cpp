@@ -193,7 +193,10 @@ void Console::process( etl::string_view line )
 
       break;
    case Parser::Result::del: program_manager.erase( parser.get_program_number() ); break;
-   case Parser::Result::run: program_manager.load( parser.get_program_number() ); break;
+   case Parser::Result::run:
+      program_manager.load( parser.get_program_number() );
+      fx::publish( msg::StartProgram{true});
+      break;
    case Parser::Result::save:
       if ( last_program.empty() )
       {

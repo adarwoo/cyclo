@@ -32,36 +32,21 @@ SOFTWARE.
 
 #include "asx.h"
 
-namespace manual_program
-{
-   namespace default_values
-   {
-      namespace on
-      {
-         constexpr auto minutes = 1;
-         constexpr auto seconds = 0;
-      }  // namespace on
-
-      namespace off
-      {
-         constexpr auto minutes = 0;
-         constexpr auto seconds = 5;
-      }  // namespace off
-   }     // namespace default_values
-}  // namespace manual_program
-
-using namespace manual_program::default_values;
-
 
 /** Contruct a manual program as o 1 minute and off 5 seconds */
 ManualProgram::ManualProgram()
-   : on_min{ on::minutes }, on_sec{ on::seconds }, off_min{ off::minutes }, off_sec{ off::seconds }
+   : on_min{0}, on_sec{0}, off_min{0}, off_sec{0}
 {}
 
 
-// Set the cached manual value from a internal program
-void ManualProgram::import_program( const Program &pgm )
+UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
 {
+   // Load the manual program. The programs manager guarantees it exists
+   program_manager.load( 0 );
+
+   // Import the manual program
+   const Program &pgm = program_manager.get_active_program();
+
    Command itemClose = pgm.at( 0 );
    Command itemOpen  = pgm.at( 1 );
 
@@ -75,10 +60,7 @@ void ManualProgram::import_program( const Program &pgm )
    // Work with seconds (not ms)
    on_sec  = to_min_sec( itemClose.delay_ms, on_min );
    off_sec = to_min_sec( itemOpen.delay_ms, off_min );
-}
 
-UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
-{
    // Get the index of the selected program
    program_index = program_manager.get_selected();
 }

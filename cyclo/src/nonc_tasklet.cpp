@@ -29,12 +29,12 @@ SOFTWARE.
  */
 #include "nonc_tasklet.hpp"
 
-#include "asf.h"
+#include "asx.h"
 
 
 NoNcTasklet::NoNcTasklet( Contact &contact ) : contact{ contact }
 {
-   #ifndef SIM
+   #ifndef _POSIX
    // Remember this_ since the callback does have any params
    this_ = this;
 
@@ -52,7 +52,7 @@ NoNcTasklet::NoNcTasklet( Contact &contact ) : contact{ contact }
 
 void NoNcTasklet::read_nonc()
 {
-   #ifndef SIM
+   #ifndef _POSIX
    // Both sides are read
    // The state changes once the following is measured
    bool nc_readback = not ioport_get_pin_level( SWITCH_SENSE_NC );

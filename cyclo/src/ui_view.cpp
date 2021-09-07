@@ -26,10 +26,8 @@ SOFTWARE.
  *
  * @author: software@arreckx.com
  */
-#include "ui_view.hpp"
-
 #include "asx.h"
-
+#include "ui_view.hpp"
 #include <logger.h>
 
 namespace

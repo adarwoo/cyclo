@@ -22,9 +22,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
-#include "program_manager.hpp"
-
 #include "asx.h"
+#include "program_manager.hpp"
 
 #include <logger.h>
 
@@ -49,6 +48,9 @@ namespace
 
    // Zero string
    etl::string<0> zs;
+
+   // Default manual program string
+   const char * DEFAULT_MANUAL_PGM = "c 1M 0s o 0M 5s";
 };  // namespace
 
 ProgramManager::ProgramManager()
@@ -64,6 +66,12 @@ ProgramManager::ProgramManager()
    if ( auto_start >= 0 )
    {
       selected = auto_start;
+   }
+
+   // The program 0 must exists - create on if nothing
+   if ( not occupancy_map[0] )
+   {
+      write_pgm_at( 0, DEFAULT_MANUAL_PGM );
    }
 }
 
@@ -94,11 +102,8 @@ void ProgramManager::scan()
             // Is it the default?
             if ( *marker_loc == '*' )
             {
-               // Load it!
-               load( i );
-
                // Indicate the program is auto_start
-               auto_start = true;
+               auto_start = i;
             }
          }
       }
@@ -200,6 +205,7 @@ void ProgramManager::write_pgm_at( uint8_t pos, etl::string_view view )
 void ProgramManager::load( uint8_t pgmIndex )
 {
    LOG_HEADER( DOM );
+   bool loaded = false;
 
    // As different tasks using this method, make it safe
    rtos::Lock_guard{ lock };
@@ -212,13 +218,10 @@ void ProgramManager::load( uint8_t pgmIndex )
 
       // Parse
       auto res = parser.parse( pgm );
-
-      if ( res == Parser::Result::program )
-      {
-         fx::publish( msg::StartProgram{ true } );
-      }
+      loaded = (res == Parser::Result::program);
    }
-   else
+
+   if ( not loaded )
    {
       // Create a default
       active_program.clear();

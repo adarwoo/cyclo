@@ -14,7 +14,9 @@
 			"string": "cpp",
 			"vector": "cpp",
 			"system_error": "cpp",
-			"array": "cpp"
+			"array": "cpp",
+			"atomic": "cpp",
+			"memory_resource": "cpp"
 		}
 	}
 }

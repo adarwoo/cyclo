@@ -33,6 +33,7 @@ INCLUDE_DIRS += \
   $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix \
   $(KERNEL_DIR)/portable/ThirdParty/GCC/Posix/utils \
   ${SIMULATION_DIR}/include \
+  $(ASF_DIR)/common/services/gfx_mono \
 
 else
 INCLUDE_DIRS += \
@@ -103,14 +104,18 @@ SRCS.sim += \
    ${LOGGER_DIR}/src/logger_os_linux.cpp \
    ${LOGGER_DIR}/src/logger_trace_stack_linux.cpp \
    ${SIMULATION_DIR}/src/sim.cpp \
-   ${SIMULATION_DIR}/src/gfx.cpp \
    ${SIMULATION_DIR}/src/nvm.cpp \
+   ${SIMULATION_DIR}/src/ssd1306.c \
    ${SIMULATION_DIR}/src/logger.c \
+   $(ASF_DIR)/common/services/gfx_mono/gfx_mono_framebuffer.c  \
+   $(ASF_DIR)/common/services/gfx_mono/gfx_mono_generic.c \
+   $(ASF_DIR)/common/services/gfx_mono/gfx_mono_text.c  \
+   $(ASF_DIR)/common/services/gfx_mono/gfx_mono_ug_2832hsweg04.c  \
+   $(ASF_DIR)/common/services/gfx_mono/sysfont.c \
 
 # ASF sources
 SRCS.avr += \
    ${KERNEL_DIR}/portable/ThirdParty/GCC/ATxmega/port.c \
-   $(ASF_DIR)/common/components/display/ssd1306/font.c \
    $(ASF_DIR)/common/services/usb/class/cdc/device/udi_cdc.c  \
    $(ASF_DIR)/common/services/usb/class/cdc/device/udi_cdc_desc.c \
    $(ASF_DIR)/common/services/usb/udc/udc.c \
