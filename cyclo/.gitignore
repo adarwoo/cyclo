@@ -6,4 +6,6 @@ avr_release
 avr_debug
 sim_release
 sim_debug
+cyclo.map
+.vscode/*.log
 
