@@ -16,7 +16,10 @@
 			"system_error": "cpp",
 			"array": "cpp",
 			"atomic": "cpp",
-			"memory_resource": "cpp"
+			"memory_resource": "cpp",
+			"gfx_mono_ug_2832hsweg04.h": "c",
+			"gfx_mono_framebuffer.h": "c",
+			"ssd1306.h": "c"
 		}
 	}
 }

@@ -41,7 +41,8 @@ $(BUILD_DIR): ; @-mkdir -p $@
 $(BUILD_DIR)/$(BIN) : $(OBJS)
 	@echo "Linking to $@"
 	$(mute)$(CXX) -Wl,--start-group $^ -Wl,--end-group ${LDFLAGS} -o $@
-	$(mute)$(SIZE) $@
+	$(DIAG)
+
 
 -include ${DEP_FILES}
 

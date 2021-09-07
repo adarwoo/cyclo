@@ -37,7 +37,7 @@
 #ifndef UTILS_PROGMEM_H
 #define UTILS_PROGMEM_H
 
-# define pgm_read_byte( p ) ( *p )
+# define pgm_read_byte( p ) ( *((uint8_t*)(void *)p) )
 
 # define PROGMEM
 # define PSTR( x ) x

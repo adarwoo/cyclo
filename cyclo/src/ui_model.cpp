@@ -38,7 +38,6 @@ ManualProgram::ManualProgram()
    : on_min{0}, on_sec{0}, off_min{0}, off_sec{0}
 {}
 
-
 UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
 {
    // Load the manual program. The programs manager guarantees it exists
@@ -64,7 +63,6 @@ UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
    // Get the index of the selected program
    program_index = program_manager.get_selected();
 }
-
 
 ///< Persist the manual program to the EEProm
 void UIModel::store_manual_pgm()

@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+// Force a framebuffer type
+#define SSD1306_TWI_INTERFACE 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif

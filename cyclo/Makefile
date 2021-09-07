@@ -16,7 +16,7 @@ CXX_DIR               := c++
 CPPFLAGS = \
    -DBOARD=USER_BOARD \
    -DCPP_FREERTOS_NO_EXCEPTIONS \
-   -DGFX_MONO_UG_2832HSWEG04=1
+   -DGFX_MONO_UG_2832HSWEG04=1 \
 
 # -I throughout (C and C++)
 INCLUDE_DIRS = \
