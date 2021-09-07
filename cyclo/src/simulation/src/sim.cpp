@@ -171,15 +171,6 @@ extern "C"
             continue;
          }
 
-         if ( c == 'P' )
-         {
-            ssd1306_print();
-            c = 0;
-            continue;
-         }
-
-
-
          if ( send_to_cdc )
          {
             if ( c != 0 )

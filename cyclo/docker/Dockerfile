@@ -21,7 +21,7 @@ RUN set -xe \
   && apt-get -y install --no-install-recommends \
     apt-utils make bash quilt rsync tree vim less \
     python3 python3-pip git binutils build-essential gdb \
-    sed gawk wget bc coreutils chrpath \
+    sed gawk wget bc coreutils chrpath libx11-dev \
     ca-certificates locales file iproute2 inetutils-ping \
   && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
   && locale-gen en_US.UTF-8 \

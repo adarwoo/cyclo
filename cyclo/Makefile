@@ -105,7 +105,7 @@ SRCS.sim += \
    ${LOGGER_DIR}/src/logger_trace_stack_linux.cpp \
    ${SIMULATION_DIR}/src/sim.cpp \
    ${SIMULATION_DIR}/src/nvm.cpp \
-   ${SIMULATION_DIR}/src/ssd1306.c \
+   ${SIMULATION_DIR}/src/ssd1306.cpp \
    ${SIMULATION_DIR}/src/logger.c \
    $(ASF_DIR)/common/services/gfx_mono/gfx_mono_framebuffer.c  \
    $(ASF_DIR)/common/services/gfx_mono/gfx_mono_generic.c \
