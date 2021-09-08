@@ -29,6 +29,8 @@ SOFTWARE.
 #include <termios.h>
 #include <unistd.h>
 
+#include <logger.h>
+
 // For the logger
 #include "asx.h"
 #include "keypad.h"
@@ -151,7 +153,23 @@ extern "C"
       return buf;
    }
 
-   extern void ssd1306_print();
+   void sim_key_press(uint8_t key)
+   {
+      if ( key != 0 )
+      {
+         LOG_DEBUG(
+            DOM, "Handling %s", key == KEY_UP ? "UP" : key == KEY_DOWN ? "DOWN" : "SELECT" );
+
+         for ( size_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i )
+         {
+            if ( keypad_keys[ i ].mask & key )
+            {
+               // Call the handler
+               keypad_keys[ i ].handler( key, keypad_keys[ i ].param );
+            }
+         }
+      }
+   }
 
    void scan_keys()
    {
@@ -160,10 +178,8 @@ extern "C"
       char c           = 0;
       bool send_to_cdc = true;
 
-      while ( c != 'q' )
+      while ( c != 'Q' )
       {
-         uint8_t key = 0;
-
          if ( c == '/' )
          {
             send_to_cdc = ! send_to_cdc;
@@ -180,25 +196,10 @@ extern "C"
          {
             switch ( c )
             {
-            case 'w': key = KEY_UP; break;
-            case 's': key = KEY_DOWN; break;
-            case '\n': key = KEY_SELECT; break;
+            case 'w': sim_key_press(KEY_UP); break;
+            case 's': sim_key_press(KEY_DOWN); break;
+            case '\n': sim_key_press(KEY_SELECT); break;
             default: break;
-            }
-
-            if ( key != 0 )
-            {
-               LOG_DEBUG(
-                  DOM, "Handling %s", key == KEY_UP ? "UP" : key == KEY_DOWN ? "DOWN" : "SELECT" );
-
-               for ( size_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i )
-               {
-                  if ( keypad_keys[ i ].mask & key )
-                  {
-                     // Call the handler
-                     keypad_keys[ i ].handler( key, keypad_keys[ i ].param );
-                  }
-               }
             }
          }
 

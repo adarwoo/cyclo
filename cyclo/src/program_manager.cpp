@@ -168,7 +168,7 @@ const char *ProgramManager::get_pgm( uint8_t index )
  * @stirng The content to write. The CRC is automatically added
  * @return a pointer to the program at the given index
  */
-void ProgramManager::write_pgm_at( uint8_t pos, etl::string_view view )
+void ProgramManager::write_pgm_at( uint8_t pos, etl::string_view view, mode_t mode )
 {
    LOG_HEADER( DOM );
 
@@ -177,7 +177,7 @@ void ProgramManager::write_pgm_at( uint8_t pos, etl::string_view view )
    // Reset the buffer content to all zero
    memset( &buffer, 0, sizeof( buffer ) );
 
-   buffer.marker = 'A';
+   buffer.marker = (mode == mode_t::normal : 'A' ? '*');
    strncpy( buffer.pgm, view.data(), etl::min(view.size(), STORAGE_MAX_LENGTH) );
 
    // Compute CRC - the whole buffer excluding the crc itself
@@ -272,5 +272,7 @@ void ProgramManager::erase( uint8_t pgmIndex )
 
 void ProgramManager::set_autostart( uint8_t pgmIndex )
 {
-   // TODO
+   // Read the string, and store as auto
+   // Grab the current auto program
+
 }

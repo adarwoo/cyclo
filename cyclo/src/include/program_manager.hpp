@@ -57,7 +57,10 @@ public:
    using Pgms                                 = etl::bitset<10>;
 
    /** The state of the active program  */
-   enum program_state_t : uint8_t { stopped, paused, running };
+   enum program_state_t : uint8_t { stopped, paused, running, usb };
+
+   /** The program mode */
+   enum mode_t : uint8_t { normal, auto };
 
    /** The storage for the program must fit 2 pages of eeprom - header, spare and crc (2 bytes) */
    static constexpr size_t STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
@@ -132,7 +135,7 @@ public:
    const char *get_pgm( uint8_t index );
 
    /** Write the given program at the given slot. 0 is the auto slot */
-   void write_pgm_at( uint8_t pos, etl::string_view view );
+   void write_pgm_at( uint8_t pos, etl::string_view viewm mode_t mode = normal );
 
    /** Load a program from the eeprom - and start it */
    void load( uint8_t pgmIndex );

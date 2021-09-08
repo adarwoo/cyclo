@@ -153,11 +153,7 @@ namespace rtos
    Mutex::Mutex()
    {
       handle= xSemaphoreCreateMutexStatic( &xSemaphoreBuffer );
-
-      if ( handle == NULL )
-      {
-         configASSERT( ! "Mutex constructor Failed" );
-      }
+      assert(handle);
    }
 #endif
 
@@ -169,12 +165,9 @@ namespace rtos
     */
    Tasklet::Tasklet()
    {
-      DtorLock= xSemaphoreCreateBinaryStatic( &xSemaphoreBuffer );
+      DtorLock = xSemaphoreCreateBinaryStatic( &xSemaphoreBuffer );
 
-      if ( DtorLock == NULL )
-      {
-         configASSERT( ! "Tasklet Constructor Failed" );
-      }
+      assert( DtorLock );
 
       xSemaphoreGive( DtorLock );
    }

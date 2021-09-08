@@ -104,6 +104,10 @@ struct walkman
          "do_play"_s
             + event<push> /
                  []( UIModel &m ) {
+                    // Load the program
+                    m.load_command();
+
+                    // Start the sequencer
                     fx::publish( msg::StartProgram{ true } );
                     m.set_state( UIModel::program_state_t::running );
                  } = "do_pause"_s

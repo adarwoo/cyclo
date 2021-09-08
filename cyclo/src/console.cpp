@@ -189,11 +189,20 @@ void Console::process( etl::string_view line )
       break;
    case Parser::Result::quit:
       usb_mode = false;
+      fx::publish( msg::StopProgram{} );
       fx::publish( msg::USBDisconnected{} );
 
       break;
-   case Parser::Result::del: program_manager.erase( parser.get_program_number() ); break;
+   case Parser::Result::del:
+      program_manager.erase( parser.get_program_number() );
+      break;
    case Parser::Result::run:
+      if ( ! usb_mode )
+      {
+         usb_mode = true;
+         fx::publish( msg::USBConnected{} );
+      }
+
       program_manager.load( parser.get_program_number() );
       fx::publish( msg::StartProgram{true});
       break;
@@ -210,8 +219,18 @@ void Console::process( etl::string_view line )
       break;
    case Parser::Result::autostart:
       // Revoke current autostart
+      auto autostart_index = program_manager.get_autostart_index();
+
+      if ( autostart_index >= 0 )
+      {
+         // Erase the current auto
+         program_manager.write_pgm_at(autostart_index, program_manager.get_pgm(autostart_index));
+      }
+
+      auto index = parser.get_program_number();
+
       // Mark autostart
-      program_manager.set_autostart( parser.get_program_number() );
+      program_manager.write_pgm_at(index, program_manager.get_pgm(index));
       break;
    default: LOG_ERROR( DOM, "Unexpected" );
    }

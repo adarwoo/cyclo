@@ -166,6 +166,7 @@ void UIWorker::on_receive( const msg::USBConnected & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBConnected" );
 
+   model.set_state(UIModel::program_state_t::usb);
    process_event( controller, usb_on{} );
 }
 
@@ -174,6 +175,7 @@ void UIWorker::on_receive( const msg::USBDisconnected & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBDisconnected" );
 
+   model.set_state(UIModel::program_state_t::stopped);
    process_event( controller, usb_off{} );
 }
 

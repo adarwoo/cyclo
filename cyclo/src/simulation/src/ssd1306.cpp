@@ -1,20 +1,23 @@
-#include "ssd1306.h"
-
-#include <rtos.hpp>
+#include "asx.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 
-#include <assert.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 #include <logger.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+#include "keypad.h"
+#include "ssd1306.h"
+
+#include <rtos.hpp>
 
 
 const char *const DOM = "X";
-
 
 uint8_t  fb[ 16 ][ 128 ] = { 0 };
 uint8_t  page            = 0;
@@ -27,8 +30,13 @@ int     scr;
 Atom    WM_DELETE_WINDOW;
 XImage *img;
 
+extern "C" void sim_key_press(uint8_t key);
+
 void init_x()
 {
+   // Allow threads
+   XInitThreads();
+
    dpy = XOpenDisplay( NULL );
 
    if ( dpy == NULL )
@@ -89,8 +97,20 @@ void handle_x()
          char   buf[ 128 ] = { 0 };
          KeySym keysym;
          XLookupString( &e.xkey, buf, sizeof buf, &keysym, NULL );
+
+         // Esc ends the event loop and exits
          if ( keysym == XK_Escape )
             break;
+
+         switch ( keysym )
+         {
+         case XK_KP_Enter:
+         case XK_Return:
+            sim_key_press(KEY_SELECT); break;
+         case XK_Down: sim_key_press(KEY_DOWN); break;
+         case XK_Up: sim_key_press(KEY_UP); break;
+         default:          break;
+         }
       }
 
       if (
@@ -103,6 +123,9 @@ void handle_x()
 
    XDestroyWindow( dpy, win );
    XCloseDisplay( dpy );
+
+   // Close the application
+   exit(0);
 }
 
 static inline void inc_addr()
@@ -161,7 +184,7 @@ extern "C" void ssd1306_write_data( uint8_t data )
    }
 
    XPutImage( dpy, win, gc, img, 0, 0, 20, 20, 48, 64 );
-   
+
    inc_addr();
 }
 

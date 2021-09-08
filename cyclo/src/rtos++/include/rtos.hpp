@@ -497,10 +497,7 @@ namespace rtos
             TName::data(), PeriodInTicks, Periodic ? pdTRUE : pdFALSE, this,
             TimerCallbackFunctionAdapter, &pxTimerBuffer );
 
-         if ( handle == NULL )
-         {
-            configASSERT( ! "Timer Constructor Failed" );
-         }
+         assert(handle);
       }
 
       ~Timer() { xTimerDelete( handle, tick::infinite ); }

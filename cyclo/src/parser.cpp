@@ -37,7 +37,7 @@ SOFTWARE.
 
 // Construct a parser
 Parser::Parser( Program &program, etl::istring &error )
-   : live_{ program }, err_( error ), buffer_{ nullptr }
+   : live_{ program }, err_( error ), buffer_{ nullptr }, distance{0}, program_number{0}
 {}
 
 /**

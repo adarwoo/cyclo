@@ -2,10 +2,9 @@
 BIN                   := cyclo
 
 # Paths, local to src
-FREERTOS_DIR          := FreeRTOS
 LOGGER_DIR            := logger
 BOOST_DIR             := boost
-KERNEL_DIR            := ${FREERTOS_DIR}/Source
+KERNEL_DIR            := FreeRTOS/Source
 RTOS_DIR              := rtos++
 SIMULATION_DIR        := simulation
 FX_DIR                := fx

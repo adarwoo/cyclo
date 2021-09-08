@@ -34,8 +34,6 @@ SOFTWARE.
 
 struct ManualProgram
 {
-   bool repeat;  ///< If true, the sequence is looped
-
    ///< Read as an array or as a struct
    union
    {

@@ -138,6 +138,9 @@ void UIView::draw_splash()
 
 void UIView::draw_prog( bool highlight )
 {
+   // Clear to overwrite
+   gfx_mono_draw_filled_rect( 14, 3, 24, 10, GFX_PIXEL_CLR );
+
    if ( model.get_pgm() == 0 )
    {
       gfx_mono_draw_string( "MAN", 16, 4, &sysfont );
@@ -146,6 +149,7 @@ void UIView::draw_prog( bool highlight )
    {
       char pgmString[ 4 ];
       snprintf( pgmString, 3, "P%1u", model.get_pgm() % 10 );
+      gfx_mono_draw_string( pgmString, 20, 4, &sysfont );
    }
 
    if ( highlight )
