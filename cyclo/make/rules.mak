@@ -35,6 +35,9 @@ COMPILE.cxx      = $(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 
 all : $(BUILD_DIR)/$(BIN)
 
+sim :
+	$(mute)$(MAKE) $(MAKEFLAGS) --no-print-directory SIM=1 all
+
 # Create the build directory
 $(BUILD_DIR): ; @-mkdir -p $@
 

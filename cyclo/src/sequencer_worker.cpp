@@ -54,6 +54,8 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
       // Start from the start
       pgm_man.get_active_program().start();
 
+      // Reset the number of ticks left. This is used when pausing,
+      // so we resume with the actual time left
       ticks_left = 0;
    }
    else if ( ticks_left )
@@ -134,10 +136,10 @@ void SequencerWorker::execute_next()
          timer.set_period( rtos::tick::from_ms( cmd->delay_ms ) );
          timer.start();
       }
-   }
-   else
-   {
-      // The program has stopped - let the GUI know
-      fx::publish( msg::ProgramIsStopped{} );
+      else
+      {
+         // The program has stopped - let the GUI know
+         fx::publish( msg::ProgramIsStopped{} );
+      }
    }
 }

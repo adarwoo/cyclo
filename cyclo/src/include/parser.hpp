@@ -79,7 +79,7 @@ public:
    ///< Access the error string
    uint8_t get_error_position() { return distance; }
 
-   ///< Access the program number
+   ///< Access the program number. Guaranteed since the manual program always exists
    uint8_t get_program_number() { return program_number; }
 
    /**

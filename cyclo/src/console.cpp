@@ -180,7 +180,7 @@ void Console::process( etl::string_view line )
 
       program_manager.load( temp_program );
       // Copy this program, so it can be saved as is
-      last_program.assign(line.begin(), line.end());
+      last_program.assign( line.begin(), line.end() );
       break;
    case Parser::Result::help: show_help(); break;
    case Parser::Result::list:
@@ -193,9 +193,7 @@ void Console::process( etl::string_view line )
       fx::publish( msg::USBDisconnected{} );
 
       break;
-   case Parser::Result::del:
-      program_manager.erase( parser.get_program_number() );
-      break;
+   case Parser::Result::del: program_manager.erase( parser.get_program_number() ); break;
    case Parser::Result::run:
       if ( ! usb_mode )
       {
@@ -204,12 +202,12 @@ void Console::process( etl::string_view line )
       }
 
       program_manager.load( parser.get_program_number() );
-      fx::publish( msg::StartProgram{true});
+      fx::publish( msg::StartProgram{ true } );
       break;
    case Parser::Result::save:
       if ( last_program.empty() )
       {
-         print_error("No valid program to save");
+         print_error( "No valid program to save" );
       }
       else
       {
@@ -218,21 +216,24 @@ void Console::process( etl::string_view line )
 
       break;
    case Parser::Result::autostart:
+   {
       // Revoke current autostart
       auto autostart_index = program_manager.get_autostart_index();
 
       if ( autostart_index >= 0 )
       {
          // Erase the current auto
-         program_manager.write_pgm_at(autostart_index, program_manager.get_pgm(autostart_index));
+         program_manager.write_pgm_at(
+            autostart_index, program_manager.get_pgm( autostart_index ) );
       }
 
       auto index = parser.get_program_number();
 
       // Mark autostart
-      program_manager.write_pgm_at(index, program_manager.get_pgm(index));
-      break;
-   default: LOG_ERROR( DOM, "Unexpected" );
+      program_manager.write_pgm_at( index, program_manager.get_pgm( index ) );
+   }
+   break;
+   default: LOG_ERROR( DOM, "Unexpected" ); break;
    }
 }
 
@@ -268,7 +269,7 @@ void Console::show_help()
       "  quit       : Leave this shell and re-enable manual mode\r\n"
       "Fast run:\r\n"
       "  [0-9] <*>  : Type a valid program number to run it.\r\n"
-      "               Add a '*' to loop it. Ignored for looped programs.\r\n");
+      "               Add a '*' to loop it. Ignored for looped programs.\r\n" );
 
    TTerminal::print_P( help );
 }

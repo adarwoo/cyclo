@@ -177,7 +177,7 @@ void ProgramManager::write_pgm_at( uint8_t pos, etl::string_view view, mode_t mo
    // Reset the buffer content to all zero
    memset( &buffer, 0, sizeof( buffer ) );
 
-   buffer.marker = (mode == mode_t::normal : 'A' ? '*');
+   buffer.marker = (mode == mode_t::normal) ? 'A' : '*';
    strncpy( buffer.pgm, view.data(), etl::min(view.size(), STORAGE_MAX_LENGTH) );
 
    // Compute CRC - the whole buffer excluding the crc itself

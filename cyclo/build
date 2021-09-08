@@ -25,13 +25,21 @@ workdir="$(realpath $(pwd))"
 # Name the runtime container uniquely
 container_name="AVR_$(id -u)_$(date +%Y%m%d-%H%M%S)"
 
-# Detect number of CPUs
-core_count=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
+# Detect number of CPUs. Environment variable J can override the value. If no value given, then 1 is used
+if [[ -v J ]]; then
+   ((core_count=j)); ((core_count)) || let core_count=1
+else
+   core_count=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
+fi
+
+# X Options
+XAUTHORITY=$(xauth info | grep "Authority file" | awk '{ print $3 }')
+xoptions="-e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $XAUTHORITY:$HOME/.Xauthority:ro"
 
 # Run make or start a shell
 if [[ "$1" == "shell" ]]; then
    shift
-   docker run -ti --rm --init --name $container_name -h $hostname_ $base_opts -w $workdir $image $@
+   docker run -ti --rm --init --name $container_name $xoptions -h $hostname_ $base_opts -v /tmp/eeprom.bin:/tmp/eeprom.bin -w $workdir $image $@
 else
    docker run -ti --rm --init --name $container_name -h $hostname_ $base_opts -w $workdir $image make -j$core_count $@
 fi

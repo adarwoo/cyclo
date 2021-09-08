@@ -120,9 +120,9 @@ struct walkman
                     fx::publish( msg::StopProgram{} );
                     m.set_state( UIModel::program_state_t::paused );
                  } = "do_play_or_stop"_s,
-         "do_pause"_s + event<up>[ is_running ]
+         "do_pause"_s + event<up>[ is_running ], 
+         "do_pause"_s + event<pgm_stopped> = "do_play"_s,
 
-         ,
          "do_play_or_stop"_s + sml::on_entry<_> / []( UIView &v ) { v.draw_walkman( 1 ); },
          "do_play_or_stop"_s
             + event<push> /
@@ -135,7 +135,6 @@ struct walkman
          ,
          "do_stop"_s + sml::on_entry<_> / []( UIView &v ) { v.draw_walkman( 2 ); },
          "do_stop"_s + event<up> = "do_play_or_stop"_s,
-         "do_stop"_s + event<pgm_stopped> = "do_play"_s,
          "do_stop"_s
             + event<push> /
                  []( UIModel &m ) {
@@ -349,15 +348,13 @@ struct sm_cyclo
       using namespace sml;
 
       return make_transition_table(
-            * "splash"_s + event<splash_timeout> = state<mode_manual>
-            , "splash"_s + sml::on_entry<_> / [] (UIView &v) {
-               v.draw_splash(); }
+         *"splash"_s + event<splash_timeout> = state<mode_manual>,
+         "splash"_s + sml::on_entry<_> / []( UIView &v ) { v.draw_splash(); }
 
-            , state<mode_manual> + sml::on_entry<_> / [] (UIView &v){
-               v.draw(); }
-            , state<mode_manual> + event<usb_on> / [] (UIView&v) { v.draw_usb(); } = state<mode_usb>
-            , state<mode_usb> + event<usb_off> = state<mode_manual>
-        );
+         ,
+         state<mode_manual> + sml::on_entry<_> / []( UIView &v ) { v.draw(); },
+         state<mode_manual> + event<usb_on> / []( UIView &v ) { v.draw_usb(); } = state<mode_usb>,
+         state<mode_usb> + event<usb_off> = state<mode_manual> );
    }
 };
 

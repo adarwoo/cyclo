@@ -183,6 +183,7 @@ void UIWorker::on_receive( const msg::ProgramIsStopped & )
 {
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "ProgramIsStopped" );
-
+   
+   model.set_state( UIModel::program_state_t::stopped );
    process_event( controller, pgm_stopped{} );
 }
