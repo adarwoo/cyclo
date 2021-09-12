@@ -247,6 +247,7 @@ void ProgramManager::load( const Program &pgm )
 
    // Make a copy
    active_program.assign( pgm.begin(), pgm.end() );
+   active_program.start();
 
    // Let the sequencer know
    fx::publish( msg::StartProgram{ true } );

@@ -284,6 +284,7 @@ static inline void ssd1306_write_cmd_buffer(const uint8_t *data, uint8_t size)
 #endif
 }
 
+#if defined(SSD1306_TWI_INTERFACE)
 /**
  * \brief Write data buffer to the display controller
  *
@@ -295,20 +296,29 @@ static inline void ssd1306_write_cmd_buffer(const uint8_t *data, uint8_t size)
  */
 static inline void ssd1306_write_data_buffer(const uint8_t *data, uint8_t size)
 {
-#if defined(SSD1306_TWI_INTERFACE)
 	((uint8_t *)twi_packet.buffer)[0] = 0b01000000;
 	uint8_t *pTo = &(((uint8_t *)twi_packet.buffer)[1]);
-	
+
 	while ( size )
 	{
 		uint8_t count = min(size, SSD1306_BUFFER_SIZE);
-		memcpy(pTo, data, count);
+
+		// If data is NULL, zero the buffer
+		if ( data == NULL )
+		{
+			memset(pTo, 0, count);
+		}
+		else
+		{
+			memcpy(pTo, data, count);
+		}
+
 	    twi_packet.length = count;
 		twi_master_write(SSD1306_TWI, &twi_packet);	
 		size -= count;
 	}
-#endif
 }
+#endif
 
 /**
  * \brief Read data from the controller

@@ -340,7 +340,8 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
             // Check the number
             if ( program_number == 255 )
             {
-               err_ = "A delay must be followed by 'open' or 'close'";
+               err_ = "Bad program number or delay without command";
+               retval = Result::error;
             }
             else
             {

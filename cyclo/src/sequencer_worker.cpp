@@ -48,11 +48,15 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
       // Reset the counter
       pgm_man.set_counter( 0 );
 
-      // Update the GUI
-      fx::publish( msg::CounterUpdate{} );
+      // Is it a loop ?
+      if ( pgm_man.get_active_program().back().command == Command::loop )
+      {
+         // Update the GUI
+         fx::publish( msg::CounterUpdate{} );
 
-      // Start from the start
-      pgm_man.get_active_program().start();
+         // Start from the start
+         pgm_man.get_active_program().start();
+      }
 
       // Reset the number of ticks left. This is used when pausing,
       // so we resume with the actual time left

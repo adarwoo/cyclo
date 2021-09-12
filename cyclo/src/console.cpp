@@ -75,6 +75,7 @@ extern "C" void console_cdc_disabled( uint8_t port )
 
 void console_putc( vt100::char_t c )
 {
+   LOG_DEBUG( DOM, "PUT %c [0x%.2x]", isalnum( c ) ? c : '.', c );
    udi_cdc_multi_putc( 0, (int)c );
 }
 
@@ -180,6 +181,7 @@ void Console::process( etl::string_view line )
 
       program_manager.load( temp_program );
       // Copy this program, so it can be saved as is
+      last_program.clear();
       last_program.assign( line.begin(), line.end() );
       break;
    case Parser::Result::help: show_help(); break;
@@ -195,14 +197,23 @@ void Console::process( etl::string_view line )
       break;
    case Parser::Result::del: program_manager.erase( parser.get_program_number() ); break;
    case Parser::Result::run:
+      // Toggle USB mode
       if ( ! usb_mode )
       {
          usb_mode = true;
          fx::publish( msg::USBConnected{} );
       }
 
-      program_manager.load( parser.get_program_number() );
-      fx::publish( msg::StartProgram{ true } );
+      // Check the program exists
+      if ( program_manager.get_map()[ parser.get_program_number() ] )
+      {
+         program_manager.load( parser.get_program_number() );
+         fx::publish( msg::StartProgram{ true } );
+      }
+      else
+      {
+         print_error( "No such program number" );
+      }
       break;
    case Parser::Result::save:
       if ( last_program.empty() )

@@ -28,18 +28,19 @@ SOFTWARE.
  * This terminal server supports a VT100 terminal, and provides history, delete, insertion etc.
  */
 
+#include "logger.h"
+
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
-#include "logger.h"
 
 // include project-specific configuration
+#include "vt100.hpp"
+
 #include <etl/circular_buffer.h>
 #include <etl/optional.h>
 #include <etl/string.h>
 #include <etl/string_view.h>
-
-#include "vt100.hpp"
 
 //
 // Constant definitions
@@ -99,7 +100,7 @@ public:
       , skip_first_if( '\0' )
    {}
 
-   virtual void print_prompt() { TTerminal::print_P( PSTR("> ") ); }
+   virtual void print_prompt() { TTerminal::print_P( PSTR( "> " ) ); }
 
    etl::string_view get_line() { return etl::string_view( history_buffer.back() ); }
 
@@ -157,6 +158,30 @@ public:
             {
                --input_buffer_position;
                TTerminal::move_back();
+            }
+            else
+            {
+               TTerminal::ring_bell();
+            }
+            break;
+         case vt100::arrow::home:
+            // if the edit input_buffer_position is non-zero
+            if ( input_buffer_position != input_buffer.begin() )
+            {
+               TTerminal::move_back( input_buffer_position - input_buffer.begin() );
+               input_buffer_position = input_buffer.begin();
+            }
+            else
+            {
+               TTerminal::ring_bell();
+            }
+            break;
+         case vt100::arrow::end:
+            // if the edit input_buffer_position is non-zero
+            if ( input_buffer_position != input_buffer.end() )
+            {
+               TTerminal::move_forward( input_buffer.end() - input_buffer_position );
+               input_buffer_position = input_buffer.end();
             }
             else
             {
@@ -228,7 +253,7 @@ public:
          }
       }
       // handle special characters - LineFeed or CarriageReturn?
-      else if ( c == ascii::lf or c == ascii::cr)
+      else if ( c == ascii::lf or c == ascii::cr )
       {
          // user pressed [ENTER] - echo CR and LF to terminal
          TTerminal::move_to_start_of_next_line();
@@ -251,7 +276,7 @@ public:
          // reset buffer
          return retval;
       }
-      else if ( c == ascii::bs )
+      else if ( c == ascii::del or c == ascii::bs )
       {
          if ( input_buffer_position == input_buffer.begin() )
          {
@@ -282,13 +307,9 @@ public:
                TTerminal::putc( ' ' );
 
                // reposition cursor
-               TTerminal::move_back( input_buffer.end() - input_buffer_position );
+               TTerminal::move_back( input_buffer.end() - input_buffer_position + 1 /*blank*/ );
             }
          }
-      }
-      else if ( c == ascii::del )
-      {
-         // not yet handled
       }
       else if ( c == ascii::esc )
       {

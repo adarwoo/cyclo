@@ -194,3 +194,29 @@ extern "C" uint8_t ssd1306_read_data()
    inc_addr();
    return retval;
 }
+
+extern "C" void ssd1306_write_data_buffer(const uint8_t *data, uint8_t size)
+{
+   while ( size-- )
+   {
+      if ( data == NULL )
+      {
+         fb[ page ][ col ] = 0;
+      }
+      else
+      {
+         fb[ page ][ col ] = *data++;
+      }
+
+      for ( int r = 0; r < 8; ++r )
+      {
+         XPutPixel(
+            img, col, page * 8 + r,
+            fb[ page ][ col ] & ( 1 << r ) ? WhitePixel( dpy, scr ) : BlackPixel( dpy, scr ) );
+      }
+
+      inc_addr();
+   }
+
+   XPutImage( dpy, win, gc, img, 0, 0, 20, 20, 48, 64 );
+}

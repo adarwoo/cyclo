@@ -29,8 +29,6 @@ SOFTWARE.
 #include <termios.h>
 #include <unistd.h>
 
-#include <logger.h>
-
 // For the logger
 #include "asx.h"
 #include "keypad.h"
@@ -153,12 +151,15 @@ extern "C"
       return buf;
    }
 
-   void sim_key_press(uint8_t key)
+   void sim_key_press( uint8_t key )
    {
       if ( key != 0 )
       {
          LOG_DEBUG(
-            DOM, "Handling %s", key == KEY_UP ? "UP" : key == KEY_DOWN ? "DOWN" : "SELECT" );
+            DOM, "Handling %s",
+            key == KEY_UP     ? "UP"
+            : key == KEY_DOWN ? "DOWN"
+                              : "SELECT" );
 
          for ( size_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i )
          {
@@ -175,35 +176,16 @@ extern "C"
    {
       LOG_TRACE( DOM, "Task key scanning running" );
 
-      char c           = 0;
-      bool send_to_cdc = true;
+      char c = 0;
 
-      while ( c != 'Q' )
+      while ( true )
       {
-         if ( c == '/' )
-         {
-            send_to_cdc = ! send_to_cdc;
-            c           = 0;
-            continue;
-         }
-
-         if ( send_to_cdc )
-         {
-            if ( c != 0 )
-               key_queue.send( c );
-         }
-         else
-         {
-            switch ( c )
-            {
-            case 'w': sim_key_press(KEY_UP); break;
-            case 's': sim_key_press(KEY_DOWN); break;
-            case '\n': sim_key_press(KEY_SELECT); break;
-            default: break;
-            }
-         }
-
          c = getch();
+
+         if ( c != 0 )
+         {
+            key_queue.send( c );
+         }
       }
 
       exit( 0 );
@@ -230,7 +212,7 @@ extern "C"
    {
       char c;
       key_queue.receive( c );
-      LOG_DEBUG( DOM, "Sending %#.2x", c );
+      LOG_DEBUG( DOM, "Key detected %#.2x", c );
 
       return (int)c;
    }

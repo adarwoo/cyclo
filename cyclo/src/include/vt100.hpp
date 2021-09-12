@@ -52,6 +52,8 @@ namespace vt100
       constexpr auto down  = 'B';
       constexpr auto right = 'C';
       constexpr auto left  = 'D';
+      constexpr auto end   = 'F';
+      constexpr auto home  = 'H';
    }  // namespace arrow
 
    namespace attr

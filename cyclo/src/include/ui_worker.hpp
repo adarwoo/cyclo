@@ -82,6 +82,9 @@ public:
    // @return true if the main screen can be updated with external changes
    bool can_update();
 
+   // @return true if the main state machine is in USB state
+   bool usb_is_on();
+
    // --------------------------------------------------------------
    // Message handlers
    // --------------------------------------------------------------

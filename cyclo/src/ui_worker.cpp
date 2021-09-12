@@ -59,6 +59,14 @@ UIWorker::UIWorker( ProgramManager &program_manager )
    LOG_HEADER( DOM );
 }
 
+// @return true if the controller is in USB state
+bool UIWorker::usb_is_on()
+{
+   using namespace sml;
+
+   return controller.is( state<mode_usb> );
+}
+
 // @return true if the main screen can be updated with external changes
 bool UIWorker::can_update()
 {
@@ -70,7 +78,9 @@ bool UIWorker::can_update()
 
    LOG_DEBUG(
       DOM, "%s",
-      is_in_splash ? "X = is in splash" : is_in_program_setup ? "X = is in pgm setup" : "OK" );
+      is_in_splash          ? "X = is in splash"
+      : is_in_program_setup ? "X = is in pgm setup"
+                            : "OK" );
 
    return not ( is_in_splash or is_in_program_setup );
 }
@@ -144,6 +154,9 @@ void UIWorker::on_receive( const msg::CounterUpdate & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "CounterUpdate" );
 
+   // Force the state to running
+   model.set_state( UIModel::program_state_t::running );
+
    if ( can_update() )
    {
       view.draw_counter();
@@ -166,7 +179,6 @@ void UIWorker::on_receive( const msg::USBConnected & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBConnected" );
 
-   model.set_state(UIModel::program_state_t::usb);
    process_event( controller, usb_on{} );
 }
 
@@ -175,7 +187,7 @@ void UIWorker::on_receive( const msg::USBDisconnected & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBDisconnected" );
 
-   model.set_state(UIModel::program_state_t::stopped);
+   model.set_state( UIModel::program_state_t::stopped );
    process_event( controller, usb_off{} );
 }
 
@@ -183,7 +195,10 @@ void UIWorker::on_receive( const msg::ProgramIsStopped & )
 {
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "ProgramIsStopped" );
-   
-   model.set_state( UIModel::program_state_t::stopped );
-   process_event( controller, pgm_stopped{} );
+
+   if ( usb_is_on() )
+   {
+      model.set_state( UIModel::program_state_t::stopped );
+      process_event( controller, pgm_stopped{} );
+   }
 }

@@ -36,12 +36,12 @@
 #ifndef _CONF_TWIM_H_
 #define _CONF_TWIM_H_
 
-#define TWI_MASTER       TWIC
-#define TWI_MASTER_PORT  PORTC
-#define TWI_MASTER_ADDR  0x50
-#define TWI_SPEED        400000
+#define TWI_MASTER      TWIC
+#define TWI_MASTER_PORT PORTC
+#define TWI_MASTER_ADDR 0x50
+#define TWI_SPEED       400000
 
 #define CONF_TWIM_INTLVL TWI_MASTER_INTLVL_MED_gc
 #define CONF_PMIC_INTLVL PMIC_MEDLVLEN_bm
 
-#endif // _CONF_TWIM_H_
+#endif  // _CONF_TWIM_H_

@@ -70,9 +70,20 @@ void gfx_mono_ssd1306_init(void)
 	 * controller memory and the framebuffer.
 	 */
 	for (page = 0; page < GFX_MONO_LCD_PAGES; page++) {
+#if defined(SSD1306_TWI_INTERFACE)
+	ssd1306_set_page_address(page);
+	ssd1306_set_column_address(0);
+
+	for (column = 0; column < GFX_MONO_LCD_WIDTH; column++) {
+		gfx_mono_framebuffer_put_byte(page, column, 0);
+	}
+
+	ssd1306_write_data_buffer(NULL, GFX_MONO_LCD_WIDTH);
+#else
 		for (column = 0; column < GFX_MONO_LCD_WIDTH; column++) {
 			gfx_mono_ssd1306_put_byte(page, column, 0x00, true);
 		}
+#endif		
 	}
 }
 
@@ -218,9 +229,13 @@ void gfx_mono_ssd1306_put_page(gfx_mono_color_t *data, gfx_coord_t page,
 	ssd1306_set_page_address(page);
 	ssd1306_set_column_address(column);
 
+#if defined(SSD1306_TWI_INTERFACE)
+	ssd1306_write_data_buffer(data, width);
+#else
 	do {
 		ssd1306_write_data(*data++);
 	} while (--width);
+#endif
 }
 
 /**
@@ -288,6 +303,7 @@ void gfx_mono_ssd1306_put_byte(gfx_coord_t page, gfx_coord_t column,
 
 	ssd1306_write_data(data);
 }
+
 
 /**
  * \brief Get a byte from the display controller RAM
