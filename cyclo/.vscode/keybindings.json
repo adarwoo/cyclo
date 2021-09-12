@@ -1,0 +1,5 @@
+{
+    "key": "f7",
+    "command": "workbench.action.runTask",
+    "args": "BuildSim"
+}

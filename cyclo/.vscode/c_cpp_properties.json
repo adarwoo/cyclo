@@ -3,9 +3,25 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/src/**"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/src/include",
+                "${workspaceFolder}/src/config",
+                "${workspaceFolder}/src/FreeRTOS/Source/include",
+                "${workspaceFolder}/src/logger/include",
+                "${workspaceFolder}/src/boost",
+                "${workspaceFolder}/src/fx/include",
+                "${workspaceFolder}/src/rtos++/include",
+                "${workspaceFolder}/src/FreeRTOS/Source/portable/ThirdParty/GCC/Posix",
+                "${workspaceFolder}/src/FreeRTOS/Source/portable/ThirdParty/GCC/Posix/utils",
+                "${workspaceFolder}/src/simulation/include",
+                "${workspaceFolder}/src/ASF/common/services/gfx_mono"
             ],
-            "defines": ["_POSIX"],
+            "defines": [
+                "_POSIX", 
+                "BOARD=USER_BOARD",
+                "CPP_FREERTOS_NO_EXCEPTIONS",
+                "GFX_MONO_UG_2832HSWEG04=1"
+            ],
             "compilerPath": "/usr/bin/g++",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",

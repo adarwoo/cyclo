@@ -33,7 +33,7 @@ DEP_FILES        = $(OBJS:%.o=%.d)
 COMPILE.c        = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 COMPILE.cxx      = $(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 
-all : $(BUILD_DIR)/$(BIN)
+all : $(BUILD_DIR)/$(BIN)$(BIN_EXT)
 
 sim :
 	$(mute)$(MAKE) $(MAKEFLAGS) --no-print-directory SIM=1 all
@@ -41,9 +41,10 @@ sim :
 # Create the build directory
 $(BUILD_DIR): ; @-mkdir -p $@
 
-$(BUILD_DIR)/$(BIN) : $(OBJS)
+$(BUILD_DIR)/$(BIN)$(BIN_EXT) : $(OBJS)
 	@echo "Linking to $@"
 	$(mute)$(CXX) -Wl,--start-group $^ -Wl,--end-group ${LDFLAGS} -o $@
+	$(POST_LINK)
 	$(DIAG)
 
 
