@@ -70,7 +70,7 @@ protected:
    uint8_t distance;
 
    ///< Number of the program for program commands
-   uint8_t program_number;
+   int8_t program_number;
 
 public:
    ///< Construct a parser
@@ -79,8 +79,8 @@ public:
    ///< Access the error string
    uint8_t get_error_position() { return distance; }
 
-   ///< Access the program number. Guaranteed since the manual program always exists
-   uint8_t get_program_number() { return program_number; }
+   ///< Access the program number. Guaranteed since the manual program always exists. Can be zero if the program is off.
+   int8_t get_program_number() { return program_number; }
 
    /**
     * Parse a single line passed as a string_view buffer

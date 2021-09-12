@@ -37,7 +37,7 @@ SOFTWARE.
 
 // Construct a parser
 Parser::Parser( Program &program, etl::istring &error )
-   : live_{ program }, err_( error ), buffer_{ nullptr }, distance{0}, program_number{0}
+   : live_{ program }, err_( error ), buffer_{ nullptr }, distance{0}, program_number{-1}
 {}
 
 /**
@@ -103,11 +103,13 @@ bool Parser::parse_program_number( const etl::string_view token )
 {
    auto retval = false;
 
+   // Mark as none
+   program_number = -1;
+
    // Must be a single char 0->9
    if ( not ::isdigit( token.front() ) or token.size() > 1 )
    {
-      err_ = "Expecting a program number";
-      error( token.front() );
+      error(token);
    }
    else
    {
@@ -174,7 +176,7 @@ void Parser::safe_insert( Command::command_t c, etl::string_view token )
  */
 Parser::Result Parser::parse( const etl::string_view &buffer )
 {
-   enum : uint8_t { more, no_more, program, program_1_to_9 } expects = more;
+   enum : uint8_t { more, no_more, program, program_1_to_9, program_or_off } expects = more;
 
 
    auto retval = Result::program; // Default is to expect a program
@@ -213,7 +215,18 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
 
       uint32_t number;
 
-      if ( expects == program or expects == program_1_to_9 )
+      if ( expects == program_or_off )
+      {
+         if ( (not parse_program_number(token)) and token != "off" )
+         {
+            err_ = "Expecting the program number [0 to 9] or 'off'";
+         }
+         else
+         {
+            expects = no_more;
+         }
+      }
+      else if ( expects == program or expects == program_1_to_9 )
       {
          if ( not parse_program_number(token) )
          {
@@ -228,10 +241,7 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
                err_ += '1';
             }
 
-            err_ += " to 9. Got '";
-            err_.append( token.data(), token.size() );
-            err_ += "\'";
-            error( token );
+            err_ += " to 9";
          }
          else
          {
@@ -292,8 +302,8 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
             }
             else if ( is_command( "auto" ) )
             {
-               retval  = Result::quit;
-               expects = program;
+               retval  = Result::autostart;
+               expects = program_or_off;
             }
             else if ( is_command( "save" ) )
             {
@@ -350,6 +360,12 @@ Parser::Result Parser::parse( const etl::string_view &buffer )
             }
          }
       }
+   }
+   // Make sure all required args supplied
+   else if ( expects != no_more )
+   {
+      err_ = "Missing argument";
+      retval = Result::error;
    }
    // else a interactive command was entered
 

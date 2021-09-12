@@ -104,16 +104,26 @@ void Console::show_error()
 
    T::putc( '^' );
    T::move_to_start_of_next_line();
-   print_error( error_buffer.c_str() );
+   print_error( error_buffer.c_str(), false );
 }
 
-void Console::print_error( const char *error )
+void Console::print_error( const char error[], bool is_pgm_str )
 {
    using T = TTerminal;
 
    T::putc( '#' );
    T::putc( ' ' );
-   T::puts( error );
+   
+   if ( is_pgm_str )
+   {
+      T::print_P( error );
+   }
+   else
+   {
+      T::puts( error );
+   }
+
+
    T::move_to_start_of_next_line();
 }
 
@@ -212,13 +222,13 @@ void Console::process( etl::string_view line )
       }
       else
       {
-         print_error( "No such program number" );
+         print_error( PSTR( "No such program number" ) );
       }
       break;
    case Parser::Result::save:
       if ( last_program.empty() )
       {
-         print_error( "No valid program to save" );
+         print_error( PSTR( "No valid program to save" ) );
       }
       else
       {
@@ -228,20 +238,30 @@ void Console::process( etl::string_view line )
       break;
    case Parser::Result::autostart:
    {
-      // Revoke current autostart
-      auto autostart_index = program_manager.get_autostart_index();
+      auto pgm = parser.get_program_number();
 
-      if ( autostart_index >= 0 )
+      // Make sure the program exists
+      if ( pgm >= 0 and not program_manager.get_map()[ pgm ] )
       {
-         // Erase the current auto
-         program_manager.write_pgm_at(
-            autostart_index, program_manager.get_pgm( autostart_index ) );
+         print_error( PSTR( "Empty program slot" ) );
       }
+      else
+      {
+         // Revoke current autostart
+         auto autostart_index = program_manager.get_autostart_index();
+         auto index           = parser.get_program_number();
 
-      auto index = parser.get_program_number();
+         if ( autostart_index >= 0 )
+         {
+            // Erase the current auto
+            program_manager.write_pgm_at(
+               autostart_index, program_manager.get_pgm( autostart_index ) );
+         }
 
-      // Mark autostart
-      program_manager.write_pgm_at( index, program_manager.get_pgm( index ) );
+         // Mark autostart
+         program_manager.write_pgm_at(
+            index, program_manager.get_pgm( index ), ProgramManager::autostart );
+      }
    }
    break;
    default: LOG_ERROR( DOM, "Unexpected" ); break;
@@ -271,16 +291,14 @@ void Console::show_help()
       "  close 250m open 10 c o *\r\n"
       "\r\n"
       "Other commands:\r\n"
-      "  list       : List saved programs\n\r"
-      "  save [1-9] : Save the last valid program\r\n"
-      "  del [1-9]  : Delete the program at the given location\r\n"
-      "  run [0-9]  : Run the given program\r\n"
-      "  auto [0-9] : Start the program automatically on power-up\r\n"
-      "  reset      : Clear the program memory\r\n"
-      "  quit       : Leave this shell and re-enable manual mode\r\n"
+      "  list           : List saved programs\n\r"
+      "  save [1-9]     : Save the last valid program\r\n"
+      "  del [1-9]      : Delete the program at the given location\r\n"
+      "  run [0-9]      : Run the given program\r\n"
+      "  auto [0-9|off] : Start the program automatically on power-up - or turn off\r\n"
+      "  quit           : Leave this shell and re-enable manual mode\r\n"
       "Fast run:\r\n"
-      "  [0-9] <*>  : Type a valid program number to run it.\r\n"
-      "               Add a '*' to loop it. Ignored for looped programs.\r\n" );
+      "  [0-9]          : Type a valid program number to run it.\r\n" );
 
    TTerminal::print_P( help );
 }
@@ -288,18 +306,22 @@ void Console::show_help()
 void Console::show_list()
 {
    // Iterate the bitset
-   uint8_t old, index = 0;
+   uint8_t index, next_index = 0;
+   auto    autostart_index = program_manager.get_autostart_index();
 
    do
    {
-      old   = index;
-      index = program_manager.get_next( index );
+      index      = next_index;
+      next_index = program_manager.get_next( index );
+
       // Print the index
+      TTerminal::move_forward();
+      TTerminal::putc( autostart_index == index ? '*' : ' ' );
       TTerminal::move_forward( 2 );
-      TTerminal::putc( '0' + old );
+      TTerminal::putc( '0' + index );
       TTerminal::putc( ':' );
       TTerminal::move_forward( 4 );
-      TTerminal::puts( program_manager.get_pgm( old ) );
+      TTerminal::puts( program_manager.get_pgm( index ) );
       TTerminal::move_to_start_of_next_line();
-   } while ( old != index );
+   } while ( index != next_index );
 }

@@ -196,9 +196,6 @@ void UIWorker::on_receive( const msg::ProgramIsStopped & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "ProgramIsStopped" );
 
-   if ( usb_is_on() )
-   {
-      model.set_state( UIModel::program_state_t::stopped );
-      process_event( controller, pgm_stopped{} );
-   }
+   model.set_state( UIModel::program_state_t::stopped );
+   process_event( controller, pgm_stopped{} );
 }

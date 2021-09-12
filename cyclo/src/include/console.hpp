@@ -67,7 +67,7 @@ protected:
    void show_error();
 
    ///< Print a simple error
-   void print_error(const char *error);
+   void print_error( const char error[], bool is_pgm_str = true );
 
    ///< Process a full command line
    void process(etl::string_view line);
