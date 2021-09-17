@@ -23,6 +23,7 @@ RUN set -xe \
     python3 python3-pip git binutils build-essential gdb \
     sed gawk wget bc coreutils chrpath libx11-dev \
     ca-certificates locales file iproute2 inetutils-ping \
+    python3-pil \
   && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
   && locale-gen en_US.UTF-8 \
   && ${PKG_CLEANUP}

@@ -14,7 +14,7 @@ CXXFLAGS += -fno-threadsafe-statics
 
 LDFLAGS         += -Wl,-Map="$(BIN).map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atxmega128a4u -Wl,--demangle -Wl,-flto
 
-OBJS = $(foreach file, $(SRCS.common) $(SRCS.avr), $(BUILD_DIR)/$(basename $(file)).o)
+OBJS = $(foreach file, $(SRCS.common) $(SRCS.avr) $(SRCS.rc), $(BUILD_DIR)/$(basename $(file)).o)
 
 define DIAG
 $(mute)$(SIZE) $@ | awk 'NR!=1 {print "Flash: [" $$1 "]" $$1 * 100 / 128 / 1024 "% - RAM: [" $$2 "+" $$3 "]" ($$2 + $$3) * 100 / 8192 "%"}'

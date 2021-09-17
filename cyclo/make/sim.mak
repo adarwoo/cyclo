@@ -21,4 +21,4 @@ ifdef DEBUG
   LDFLAGS += -lrt -fsanitize=address -fsanitize=alignment -static-libasan -static-libstdc++ -lX11
 endif
 
-OBJS = $(foreach file, $(SRCS.common) $(SRCS.sim), $(BUILD_DIR)/$(basename $(file)).o)
+OBJS = $(foreach file, $(SRCS.common) $(SRCS.sim) $(SRCS.rc), $(BUILD_DIR)/$(basename $(file)).o)

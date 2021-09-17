@@ -2,14 +2,16 @@
 BIN                   := cyclo
 
 # Paths, local to src
-LOGGER_DIR            := logger
-BOOST_DIR             := boost
-KERNEL_DIR            := FreeRTOS/Source
-RTOS_DIR              := rtos++
-SIMULATION_DIR        := simulation
-FX_DIR                := fx
-ASF_DIR               := ASF
-CXX_DIR               := c++
+SRC_DIR        := src
+LOGGER_DIR     := $(SRC_DIR)/logger
+BOOST_DIR      := $(SRC_DIR)/boost
+KERNEL_DIR     := $(SRC_DIR)/FreeRTOS/Source
+RTOS_DIR       := $(SRC_DIR)/rtos++
+SIMULATION_DIR := $(SRC_DIR)/simulation
+RESOURCES_DIR  := $(SRC_DIR)/resources
+FX_DIR         := $(SRC_DIR)/fx
+ASF_DIR        := $(SRC_DIR)/ASF
+CXX_DIR        := $(SRC_DIR)/c++
 
 # -D for all
 CPPFLAGS = \
@@ -19,8 +21,9 @@ CPPFLAGS = \
 
 # -I throughout (C and C++)
 INCLUDE_DIRS = \
-   . \
-   include config \
+   $(SRC_DIR) \
+   $(SRC_DIR)/include \
+   $(SRC_DIR)/config \
    ${KERNEL_DIR}/include \
    ${LOGGER_DIR}/include \
    ${BOOST_DIR} \
@@ -82,17 +85,17 @@ SRCS.common := \
    $(KERNEL_DIR)/timers.c \
    ${RTOS_DIR}/src/rtos.cpp \
    ${FX_DIR}/src/fx.cpp \
-   console.cpp \
-   contact.cpp \
-   keypad_tasklet.cpp \
-   main.cpp \
-   nonc_tasklet.cpp \
-   parser.cpp \
-   program_manager.cpp \
-   sequencer_worker.cpp \
-   ui_model.cpp \
-   ui_view.cpp \
-   ui_worker.cpp
+   $(SRC_DIR)/console.cpp \
+   $(SRC_DIR)/contact.cpp \
+   $(SRC_DIR)/keypad_tasklet.cpp \
+   $(SRC_DIR)/main.cpp \
+   $(SRC_DIR)/nonc_tasklet.cpp \
+   $(SRC_DIR)/parser.cpp \
+   $(SRC_DIR)/program_manager.cpp \
+   $(SRC_DIR)/sequencer_worker.cpp \
+   $(SRC_DIR)/ui_model.cpp \
+   $(SRC_DIR)/ui_view.cpp \
+   $(SRC_DIR)/ui_worker.cpp
 
 SRCS.sim += \
    ${KERNEL_DIR}/portable/ThirdParty/GCC/Posix/utils/wait_for_event.c \
@@ -137,9 +140,12 @@ SRCS.avr += \
    $(ASF_DIR)/common/boards/user_board/init.c \
    $(ASF_DIR)/xmega/drivers/nvm/nvm_asm.s  \
    $(ASF_DIR)/xmega/drivers/cpu/ccp.s \
-   trace.c \
-   keypad.cpp \
-   c++/src/new.cpp \
+   $(CXX_DIR)/src/new.cpp \
+   $(SRC_DIR)/trace.c \
+   $(SRC_DIR)/keypad.cpp \
+
+# Description of the system resources
+SRCS.resources = $(RESOURCES_DIR)/rc.json
 
 # Inlude the actual build rules
 include make/rules.mak
