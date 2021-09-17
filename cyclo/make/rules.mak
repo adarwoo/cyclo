@@ -30,7 +30,7 @@ POSTCOMPILE      = mv -f $(BUILD_DIR)/$*.Td $(BUILD_DIR)/$*.d && touch $@
 
 DEP_FILES        = $(OBJS:%.o=%.d)
 
-RCDEP_FILES      = $(foreach rc, $(SRCS.resources:%.json=%.rcd), $(BUILD_DIR)/$(notdir $(rc)))
+RCDEP_FILES      = $(foreach rc, $(SRCS.resources:%.json=%.rcd), $(BUILD_DIR)/$(rc))
 
 COMPILE.c        = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 COMPILE.cxx      = $(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
@@ -65,12 +65,13 @@ $(BUILD_DIR)/%.o : %.s | $(@D)
 	@echo "Assembling $<"
 	$(mute)$(CXX) -Wa,-gdwarf2 -x assembler-with-cpp $(CPPFLAGS) -c -mmcu=atxmega128a4u -Wa,-g $< -o $@
 
-$(BUILD_DIR)/%.rcd : $(RESOURCES_DIR)/%.json
+$(BUILD_DIR)/%.rcd : %.json
 	@echo "Generating the resources from $<"
+	$(mute)[ -d $(@D) ] || mkdir -p $(@D)
 	$(mute)$(COMPILE.rc) $@ $<
 
 $(DEP_FILES):
-	@[ -d $(@D) ] || mkdir -p $(@D)
+	$(mute)[ -d $(@D) ] || mkdir -p $(@D)
 
 include $(wildcard $(DEP_FILES))
 include $(RCDEP_FILES)

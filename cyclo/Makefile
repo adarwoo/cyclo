@@ -2,13 +2,13 @@
 BIN                   := cyclo
 
 # Paths, local to src
+RESOURCES_DIR  := resources
 SRC_DIR        := src
 LOGGER_DIR     := $(SRC_DIR)/logger
 BOOST_DIR      := $(SRC_DIR)/boost
 KERNEL_DIR     := $(SRC_DIR)/FreeRTOS/Source
 RTOS_DIR       := $(SRC_DIR)/rtos++
 SIMULATION_DIR := $(SRC_DIR)/simulation
-RESOURCES_DIR  := $(SRC_DIR)/resources
 FX_DIR         := $(SRC_DIR)/fx
 ASF_DIR        := $(SRC_DIR)/ASF
 CXX_DIR        := $(SRC_DIR)/c++
