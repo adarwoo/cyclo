@@ -1,9 +1,9 @@
 {
         "in": [
                 {
-                        "id": "logo_header",
+                        "id": "logo",
                         "type": "bitmap",
-                        "source": "logo.png"
+                        "source": "arex.png"
                 },
                 {
                         "id": "switch_opened",
@@ -47,7 +47,7 @@
                            "#include \"asx.h\""
                         ],
                         "ids": [
-                                "logo_header",
+                                "logo",
                                 "switch_opened",
                                 "switch_closed",
                                 "rec_stop",

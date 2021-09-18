@@ -17,15 +17,16 @@
                 "${workspaceFolder}/src/ASF/common/services/gfx_mono"
             ],
             "defines": [
-                "_POSIX", 
+                "_POSIX",
                 "BOARD=USER_BOARD",
                 "CPP_FREERTOS_NO_EXCEPTIONS",
                 "GFX_MONO_UG_2832HSWEG04=1"
             ],
             "compilerPath": "/usr/bin/g++",
-            "cStandard": "gnu17",
+            "cStandard": "gnu11",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
     "version": 4

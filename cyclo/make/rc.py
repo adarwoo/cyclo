@@ -49,6 +49,10 @@ class Bitmap(Resource):
 
       width, height = im.size
 
+      # Make sure the height is a multiple of 8
+      if height % 8:
+         raise ParserException("Pixmap height must be a multiple of 8")
+
       for y in range(0, height) :
          bloc="// "
          for x in range(0, width) :
@@ -75,7 +79,7 @@ class Bitmap(Resource):
       self.src.append("")
 
       # Add the bitmap struct
-      self.inc.append(f"struct gfx_mono_bitmap {self.id}_bm;")
+      self.inc.append(f"extern struct gfx_mono_bitmap {self.id}_bm;")
 
       self.src.append(f"struct gfx_mono_bitmap {self.id}_bm = {{")
       self.src.append(f"   .width = {width},")
@@ -117,6 +121,7 @@ class ResourceParser:
                raise ParserException(f"Invalid resource id: '{id}")
 
             if type == "bitmap":
+               print(f"Processing bitmap: {id}")
                self.resources[id] = Bitmap(id, parent, res)
                self.resources[id].build(res)
 
@@ -148,7 +153,7 @@ class ResourceParser:
             for res_id in files.get("ids", []):
                # The ID must exists!
                if res_id not in self.resources:
-                  raise ParserException(f"Invalid ID: {res_id}")
+                  raise ParserException(f"Undeclared resource id: {res_id}")
 
                src.extend(self.resources[res_id].get_code(True))
                inc.extend(self.resources[res_id].get_code())

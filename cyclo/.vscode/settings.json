@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "*.mak": "makefile"
+    },
+    "makefile.configurations": [
+        {
+            "name": "cyclo",
+            "makeArgs": ["SIM=1", "-j16"],
+        }
+    ]    
+}

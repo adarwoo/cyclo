@@ -24,7 +24,7 @@ SOFTWARE.
  * console_task.cpp
  *
  * Created: 28/08/2021 20:27:07
- *  Author: micro
+ *  Author: software@arreckx.com
  */
 #include "console.hpp"
 
