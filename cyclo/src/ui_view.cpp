@@ -69,20 +69,38 @@ void UIView::draw_prog( bool highlight )
    // Clear to overwrite
    gfx_mono_draw_filled_rect( 14, 3, 24, 10, GFX_PIXEL_CLR );
 
-   if ( model.get_pgm() == 0 )
+   if ( model.get_pgm() < 0 )
    {
-      gfx_mono_draw_string( "MAN", 16, 4, &sysfont );
+      // Draw a back arrow. We draw rather than bitmap given the height
+      // Start with setting all on (the arrow can only exists selected)
+      gfx_mono_draw_filled_rect( 14, 3, 24, 10, GFX_PIXEL_SET );
+      // Draw h bar accross
+      gfx_mono_draw_filled_rect( 18, 7, 15, 2, GFX_PIXEL_CLR );
+      // Draw arrow head v bar
+      gfx_mono_draw_filled_rect( 20, 5, 2, 6, GFX_PIXEL_CLR );
+      // Draw right up tail
+      gfx_mono_draw_filled_rect( 31, 4, 2, 3, GFX_PIXEL_CLR );
+      // Pixel to finsh (line is faster)
+      gfx_mono_draw_vertical_line( 19, 6, 4, GFX_PIXEL_CLR );
+      gfx_mono_draw_vertical_line( 21, 4, 8, GFX_PIXEL_CLR );
    }
    else
    {
-      char pgmString[ 4 ];
-      snprintf( pgmString, 3, "P%1u", model.get_pgm() % 10 );
-      gfx_mono_draw_string( pgmString, 20, 4, &sysfont );
-   }
+      if ( model.get_pgm() == 0 )
+      {
+         gfx_mono_draw_string( "MAN", 16, 4, &sysfont );
+      }
+      else
+      {
+         char pgmString[ 4 ];
+         snprintf( pgmString, 3, "P%1u", model.get_pgm() % 10 );
+         gfx_mono_draw_string( pgmString, 20, 4, &sysfont );
+      }
 
-   if ( highlight )
-   {
-      gfx_mono_draw_filled_rect( 14, 3, 24, 10, GFX_PIXEL_XOR );
+      if ( highlight )
+      {
+         gfx_mono_draw_filled_rect( 14, 3, 24, 10, GFX_PIXEL_XOR );
+      }
    }
 }
 

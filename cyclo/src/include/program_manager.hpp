@@ -66,8 +66,8 @@ public:
    static constexpr size_t STORAGE_MAX_LENGTH = (EEPROM_PAGE_SIZE * 2) - 4;
 
 private:
-   ///< Current selected program. 0 is auto. 255 is none.
-   uint8_t selected;
+   ///< Current selected program. 0 is auto. -1 is none.
+   int8_t selected;
 
    ///< Which program should be started right away or -1
    int8_t auto_start;
@@ -100,8 +100,8 @@ public:
    // Accessors
    //////////////////////////////////////////////////////////////////////////
 public:
-   inline uint8_t get_selected() { return selected; }
-   inline void    set_selected( uint8_t pgm ) { selected = pgm; }
+   inline int8_t get_selected() { return selected; }
+   inline void    set_selected( int8_t pgm ) { selected = pgm; }
 
    inline program_state_t get_state() { return state; }
    inline void            set_state( program_state_t newState ) { state = newState; }
@@ -126,10 +126,10 @@ public:
    inline Pgms get_map() { return occupancy_map; }
 
    /** Grab the next available slot from the given position */
-   uint8_t get_next( uint8_t from );
+   int8_t get_next( int8_t from );
 
    /** Grab the prev available slot from the given position*/
-   uint8_t get_prev( uint8_t from );
+   int8_t get_prev( int8_t from );
 
    /** Get the program string at the given index */
    const char *get_pgm( uint8_t index );

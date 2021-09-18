@@ -112,9 +112,9 @@ void ProgramManager::scan()
 
 /**
  * @param from The position to start from. 0 is OK as 0 always exists
- * @returns The next available position - which could be the same
+ * @returns The next available position - or -1 if none found
  */
-uint8_t ProgramManager::get_next( uint8_t from )
+int8_t ProgramManager::get_next( int8_t from )
 {
    uint8_t pos = from;
 
@@ -126,14 +126,14 @@ uint8_t ProgramManager::get_next( uint8_t from )
       }
    }
 
-   return from;
+   return -1;
 }
 
 /**
  * @param from The position to start from. 0 is OK as 0 always exists
  * @returns The previous valid position or the same if no previous was found
  */
-uint8_t ProgramManager::get_prev( uint8_t from )
+int8_t ProgramManager::get_prev( int8_t from )
 {
    while ( from != 0 )
    {
@@ -143,7 +143,7 @@ uint8_t ProgramManager::get_prev( uint8_t from )
       }
    }
 
-   return 0;
+   return -1;
 }
 
 /**
