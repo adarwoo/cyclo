@@ -23,13 +23,15 @@ SOFTWARE.
 #ifndef ui_model_h_included
 #define ui_model_h_included
 
-#include <cstdint>
-#include <cstdio>
+#include "asx.h"
 
 #include <etl/bitset.h>
 
+#include <cstdint>
+#include <cstdio>
+
 #include "program_manager.hpp"
-#include "asx.h"
+
 
 
 struct ManualProgram
@@ -75,7 +77,7 @@ public:
    ///< Set the program shown
    inline void set_pgm( int8_t newPgm ) { program_index = newPgm; }
    ///< Select the new program (not just shown)
-   inline void select_pgm() { program_manager.set_selected( program_index ); }
+   void select_pgm();
 
    ///< Persist the manual program to the EEProm
    void store_manual_pgm();
@@ -84,10 +86,13 @@ public:
    void load_command() { program_manager.load( get_pgm() ); }
 
    inline program_state_t get_state() { return program_manager.get_state(); }
-   inline void            set_state( program_state_t newState ) { program_manager.set_state( newState ); }
+   inline void set_state( program_state_t newState ) { program_manager.set_state( newState ); }
 
-   inline uint16_t get_counter() { return program_manager.get_counter(); }
-   inline void     reset_counter() { program_manager.set_counter( 0 ); }
+   inline int32_t get_counter() { return program_manager.get_counter(); }
+   inline void    reset_counter( bool invalidate = false )
+   {
+      program_manager.set_counter( invalidate ? -1 : 0 );
+   }
 
    ///< Contact accessor
    inline bool contact_is_open() const { return program_manager.get_contact().is_open(); }

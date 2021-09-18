@@ -57,7 +57,7 @@ ProgramManager::ProgramManager()
    : selected{ 0 }
    , auto_start{ -1 }
    , state{ stopped }
-   , counter{ 0 }
+   , counter{ -1 }
    , parser{ active_program, zs }
 {
    LOG_HEADER( DOM );
@@ -135,7 +135,13 @@ int8_t ProgramManager::get_next( int8_t from )
  */
 int8_t ProgramManager::get_prev( int8_t from )
 {
-   while ( from != 0 )
+   if ( from < 0 )
+   {
+      // Go for the last possible
+      from = occupancy_map.size();
+   }
+
+   while ( from > 0 )
    {
       if ( occupancy_map[ --from ] )
       {

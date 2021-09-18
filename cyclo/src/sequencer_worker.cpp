@@ -46,17 +46,19 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
    if ( msg.from_start )
    {
       // Reset the counter
-      pgm_man.set_counter( 0 );
+      pgm_man.set_counter( -1 );
 
       // Is it a loop ?
       if ( pgm_man.get_active_program().back().command == Command::loop )
       {
-         // Update the GUI
-         fx::publish( msg::CounterUpdate{} );
+         pgm_man.set_counter( 0 );
 
          // Start from the start
          pgm_man.get_active_program().start();
       }
+
+      // Update the GUI
+      fx::publish( msg::CounterUpdate{} );
 
       // Reset the number of ticks left. This is used when pausing,
       // so we resume with the actual time left
@@ -74,6 +76,7 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
    execute_next();
 }
 
+/** Don't if this stop is a pause or a final stop */
 void SequencerWorker::on_receive( const msg::StopProgram &msg )
 {
    LOG_TRACE( DOM, "StopProgram" );
@@ -144,6 +147,9 @@ void SequencerWorker::execute_next()
       {
          // The program has stopped - let the GUI know
          fx::publish( msg::ProgramIsStopped{} );
+
+         // Stop linking NO/NC with the contact
+         pgm_man.get_contact().unmanage();
       }
    }
 }

@@ -123,11 +123,21 @@ void UIView::draw_nonc()
 
 void UIView::draw_counter()
 {
-   char counterString[] = "-----";
+   int32_t counter            = model.get_counter();
+   char    counterString[ 7 ] = "-----";
 
-   if ( model.get_state() != UIModel::program_state_t::stopped )
+   if ( counter >= 0 )
    {
-      snprintf( counterString, sizeof( counterString ), "%.5u", model.get_counter() );
+      if ( counter < 100000 )
+      {
+         snprintf( counterString, sizeof( counterString ), "%.5ld", counter );
+      }
+      else
+      {
+         counter %= 100000;
+         // Display the number with a + for large cycles
+         snprintf( counterString, sizeof( counterString ), "+%.4ld", counter );
+      }
    }
 
    gfx_mono_draw_string( counterString, 15, 36, &sysfont );
@@ -135,17 +145,17 @@ void UIView::draw_counter()
 
 void UIView::draw_walkman( uint8_t select )
 {
-   uint8_t x = 11;
+   uint8_t x = 13;
 
    // Need to erase the right hand icon
-   auto erase_adjacent = [] { gfx_mono_draw_filled_rect( 27, 17, 13, 13, GFX_PIXEL_CLR ); };
+   auto erase_adjacent = [] { gfx_mono_draw_filled_rect( 29, 17, 13, 13, GFX_PIXEL_CLR ); };
 
    switch ( model.get_state() )
    {
    case UIModel::program_state_t::paused:
-      x = 9;
+      x = 11;  // Change to highlight
       gfx_mono_put_bitmap( &rec_play_bm, x, 16 );
-      gfx_mono_put_bitmap( &rec_stop_bm, 25, 16 );
+      gfx_mono_put_bitmap( &rec_stop_bm, x + 16, 16 );
       break;
    case UIModel::program_state_t::running:
       gfx_mono_put_bitmap( &rec_pause_bm, x, 16 );
@@ -184,7 +194,21 @@ void UIView::draw_cursor( uint8_t pos )
 
    gfx_mono_draw_line( 3, y, 9, y + 4, GFX_PIXEL_SET );
    gfx_mono_draw_line( 9, y + 4, 3, y + 8, GFX_PIXEL_SET );
-   gfx_mono_draw_line( 3, y + 8, 3, y, GFX_PIXEL_SET );
+   gfx_mono_draw_vertical_line( 3, y, 8, GFX_PIXEL_SET );
+}
+
+void UIView::erase_curson_hint( uint8_t pos )
+{
+   gfx_coord_t y = pos * 16 + 5;
+
+   gfx_mono_draw_vertical_line( 2, y, 4, GFX_PIXEL_CLR );
+}
+
+void UIView::draw_curson_hint( uint8_t pos )
+{
+   gfx_coord_t y = pos * 16 + 5;
+
+   gfx_mono_draw_vertical_line( 2, y, 4, GFX_PIXEL_SET );
 }
 
 void UIView::erase_cursor( uint8_t pos )

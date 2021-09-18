@@ -76,3 +76,17 @@ void UIModel::store_manual_pgm()
    // Reload it
    program_manager.load( 0 );
 }
+
+void UIModel::select_pgm()
+{
+   // If the program is back - reverse back to the current
+   if ( program_index < 0 )
+   {
+      program_index = program_manager.get_selected();
+   }
+   else
+   {
+      // TO DO -> Overwrite the pgm to mark it as the default selected
+      program_manager.set_selected( program_index ); 
+   }
+}
