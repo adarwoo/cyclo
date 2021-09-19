@@ -4,17 +4,6 @@
  * Configuration for the RTOS for the AVR
  */
 
-/*
- * #define TCB_t to avoid conflicts between the
- * FreeRTOS task control block type (TCB_t) and the
- * AVR Timer Counter B type (TCB_t)
- */
-#ifndef _POSIX
-#  define TCB_t avrTCB_t
-#  include <avr/io.h>
-#  undef TCB_t
-#endif
-
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -71,8 +60,8 @@
 
 // 4 levels of priorities only to reduce the eval cost during context switch
 #define configMAX_PRIORITIES                     4
-#define configMINIMAL_STACK_SIZE                 256
-#define configTOTAL_HEAP_SIZE                    2048
+#define configMINIMAL_STACK_SIZE                 128
+#define configTOTAL_HEAP_SIZE                    0
 #ifdef DEBUG
     #define configUSE_MALLOC_FAILED_HOOK         1
 #else
@@ -112,7 +101,7 @@
 #define configUSE_STATS_FORMATTING_FUNCTIONS     0
 #define configTIMER_TASK_PRIORITY                (configMAX_PRIORITIES - 1)
 #define configTIMER_QUEUE_LENGTH                 5
-#define configTIMER_TASK_STACK_DEPTH             (configMINIMAL_STACK_SIZE * 2)
+#define configTIMER_TASK_STACK_DEPTH             (configMINIMAL_STACK_SIZE + 128)
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
