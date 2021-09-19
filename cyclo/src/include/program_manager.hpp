@@ -62,7 +62,7 @@ public:
    enum program_state_t : uint8_t { stopped, paused, running, usb };
 
    /** The program mode */
-   enum mode_t : uint8_t { normal, autostart };
+   enum class mode_t : uint8_t { normal=0, autostart=0x50, lastused=0x0A };
 
    /** The storage for the program must fit 2 pages of eeprom - header, spare and crc (2 bytes) */
    static constexpr size_t STORAGE_MAX_LENGTH = ( EEPROM_PAGE_SIZE * 2 ) - 4;
@@ -73,6 +73,9 @@ private:
 
    ///< Which program should be started right away or -1
    int8_t auto_start;
+
+   ///< Which program was last used - so we make it the default (unless autostart)
+   int8_t last_used;
 
    ///< Current state of the active program
    program_state_t state;
@@ -115,8 +118,11 @@ public:
    // @return true if a program starts automatically
    inline bool starts_automatically() const { return ( auto_start >= 0 ); }
 
-   // @return true if a program starts automatically
+   // @return The index of the program to start automatically or -1
    inline int8_t get_autostart_index() const { return auto_start; }
+
+   // @return The index of the last used program
+   inline int8_t get_lastused_index() const { return last_used; }
 
    // Grab the contact manager
    inline Contact &get_contact() { return contact; }
@@ -137,7 +143,7 @@ public:
    const char *get_pgm( uint8_t index );
 
    /** Write the given program at the given slot. 0 is the auto slot */
-   void write_pgm_at( uint8_t pos, etl::string_view view, mode_t mode = normal );
+   void write_pgm_at( uint8_t pos, etl::string_view view);
 
    /** Load a program from the eeprom - and start it */
    void load( uint8_t pgmIndex );
@@ -149,7 +155,10 @@ public:
    void scan();
 
    /** Set a program has auto start */
-   void set_autostart( uint8_t index );
+   void set_autostart( int8_t index );
+
+   /** Set a program has last used */
+   void set_lastused( int8_t index );
 
    //
    // Drive the sequencer

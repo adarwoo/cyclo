@@ -33,7 +33,7 @@
                 {
                         "id": "usb_symbol",
                         "type": "bitmap",
-                        "source": "usb.png"
+                        "source": "usb_large.png"
                 }
         ],
         "out": [

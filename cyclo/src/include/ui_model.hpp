@@ -33,7 +33,6 @@ SOFTWARE.
 #include "program_manager.hpp"
 
 
-
 struct ManualProgram
 {
    ///< Read as an array or as a struct
@@ -87,6 +86,9 @@ public:
 
    inline program_state_t get_state() { return program_manager.get_state(); }
    inline void set_state( program_state_t newState ) { program_manager.set_state( newState ); }
+
+   inline void set_last_used() { program_manager.set_lastused( program_index ); }
+
 
    inline int32_t get_counter() { return program_manager.get_counter(); }
    inline void    reset_counter( bool invalidate = false )

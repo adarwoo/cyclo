@@ -30,17 +30,21 @@ SOFTWARE.
  * Created: 01/07/2021 12:19:42
  *  Author: micro
  */
+#include <typestring.hpp>
+
+#include <etl/algorithm.h>
+#include <etl/delegate.h>
+
+// Keep FreeRTOS the first in this list
+// clang-format off
 #include <FreeRTOS.h>
+
 #include <message_buffer.h>
 #include <queue.h>
 #include <semphr.h>
 #include <task.h>
 #include <timers.h>
-
-#include <etl/algorithm.h>
-#include <etl/delegate.h>
-#include <typestring.hpp>
-
+// clang-format on
 
 namespace rtos
 {
@@ -117,7 +121,7 @@ namespace rtos
       bool give_from_isr( BaseType_t *pxHigherPriorityTaskWoken );
 
       /** Get the count */
-      UBaseType_t get_count() { return uxSemaphoreGetCount(handle); }
+      UBaseType_t get_count() { return uxSemaphoreGetCount( handle ); }
 
       virtual ~Semaphore();
 
@@ -181,8 +185,9 @@ namespace rtos
    class Lock_guard
    {
       Mutex &m;
+
    public:
-      Lock_guard(Mutex &m) : m{m} { m.take(); }
+      Lock_guard( Mutex &m ) : m{ m } { m.take(); }
       ~Lock_guard() { m.give(); }
    };
 #endif
@@ -481,6 +486,8 @@ namespace rtos
    template<class TName, typename TData = uint8_t>
    class Timer
    {
+      using delegator_t = etl::delegate<void()>;
+
    private:
       /**
        *  Reference to the underlying timer handle.
@@ -488,16 +495,18 @@ namespace rtos
       TimerHandle_t handle;
       StaticTimer_t pxTimerBuffer;
       TData         param;
+      delegator_t   delegator;
 
    public:
       // Construct a timer. Default value is set to infinity.
-      Timer( tick_t PeriodInTicks = tick::infinite, bool Periodic = false )
+      Timer( delegator_t d ) : delegator{ d }
       {
+         // Create the timer - with dummy setting as these will be overwritten with every start
          handle = xTimerCreateStatic(
-            TName::data(), PeriodInTicks, Periodic ? pdTRUE : pdFALSE, this,
-            TimerCallbackFunctionAdapter, &pxTimerBuffer );
+            TName::data(), tick::infinite, pdFALSE, this, TimerCallbackFunctionAdapter,
+            &pxTimerBuffer );
 
-         assert(handle);
+         assert( handle != nullptr );
       }
 
       ~Timer() { xTimerDelete( handle, tick::infinite ); }
@@ -507,10 +516,16 @@ namespace rtos
 
       bool is_active() { return xTimerIsTimerActive( handle ) == pdFALSE ? false : true; }
 
-      bool start( tick_t CmdTimeout = tick::infinite )
+      bool start( tick_t period, bool periodic = false, tick_t timeout = tick::infinite )
       {
-         assert( handle != nullptr );
-         return xTimerStart( handle, CmdTimeout ) == pdFALSE ? false : true;
+         vTimerSetReloadMode( handle, periodic ? pdTRUE : pdFALSE );
+
+         if ( xTimerChangePeriod( handle, period, timeout ) == pdFALSE )
+         {
+            return false;
+         }
+
+         return xTimerStart( handle, timeout ) == pdFALSE ? false : true;
       }
 
       tick_t get_time_left_until_expiry()
@@ -526,16 +541,33 @@ namespace rtos
          return 0;
       }
 
-      bool start_from_isr()
+      bool start_from_isr( tick_t period, bool periodic = false )
       {
          bool        retval;
          BaseType_t *pxHigherPriorityTaskWoken;
 
-         retval = xTimerStartFromISR( handle, pxHigherPriorityTaskWoken ) == pdFALSE ? false : true;
+         vTimerSetReloadMode( handle, periodic ? pdTRUE : pdFALSE );
 
+         retval = xTimerChangePeriodFromISR( handle, period, pxHigherPriorityTaskWoken ) == pdFAIL
+                     ? false
+                     : true;
+
+         // Yield if this has cause a task to get moved up
          if ( pxHigherPriorityTaskWoken )
          {
             portYIELD();
+         }
+
+         // Carry on only if succesfull
+         if ( retval )
+         {
+            retval =
+               xTimerStartFromISR( handle, pxHigherPriorityTaskWoken ) == pdFAIL ? false : true;
+
+            if ( pxHigherPriorityTaskWoken )
+            {
+               portYIELD();
+            }
          }
 
          return retval;
@@ -609,14 +641,7 @@ namespace rtos
       {
          Timer *timer = static_cast<Timer *>( pvTimerGetTimerID( xTimer ) );
 
-         timer->run();
-      }
-
-   protected:
-      virtual void run()
-      {
-         // No overload
-         assert( 0 );
+         timer->delegator();
       }
    };
 }  // namespace rtos

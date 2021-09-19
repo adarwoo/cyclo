@@ -38,20 +38,9 @@ namespace
    const char *const DOM = "ui_worker";
 }
 
-/** Create the timer for the splash */
-UIWorker::SplashTimer::SplashTimer() : rtos::Timer<typestring_is( "tsplash" )>( 1.5_s )
-{}
-
-/** Publish a message on expiry */
-void UIWorker::SplashTimer::run()
-{
-   LOG_HEADER( DOM );
-
-   fx::publish( msg::EndOfSplash{} );
-}
-
 UIWorker::UIWorker( ProgramManager &program_manager )
-   : model{ program_manager }
+   : splash_timer{ [] { fx::publish( msg::EndOfSplash{} ); } }
+   , model{ program_manager }
    , view{ model }
    , controller{ model, view }
    , program_manager{ program_manager }
@@ -93,7 +82,7 @@ void UIWorker::on_receive( const fx::DispatcherStarted &msg )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "DispatcherStarted" );
 
-   splash_timer.start();
+   splash_timer.start( 1.5_s );
 }
 
 void UIWorker::on_receive( const msg::EndOfSplash &msg )
@@ -107,20 +96,19 @@ void UIWorker::on_receive( const msg::EndOfSplash &msg )
    // Is there an auto_start program?
    if ( program_manager.starts_automatically() )
    {
-      // Load it (unless it's 0)
-      uint8_t selected = program_manager.get_selected();
-
-      if ( selected > 0 )
-      {
-         // Parse it
-         program_manager.load( selected );
-      }
+      // Parse it
+      program_manager.load( program_manager.get_autostart_index() );
 
       // Start!
       fx::publish( msg::StartProgram{ true } );
 
       // Set the running state
+      model.set_pgm( program_manager.get_autostart_index() );
       model.set_state( UIModel::program_state_t::running );
+   }
+   else if ( program_manager.get_lastused_index() >= 0 )
+   {
+      model.set_pgm( program_manager.get_lastused_index() );
    }
 }
 
@@ -178,6 +166,14 @@ void UIWorker::on_receive( const msg::USBConnected & )
 {
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBConnected" );
+
+   // Update the model with the last program used
+   auto lastUsed = program_manager.get_lastused_index();
+
+   if ( lastUsed >= 0 )
+   {
+      model.set_pgm( lastUsed );
+   }
 
    process_event( controller, usb_on{} );
 }

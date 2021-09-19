@@ -31,6 +31,9 @@ SOFTWARE.
 #include "asx.h"
 #include "resource.h"
 
+#include <etl/format_spec.h>
+#include <etl/to_string.h>
+
 #include <logger.h>
 
 namespace
@@ -92,9 +95,12 @@ void UIView::draw_prog( bool highlight )
       }
       else
       {
-         char pgmString[ 4 ];
-         snprintf( pgmString, 3, "P%1u", model.get_pgm() % 10 );
-         gfx_mono_draw_string( pgmString, 20, 4, &sysfont );
+         etl::string<2>   pgmStr{ "P" };
+         etl::format_spec format;
+
+         format.width( 1 ).decimal();
+         etl::to_string( model.get_pgm() % 10, pgmStr, format, true );
+         gfx_mono_draw_string( pgmStr.c_str(), 20, 4, &sysfont );
       }
 
       if ( highlight )
@@ -123,24 +129,27 @@ void UIView::draw_nonc()
 
 void UIView::draw_counter()
 {
-   int32_t counter            = model.get_counter();
-   char    counterString[ 7 ] = "-----";
+   int32_t          counter = model.get_counter();
+   etl::string<5>   cntStr{ "-----" };
+   etl::format_spec format;
+
+   format.width( 5 ).fill( '0' ).decimal();
 
    if ( counter >= 0 )
    {
       if ( counter < 100000 )
       {
-         snprintf( counterString, sizeof( counterString ), "%.5ld", counter );
+         etl::to_string( counter, cntStr, format );
       }
       else
       {
-         counter %= 100000;
          // Display the number with a + for large cycles
-         snprintf( counterString, sizeof( counterString ), "+%.4ld", counter );
+         cntStr == "+";
+         etl::to_string( counter % 100000, cntStr, format, true );
       }
    }
 
-   gfx_mono_draw_string( counterString, 15, 36, &sysfont );
+   gfx_mono_draw_string( cntStr.c_str(), 15, 36, &sysfont );
 }
 
 void UIView::draw_walkman( uint8_t select )
@@ -261,11 +270,12 @@ void UIView::draw_program_setup_dialog()
  */
 void UIView::manual_program_draw_digit( show_digit_t show, uint8_t row, uint8_t column )
 {
-   char                     buffer[ 4 ];
    uint8_t                  x              = 8 + 24 * column;
    uint8_t                  y              = 20 + 32 * row;
    static constexpr uint8_t MINUTES_COLUMN = 0;
    static constexpr uint8_t ON_ROW         = 0;
+   etl::string<2>           digits;
+   etl::format_spec         format;
 
    // Clear the area
    if ( show == back_to_normal )
@@ -283,8 +293,9 @@ void UIView::manual_program_draw_digit( show_digit_t show, uint8_t row, uint8_t 
       DOM, "Draw digit Col:%d Row:%d = %s%d%s", column, row, show ? ">>" : "", value,
       show ? "<<" : "" );
 
-   snprintf( buffer, sizeof( buffer ), "%.2u", value );
-   gfx_mono_draw_string( buffer, x, y, &sysfont );
+
+   format.width( 2 ).fill( '0' );
+   gfx_mono_draw_string( etl::to_string( value, digits, format ).c_str(), x, y, &sysfont );
 
    // Inverse the digits
    if ( show == first_highlight )

@@ -1,11 +1,26 @@
 {
+    "terminal.integrated.copyOnSelection": true,
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    "terminal.integrated.splitCwd": "workspaceRoot",
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash",
+            "icon": "terminal-bash",
+            "args": []
+        }
+    },
+    "terminal.integrated.defaultLocation": "editor",
+    "editor.trimAutoWhitespace": true,
     "files.associations": {
         "*.mak": "makefile"
     },
     "makefile.configurations": [
         {
             "name": "cyclo",
-            "makeArgs": ["SIM=1", "-j16"],
+            "makeArgs": [
+                "SIM=1",
+                "-j16"
+            ],
         }
-    ]    
+    ]
 }

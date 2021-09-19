@@ -217,7 +217,10 @@ void Console::process( etl::string_view line )
       // Check the program exists
       if ( program_manager.get_map()[ parser.get_program_number() ] )
       {
-         program_manager.load( parser.get_program_number() );
+         auto pgmNumber = parser.get_program_number();
+         program_manager.load( pgmNumber );
+         program_manager.set_lastused( pgmNumber );
+         
          fx::publish( msg::StartProgram{ true } );
       }
       else
@@ -232,7 +235,13 @@ void Console::process( etl::string_view line )
       }
       else
       {
-         program_manager.write_pgm_at( parser.get_program_number(), last_program );
+         auto pgmNumber = parser.get_program_number();
+
+         // Store
+         program_manager.write_pgm_at( pgmNumber, last_program );
+
+         // Make it the last used
+         program_manager.set_lastused( pgmNumber );
       }
 
       break;
@@ -247,20 +256,7 @@ void Console::process( etl::string_view line )
       }
       else
       {
-         // Revoke current autostart
-         auto autostart_index = program_manager.get_autostart_index();
-         auto index           = parser.get_program_number();
-
-         if ( autostart_index >= 0 )
-         {
-            // Erase the current auto
-            program_manager.write_pgm_at(
-               autostart_index, program_manager.get_pgm( autostart_index ) );
-         }
-
-         // Mark autostart
-         program_manager.write_pgm_at(
-            index, program_manager.get_pgm( index ), ProgramManager::autostart );
+         program_manager.set_autostart(pgm);
       }
    }
    break;
@@ -306,7 +302,7 @@ void Console::show_help()
 void Console::show_list()
 {
    // Iterate the bitset
-   uint8_t index, next_index = 0;
+   int8_t index, next_index = 0;
    auto    autostart_index = program_manager.get_autostart_index();
 
    do
@@ -323,5 +319,5 @@ void Console::show_list()
       TTerminal::move_forward( 4 );
       TTerminal::puts( program_manager.get_pgm( index ) );
       TTerminal::move_to_start_of_next_line();
-   } while ( index != next_index );
+   } while ( next_index > 0 );
 }

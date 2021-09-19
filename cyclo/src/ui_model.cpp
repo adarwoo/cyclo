@@ -32,10 +32,13 @@ SOFTWARE.
 
 #include "asx.h"
 
+#include <etl/format_spec.h>
+#include <etl/string.h>
+#include <etl/to_string.h>
+
 
 /** Contruct a manual program as o 1 minute and off 5 seconds */
-ManualProgram::ManualProgram()
-   : on_min{0}, on_sec{0}, off_min{0}, off_sec{0}
+ManualProgram::ManualProgram() : on_min{ 0 }, on_sec{ 0 }, off_min{ 0 }, off_sec{ 0 }
 {}
 
 UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
@@ -67,11 +70,21 @@ UIModel::UIModel( ProgramManager &pm ) : program_manager{ pm }
 ///< Persist the manual program to the EEProm
 void UIModel::store_manual_pgm()
 {
-   char buffer[ 22 ];  // 'c 00M 01s o 00M 00s *' = 21 + 1 \0
-   auto fmt = PROGMEM_STRING( "c %.2hhuM %.2hhus o %.2hhuM %.2hhus *" );
-   snprintf_P( buffer, sizeof( buffer ), fmt, on_min, on_sec, off_min, off_sec );
+   etl::string<22>  pgmStr{ "c " };  // 'c 00M 01s o 00M 00s *' = 21 + 1 \0
+   etl::format_spec format;
 
-   program_manager.write_pgm_at( 0, buffer );
+   format.fill( '0' ).width( 2 ).decimal();
+
+   etl::to_string( on_min, pgmStr, format, true );
+   pgmStr += "M ";
+   etl::to_string( on_sec, pgmStr, format, true );
+   pgmStr += "s o ";
+   etl::to_string( off_min, pgmStr, format, true );
+   pgmStr += "M ";
+   etl::to_string( off_sec, pgmStr, format, true );
+   pgmStr += "s *";
+
+   program_manager.write_pgm_at( 0, pgmStr.c_str() );
 
    // Reload it
    program_manager.load( 0 );
@@ -87,6 +100,6 @@ void UIModel::select_pgm()
    else
    {
       // TO DO -> Overwrite the pgm to mark it as the default selected
-      program_manager.set_selected( program_index ); 
+      program_manager.set_selected( program_index );
    }
 }

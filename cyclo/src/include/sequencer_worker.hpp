@@ -41,11 +41,7 @@ class SequencerWorker
    : public fx::Worker<SequencerWorker, msg::StartProgram, msg::StopProgram, msg::SequenceNext>
 {
    ///< Timer in between sequences
-   class SeqTimer : public rtos::Timer<typestring_is( "tseq" ), uint32_t>
-   {
-   protected:
-      virtual void run() override { fx::publish( msg::SequenceNext{} ); }
-   } timer;
+   rtos::Timer<typestring_is( "tseq" ), uint32_t> timer;
 
    ///< Prevent race - associate a count to each timer run
    uint32_t timer_counter;

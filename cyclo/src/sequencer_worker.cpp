@@ -35,7 +35,10 @@ namespace
 
 
 SequencerWorker::SequencerWorker( ProgramManager &pgm_man )
-   : timer_counter{ 100 }, ticks_left{ 0 }, pgm_man{ pgm_man }
+   : timer{ [] { fx::publish( msg::SequenceNext{} ); } }
+   , timer_counter{ 100 }
+   , ticks_left{ 0 }
+   , pgm_man{ pgm_man }
 {}
 
 // Activate the sequencer. This resets the program
@@ -52,10 +55,10 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
       if ( pgm_man.get_active_program().back().command == Command::loop )
       {
          pgm_man.set_counter( 0 );
-
-         // Start from the start
-         pgm_man.get_active_program().start();
       }
+
+      // Start from the start
+      pgm_man.get_active_program().start();
 
       // Update the GUI
       fx::publish( msg::CounterUpdate{} );
@@ -67,8 +70,7 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
    else if ( ticks_left )
    {
       timer.set_param( timer_counter );
-      timer.set_period( ticks_left );
-      timer.start();
+      timer.start(ticks_left);
 
       return;
    }
@@ -113,7 +115,7 @@ void SequencerWorker::execute_next()
    const Command *cmd = pgm.iterate();
 
    // Make sure not the last
-   if ( cmd != nullptr )
+   if ( cmd )
    {
       // Execute the item
       switch ( cmd->command )
@@ -140,16 +142,15 @@ void SequencerWorker::execute_next()
       {
          // Fire a new timers
          timer.set_param( ++timer_counter );
-         timer.set_period( rtos::tick::from_ms( cmd->delay_ms ) );
-         timer.start();
+         timer.start( rtos::tick::from_ms( cmd->delay_ms ) );
       }
-      else
-      {
-         // The program has stopped - let the GUI know
-         fx::publish( msg::ProgramIsStopped{} );
+   }
+   else
+   {
+      // The program has stopped - let the GUI know
+      fx::publish( msg::ProgramIsStopped{} );
 
-         // Stop linking NO/NC with the contact
-         pgm_man.get_contact().unmanage();
-      }
+      // Stop linking NO/NC with the contact
+      pgm_man.get_contact().unmanage();
    }
 }
