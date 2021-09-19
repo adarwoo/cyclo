@@ -442,7 +442,7 @@ namespace etl
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
+                            !etl::is_same<T, bool>::value, const TIString& > ::type
       to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
@@ -458,7 +458,7 @@ namespace etl
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
+                            !etl::is_same<T, bool>::value, const TIString& > ::type
       to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
@@ -472,7 +472,7 @@ namespace etl
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
+                            !etl::is_same<T, bool>::value, const TIString& > ::type
       to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
@@ -488,7 +488,7 @@ namespace etl
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
+                            !etl::is_same<T, bool>::value, const TIString& > ::type
       to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
