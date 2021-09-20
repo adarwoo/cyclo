@@ -12,7 +12,7 @@ CFLAGS += -funsigned-char -funsigned-bitfields -ffunction-sections -fdata-sectio
 CFLAGS += -O$(if $(DEBUG),g,s)
 CXXFLAGS += -fno-threadsafe-statics
 
-LDFLAGS         += -Wl,-Map="$(BIN).map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atxmega128a4u -Wl,--demangle
+LDFLAGS         += -Wl,-Map="$(BIN).map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atxmega128a4u -Wl,--demangle -Wl,-flto
 
 OBJS = $(foreach file, $(SRCS.common) $(SRCS.avr) $(SRCS.rc), $(BUILD_DIR)/$(basename $(file)).o)
 
