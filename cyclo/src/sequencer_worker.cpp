@@ -143,14 +143,13 @@ void SequencerWorker::execute_next()
          // Fire a new timers
          timer.set_param( ++timer_counter );
          timer.start( rtos::tick::from_ms( cmd->delay_ms ) );
+         return;
       }
    }
-   else
-   {
-      // The program has stopped - let the GUI know
-      fx::publish( msg::ProgramIsStopped{} );
 
-      // Stop linking NO/NC with the contact
-      pgm_man.get_contact().unmanage();
-   }
+   // The program has stopped - let the GUI know
+   fx::publish( msg::ProgramIsStopped{} );
+
+   // Stop linking NO/NC with the contact
+   pgm_man.get_contact().unmanage();
 }

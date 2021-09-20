@@ -51,7 +51,7 @@ int main( void )
    auto sequencer     = SequencerWorker{ pgm_manager };
    auto sequencer_bus = fx::Dispatcher<msg::packet_t, typestring_is( "sq" ), 32>();
    auto ui            = UIWorker{ pgm_manager };
-   auto ui_bus        = fx::Dispatcher<msg::packet_t, typestring_is( "ui" ), 64, 1, 8>();
+   auto ui_bus        = fx::Dispatcher<msg::packet_t, typestring_is( "ui" ), 128, 1, 8>();
 
    ///< The root dispatcher (un-threaded) with 2 sub-dispatchers
    auto root = fx::RootDispatcher<2>();

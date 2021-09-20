@@ -307,6 +307,8 @@ struct mode_manual
          return m.get_state() == UIModel::program_state_t::stopped;
       };
 
+      auto counter_active = []( UIModel &m ) { return m.get_counter() >= 0; };
+
       return make_transition_table(
          *"select"_s + sml::on_entry<_> / call_next,
          "select"_s + event<next>[ is_running ] = state<walkman>,
@@ -336,6 +338,7 @@ struct mode_manual
          ,
          "contact"_s + sml::on_entry<_> / []( UIView &v ) { v.draw_cursor( 3 ); },
          "contact"_s + sml::on_exit<_> / []( UIView &v ) { v.erase_cursor( 3 ); },
+         "contact"_s + event<up>[ is_paused and not counter_active ] = state<walkman>,
          "contact"_s + event<up>[ is_paused ] = "counter"_s,
          "contact"_s + event<up>              = state<walkman>,
          "contact"_s + event<push> / []( UIModel &m ) { m.flip_contact(); }
@@ -346,8 +349,9 @@ struct mode_manual
             m.select_pgm();
             v.draw_prog( false );
          } =state<walkman>,
-         state<walkman> + event<down>[ is_paused ]  = "counter"_s,
-         state<walkman> + event<down>[ is_stopped ] = "contact"_s,
+         state<walkman> + event<down>[ is_paused and not counter_active ]  = "contact"_s,
+         state<walkman> + event<down>[ is_paused ] = "counter"_s,
+         state<walkman> + event<down>[ is_stopped or is_paused ] = "contact"_s,
          state<walkman> + event<up>[ is_stopped ]   = state<program_selection> );
    }
 };
