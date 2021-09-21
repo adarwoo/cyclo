@@ -83,7 +83,7 @@ void console_putc( vt100::char_t c )
 Console::Console( ProgramManager &program_manager )
    : parser{ temp_program, error_buffer }
    , program_manager{ program_manager }
-   , task( etl::delegate<void()>::create<Console, &Console::default_handler>( *this ) )
+   , task( etl::delegate<void()>::create<Console, &Console::run>( *this ) )
 {}
 
 void Console::show_error()
@@ -129,7 +129,7 @@ void Console::print_error( const char error[], bool is_pgm_str )
 /**
  * The task entry point
  */
-void Console::default_handler()
+void Console::run()
 {
    using T = TTerminal;
 

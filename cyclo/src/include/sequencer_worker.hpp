@@ -30,15 +30,20 @@ SOFTWARE.
  */
 #include <fx.hpp>
 
-#include "program_manager.hpp"
 #include "msg_defs.hpp"
+#include "program_manager.hpp"
 
 
 using namespace rtos::tick;
 
 
 class SequencerWorker
-   : public fx::Worker<SequencerWorker, msg::StartProgram, msg::StopProgram, msg::SequenceNext>
+   : public fx::Worker<
+        SequencerWorker,
+        msg::CheckHealth,
+        msg::StartProgram,
+        msg::StopProgram,
+        msg::SequenceNext>
 {
    ///< Timer in between sequences
    rtos::Timer<typestring_is( "tseq" ), uint32_t> timer;
@@ -58,12 +63,15 @@ class SequencerWorker
 public:
    SequencerWorker( ProgramManager &pgm_man );
 
+   void on_receive( const msg::CheckHealth &msg );
+
    // Activate the sequencer. This resets the program
    void on_receive( const msg::StartProgram &msg );
 
    void on_receive( const msg::StopProgram &msg );
 
    void on_receive( const msg::SequenceNext &msg );
+
 
 protected:
    void execute_next();

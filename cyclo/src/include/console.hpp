@@ -62,7 +62,7 @@ class Console
 
 public:
    explicit Console( ProgramManager &);
-   virtual void default_handler() final;
+   virtual void run() final;
 
 protected:
    ///< Display the parsing error

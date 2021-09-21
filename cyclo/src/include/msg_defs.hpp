@@ -25,8 +25,11 @@ SOFTWARE.
 /**
  * Defines all the fx messages
  */
+#include "asx.h"
+
 #include <fx.hpp>
 #include <rtos.hpp>
+#include <etl/delegate.h>
 
 namespace msg
 {
@@ -48,6 +51,13 @@ namespace msg
    FX_MSG( USBConnected ){};
    FX_MSG( USBDisconnected ){};
    FX_MSG( SequenceNext ){};
+   FX_MSG( CheckHealth )
+   {
+      void check() const
+      {
+         wdt_reset(); 
+      };
+   };
 
    // Create a universal message type
    using packet_t = etl::message_packet<
@@ -59,9 +69,10 @@ namespace msg
       StartProgram,
       StopProgram,
       ProgramIsStopped,
-      SequenceNext,
       USBConnected,
-      USBDisconnected>;
+      USBDisconnected,
+      SequenceNext,
+      CheckHealth>;
 }  // namespace msg
 
 #endif  // ndef msg_defs_hpp_included

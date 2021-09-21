@@ -41,6 +41,12 @@ SequencerWorker::SequencerWorker( ProgramManager &pgm_man )
    , pgm_man{ pgm_man }
 {}
 
+// Kick the watchdog
+void SequencerWorker::on_receive( const msg::CheckHealth &msg )
+{
+   msg.check();
+}
+
 // Activate the sequencer. This resets the program
 void SequencerWorker::on_receive( const msg::StartProgram &msg )
 {
@@ -77,6 +83,7 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
 
    execute_next();
 }
+
 
 /** Don't if this stop is a pause or a final stop */
 void SequencerWorker::on_receive( const msg::StopProgram &msg )

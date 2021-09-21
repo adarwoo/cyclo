@@ -87,6 +87,52 @@ extern "C"
    };
    uint32_t crc_io_checksum( void *data, uint16_t len, enum crc_16_32_t crc_16_32 );
 
+
+// Wdt
+//! Watchdog window period setting
+enum wdt_window_period_t {
+	WDT_WINDOW_PERIOD_8CLK = (0x00),
+	WDT_WINDOW_PERIOD_16CLK = (0x01),
+	WDT_WINDOW_PERIOD_32CLK = (0x02),
+	WDT_WINDOW_PERIOD_64CLK = (0x03),
+	WDT_WINDOW_PERIOD_125CLK = (0x04),
+	WDT_WINDOW_PERIOD_250CLK = (0x05),
+	WDT_WINDOW_PERIOD_500CLK = (0x06),
+	WDT_WINDOW_PERIOD_1KCLK = (0x07),
+	WDT_WINDOW_PERIOD_2KCLK = (0x08),
+	WDT_WINDOW_PERIOD_4KCLK = (0x09),
+	WDT_WINDOW_PERIOD_8KCLK = (0x0A),
+};
+
+enum wdt_timeout_period_t {
+	//! Timeout period = 8 cycles or 8 ms @ 3.3V
+	WDT_TIMEOUT_PERIOD_8CLK = (0x00),
+	//! Timeout period = 16 cycles or 16 ms @ 3.3V
+	WDT_TIMEOUT_PERIOD_16CLK = (0x01),
+	//! Timeout period = 32 cycles or 32m s @ 3.3V
+	WDT_TIMEOUT_PERIOD_32CLK = (0x02),
+	//! Timeout period = 64 cycles or 64ms @ 3.3V
+	WDT_TIMEOUT_PERIOD_64CLK = (0x03),
+	//! Timeout period = 125 cycles or 125ms @ 3.3V
+	WDT_TIMEOUT_PERIOD_125CLK = (0x04),
+	//! 250 cycles or 250ms @ 3.3V)
+	WDT_TIMEOUT_PERIOD_250CLK = (0x05),
+	//! Timeout period = 500 cycles or 500ms @ 3.3V
+	WDT_TIMEOUT_PERIOD_500CLK = (0x06),
+	//! Timeout period =1K cycles or 1s @ 3.3V
+	WDT_TIMEOUT_PERIOD_1KCLK = (0x07),
+	//! Timeout period = 2K cycles or 2s @ 3.3V
+	WDT_TIMEOUT_PERIOD_2KCLK = (0x08),
+	//! Timeout period = 4K cycles or 4s @ 3.3V
+	WDT_TIMEOUT_PERIOD_4KCLK = (0x09),
+	//! Timeout period = 8K cycles or 8s @ 3.3V
+	WDT_TIMEOUT_PERIOD_8KCLK = (0x0A),
+};
+
+void wdt_enable(void);
+void wdt_set_timeout_period(enum wdt_timeout_period_t to_period);
+void wdt_reset();
+
 #ifdef __cplusplus
 }
 #endif

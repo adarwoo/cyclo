@@ -28,19 +28,23 @@ SOFTWARE.
  * @author software@arreckx.com
  */
 #include "asx.h"
-
-#include "program_manager.hpp"
-#include "sequencer_worker.hpp"
-#include "ui_worker.hpp"
-#include "keypad_tasklet.hpp"
-#include "nonc_tasklet.hpp"
 #include "console.hpp"
 
 #include <fx.hpp>
 
+#include "keypad_tasklet.hpp"
+#include "nonc_tasklet.hpp"
+#include "program_manager.hpp"
+#include "sequencer_worker.hpp"
+#include "ui_worker.hpp"
+
 
 int main( void )
 {
+   // Activate the watchdog - 125ms timeout
+   wdt_set_timeout_period( WDT_TIMEOUT_PERIOD_1KCLK );
+   wdt_enable();
+
    // Initialise the board hardware (clocks, IOs, buses etc.)
    board_init();
 
@@ -71,8 +75,12 @@ int main( void )
    // Do we need to auto-start a program?
    if ( pgm_manager.starts_automatically() )
    {
-      fx::publish(msg::StartProgram{true});
+      fx::publish( msg::StartProgram{ true } );
    }
+
+   // Start a repeating timer to have the watchdog kicked by a service
+   auto wdt = rtos::Timer<typestring_is( "wd" )>( []() { fx::publish( msg::CheckHealth() ); } );
+   wdt.start( 500_ms, true );
 
    // Start the scheduler - and go! The tasklets, tasks and workers are now loose
    rtos::start_scheduler();

@@ -298,7 +298,7 @@ namespace rtos
    public:
       TaskHandle_t operator*() { return handle; }
 
-      Task(delegator_t delegate) : delegator{delegate}
+      Task(delegator_t &&delegate) : delegator{delegate}
       {
          /* Create the task without using any dynamic memory allocation. */
          handle = xTaskCreateStatic(

@@ -239,4 +239,20 @@ extern "C"
          }
       }
    }
+
+   void wdt_enable(void)
+   {
+
+   }
+
+   void wdt_set_timeout_period(enum wdt_timeout_period_t to_period)
+   {
+
+   }
+   
+   void wdt_reset()
+   {
+      LOG_DEBUG("wdt", "kick");
+   }
+
 }  // extern "C"
