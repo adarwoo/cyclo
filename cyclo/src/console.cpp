@@ -81,11 +81,10 @@ void console_putc( vt100::char_t c )
 
 /** Create the timer for the splash */
 Console::Console( ProgramManager &program_manager )
-   : parser{ temp_program, error_buffer }, program_manager{ program_manager }
-{
-   // Start the thread
-   this->run();
-}
+   : parser{ temp_program, error_buffer }
+   , program_manager{ program_manager }
+   , task( etl::delegate<void()>::create<Console, &Console::default_handler>( *this ) )
+{}
 
 void Console::show_error()
 {
@@ -113,7 +112,7 @@ void Console::print_error( const char error[], bool is_pgm_str )
 
    T::putc( '#' );
    T::putc( ' ' );
-   
+
    if ( is_pgm_str )
    {
       T::print_P( error );
@@ -220,7 +219,7 @@ void Console::process( etl::string_view line )
          auto pgmNumber = parser.get_program_number();
          program_manager.load( pgmNumber );
          program_manager.set_lastused( pgmNumber );
-         
+
          fx::publish( msg::StartProgram{ true } );
       }
       else
@@ -256,7 +255,7 @@ void Console::process( etl::string_view line )
       }
       else
       {
-         program_manager.set_autostart(pgm);
+         program_manager.set_autostart( pgm );
       }
    }
    break;
@@ -304,7 +303,7 @@ void Console::show_list()
 {
    // Iterate the bitset
    int8_t index, next_index = 0;
-   auto    autostart_index = program_manager.get_autostart_index();
+   auto   autostart_index = program_manager.get_autostart_index();
 
    do
    {

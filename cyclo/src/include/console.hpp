@@ -34,7 +34,7 @@ SOFTWARE.
 
 extern void console_putc(vt100::char_t);
 
-class Console : public rtos::Task<typestring_is("console"), 256>
+class Console
 {
    using TTerminal = vt100::Terminal<console_putc>;
    using TConsoleServer = ConsoleServer<TTerminal>;
@@ -57,6 +57,8 @@ class Console : public rtos::Task<typestring_is("console"), 256>
 
    ///< Copy of the last valid program string
    TConsoleServer::buffer_t last_program;
+
+   rtos::Task<typestring_is("console"), 256> task;
 
 public:
    explicit Console( ProgramManager &);

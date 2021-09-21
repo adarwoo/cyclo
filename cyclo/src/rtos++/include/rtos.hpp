@@ -257,28 +257,6 @@ namespace rtos
       StaticSemaphore_t xSemaphoreBuffer;
    };
 
-   /**
-    * Delegate to a function/lambda etc.
-    */
-   struct Delegator
-   {
-      ///< Type of task handler
-      using handler_t = void ( * )();
-
-      ///< Accessor to the handler
-      virtual void invoke();
-
-      virtual void default_handler();
-
-   protected:
-      /** Hold this function pointer */
-      handler_t m_handler = nullptr;
-   };
-
-   /**
-    * C Linkage entrypoint
-    */
-   extern "C" void trampoline( void *thisPtr );
 
    /**
     * Create a new static task.
@@ -294,50 +272,43 @@ namespace rtos
       class TName,
       const size_t     TStackSize = 0,
       const priority_t TPriority  = rtos::priority_t::normal>
-   class Task : Delegator
+   class Task
    {
+      using delegator_t = etl::delegate<void()>;
+
+      ///< Handle to the task
+      TaskHandle_t handle;
       ///< The stack size is on top of freeRTOS minimum requirement
       static constexpr auto stack_size = configMINIMAL_STACK_SIZE + TStackSize;
-
-      /** Structure that will hold the TCB of the task being created. */
+      ///< Structure that will hold the TCB of the task being created
       StaticTask_t taskBuffer;
-
-      /** Local stack storage */
+      ///< Local stack storage
       StackType_t stack[ stack_size ];
+      ///< Entrypoint
+      delegator_t delegator;
 
-      /** Handle to the task */
-      TaskHandle_t handle;
+   protected:
+      static void TaskCallbackFunctionAdapter( void *_this )
+      {
+         Task *pTask = static_cast<Task *>( _this );
+
+         pTask->delegator();
+      }
 
    public:
       TaskHandle_t operator*() { return handle; }
 
-      template<typename TLambda>
-      void run( TLambda &&handler )
-      {
-         m_handler = reinterpret_cast<handler_t>( static_cast<handler_t>( handler ) );
-
-         /* Create the task without using any dynamic memory allocation. */
-         handle = xTaskCreateStatic(
-            &trampoline,            /* Function that implements the task. */
-            TName::data(),          /* Text name for the task. */
-            stack_size,             /* Number of indexes in the xStack array. */
-            (void *)this,           /* Parameter passed into the task. */
-            (UBaseType_t)TPriority, /* Priority at which the task is created. */
-            stack,                  /* Array to use as the task's stack. */
-            &taskBuffer );          /* Variable to hold the task's data structure. */
-      }
-
-      void run()
+      Task(delegator_t delegate) : delegator{delegate}
       {
          /* Create the task without using any dynamic memory allocation. */
          handle = xTaskCreateStatic(
-            &trampoline,            /* Function that implements the task. */
-            TName::data(),          /* Text name for the task. */
-            stack_size,             /* Number of indexes in the xStack array. */
-            (void *)this,           /* Parameter passed into the task. */
-            (UBaseType_t)TPriority, /* Priority at which the task is created. */
-            stack,                  /* Array to use as the task's stack. */
-            &taskBuffer );          /* Variable to hold the task's data structure. */
+            &TaskCallbackFunctionAdapter, /* Function that implements the task. */
+            TName::data(),                /* Text name for the task. */
+            stack_size,                   /* Number of indexes in the xStack array. */
+            (void *)this,                 /* Parameter passed into the task. */
+            (UBaseType_t)TPriority,       /* Priority at which the task is created. */
+            stack,                        /* Array to use as the task's stack. */
+            &taskBuffer );                /* Variable to hold the task's data structure. */
       }
    };
 
@@ -488,7 +459,6 @@ namespace rtos
    {
       using delegator_t = etl::delegate<void()>;
 
-   private:
       /**
        *  Reference to the underlying timer handle.
        */

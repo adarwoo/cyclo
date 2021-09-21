@@ -266,34 +266,4 @@ namespace rtos
       tasklet->run( parameter );
       xSemaphoreGive( tasklet->DtorLock );
    }
-
-   ///< Accessor to the handler
-   void Delegator::invoke()
-   {
-      if ( m_handler )
-      {
-         m_handler();
-      }
-      else
-      {
-         default_handler();
-      }
-   }
-
-   void Delegator::default_handler() {}
-
-   /**
-    * C Linkage entrypoint
-    * @param A function pointer to a lambda which calls the real function
-    *         with proper arguments
-    */
-   extern "C" void trampoline( void *thisPtr )
-   {
-      // Grab this
-      auto delegate= (Delegator *)thisPtr;
-      delegate->invoke();
-
-      // If the function returns - stop the task
-      vTaskDelete( NULL );
-   }
 }  // namespace rtos

@@ -37,6 +37,7 @@ SOFTWARE.
 
 extern "C" void nvm_init( void );
 extern "C" bool console_cdc_enabled( uint8_t port );
+extern "C" void scan_keys();
 
 namespace
 {
@@ -45,6 +46,11 @@ namespace
 
    // Synchronous queue to send to the UDC
    rtos::Queue<char, 16> key_queue;
+
+   // Scanning task
+   auto task = rtos::Task<typestring_is( "keypad" )>(
+      etl::delegate<void(void)>::create<scan_keys>()
+   );
 }  // namespace
 
 extern "C"
@@ -194,9 +200,6 @@ extern "C"
    /** Initialise the keypad library */
    void keypad_init( void )
    {
-      // Start a thread which scan the keypad and calls the callback
-      static auto keypad = rtos::Task<typestring_is( "keypad" )>();
-      keypad.run( scan_keys );
    }
 
    // UDI

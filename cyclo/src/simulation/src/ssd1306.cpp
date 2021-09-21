@@ -135,6 +135,11 @@ static inline void inc_addr()
 
 static bool once = false;
 
+// Need a task to refresh the UI
+static auto ui_task = rtos::Task<typestring_is( "simui" )>(
+   etl::delegate<void()>::create<handle_x>()
+);
+
 extern "C" void ssd1306_init( void )
 {
    if ( once )
@@ -144,16 +149,10 @@ extern "C" void ssd1306_init( void )
 
    LOG_HEADER( DOM );
 
-   // Need a task to refresh the UI
-   static auto ui_task = rtos::Task<typestring_is( "simui" )>();
-
    // Reset the framebuffer
    memset( fb, 0, sizeof( fb ) );
 
    init_x();
-
-   // Start the task to process screen refresh etc.
-   ui_task.run( handle_x );
 }
 
 

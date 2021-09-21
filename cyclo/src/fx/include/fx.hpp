@@ -91,14 +91,16 @@ namespace fx
    };
    
    template <class TPacket, class TName, const size_t STACKSIZE, const uint_least8_t MAX_ROUTERS=1, const size_t QUEUESIZE=4>
-   class Dispatcher : public etl::message_bus<MAX_ROUTERS>, public rtos::Task<TName, STACKSIZE>
+   class Dispatcher : public etl::message_bus<MAX_ROUTERS>
    {
       rtos::Queue<TPacket, QUEUESIZE> queue;
+      rtos::Task<TName, STACKSIZE> task;
          
    public:
-      Dispatcher() : etl::message_bus<MAX_ROUTERS>()
+      Dispatcher() :
+         etl::message_bus<MAX_ROUTERS>(), 
+         task(etl::delegate<void()>::create<Dispatcher, &Dispatcher::default_handler>(*this))
       {
-         this->run();
       }
       
       template<class T> Dispatcher &operator<<(T& w)
