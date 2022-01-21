@@ -87,8 +87,8 @@ the latest version of Eagle. Given the size of the PCB, the free edition is enou
 
 I have added the .brd and .sch which must PCB house will take.
 If you plan on making the PCB yourself - you will need a production method which can achieve 
-at least 10mil tracks and isolation. A good CNC will do that. If you're ething, you need to
-know what you're doint.
+at least 10mil tracks and isolation. A good CNC will do that. If you're etching, you absolutly need to
+know what you're doing. This is the top end of home made PCBs, but poeple with experience can do it.
 I personnaly still etch my PCB and also do PTH (Yes!). But I have a CNC for drilling, and 
 a lot of chemicals like paladium... and 15 years experience doing it.
 
