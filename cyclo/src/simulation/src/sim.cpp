@@ -29,8 +29,6 @@ SOFTWARE.
 #include <termios.h>
 #include <unistd.h>
 
-#include <logger.h>
-
 // For the logger
 #include "asx.h"
 #include "keypad.h"
@@ -39,6 +37,7 @@ SOFTWARE.
 
 extern "C" void nvm_init( void );
 extern "C" bool console_cdc_enabled( uint8_t port );
+extern "C" void scan_keys();
 
 namespace
 {
@@ -47,6 +46,11 @@ namespace
 
    // Synchronous queue to send to the UDC
    rtos::Queue<char, 16> key_queue;
+
+   // Scanning task
+   auto task = rtos::Task<typestring_is( "keypad" )>(
+      etl::delegate<void(void)>::create<scan_keys>()
+   );
 }  // namespace
 
 extern "C"
@@ -153,12 +157,15 @@ extern "C"
       return buf;
    }
 
-   void sim_key_press(uint8_t key)
+   void sim_key_press( uint8_t key )
    {
       if ( key != 0 )
       {
          LOG_DEBUG(
-            DOM, "Handling %s", key == KEY_UP ? "UP" : key == KEY_DOWN ? "DOWN" : "SELECT" );
+            DOM, "Handling %s",
+            key == KEY_UP     ? "UP"
+            : key == KEY_DOWN ? "DOWN"
+                              : "SELECT" );
 
          for ( size_t i = 0; i < KEYPAD_NUMBER_OF_KEYS; ++i )
          {
@@ -175,35 +182,16 @@ extern "C"
    {
       LOG_TRACE( DOM, "Task key scanning running" );
 
-      char c           = 0;
-      bool send_to_cdc = true;
+      char c = 0;
 
-      while ( c != 'Q' )
+      while ( true )
       {
-         if ( c == '/' )
-         {
-            send_to_cdc = ! send_to_cdc;
-            c           = 0;
-            continue;
-         }
-
-         if ( send_to_cdc )
-         {
-            if ( c != 0 )
-               key_queue.send( c );
-         }
-         else
-         {
-            switch ( c )
-            {
-            case 'w': sim_key_press(KEY_UP); break;
-            case 's': sim_key_press(KEY_DOWN); break;
-            case '\n': sim_key_press(KEY_SELECT); break;
-            default: break;
-            }
-         }
-
          c = getch();
+
+         if ( c != 0 )
+         {
+            key_queue.send( c );
+         }
       }
 
       exit( 0 );
@@ -212,9 +200,6 @@ extern "C"
    /** Initialise the keypad library */
    void keypad_init( void )
    {
-      // Start a thread which scan the keypad and calls the callback
-      static auto keypad = rtos::Task<typestring_is( "keypad" )>();
-      keypad.run( scan_keys );
    }
 
    // UDI
@@ -230,7 +215,7 @@ extern "C"
    {
       char c;
       key_queue.receive( c );
-      LOG_DEBUG( DOM, "Sending %#.2x", c );
+      LOG_DEBUG( DOM, "Key detected %#.2x", c );
 
       return (int)c;
    }
@@ -254,4 +239,20 @@ extern "C"
          }
       }
    }
+
+   void wdt_enable(void)
+   {
+
+   }
+
+   void wdt_set_timeout_period(enum wdt_timeout_period_t to_period)
+   {
+
+   }
+   
+   void wdt_reset()
+   {
+      LOG_DEBUG("wdt", "kick");
+   }
+
 }  // extern "C"

@@ -1,0 +1,60 @@
+{
+        "in": [
+                {
+                        "id": "logo",
+                        "type": "bitmap",
+                        "source": "arex.png"
+                },
+                {
+                        "id": "switch_opened",
+                        "type": "bitmap",
+                        "source": "switch_opened.png"
+                },
+                {
+                        "id": "switch_closed",
+                        "type": "bitmap",
+                        "source": "switch_closed.png"
+                },
+                {
+                        "id": "rec_stop",
+                        "type": "bitmap",
+                        "source": "stop.png"
+                },
+                {
+                        "id": "rec_play",
+                        "type": "bitmap",
+                        "source": "play.png"
+                },
+                {
+                        "id": "rec_pause",
+                        "type": "bitmap",
+                        "source": "pause.png"
+                },
+                {
+                        "id": "usb_symbol",
+                        "type": "bitmap",
+                        "source": "usb_large.png"
+                }
+        ],
+        "out": [
+                {
+                        "src": "src/resource.c",
+                        "src_header": [
+                           "#include \"resource.h\""
+                        ],
+                        "inc": "src/include/resource.h",
+                        "inc_header": [
+                           "#include \"asx.h\""
+                        ],
+                        "ids": [
+                                "logo",
+                                "switch_opened",
+                                "switch_closed",
+                                "rec_stop",
+                                "rec_play",
+                                "rec_pause",
+                                "usb_symbol"
+                        ]
+                }
+        ]
+}

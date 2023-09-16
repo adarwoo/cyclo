@@ -61,6 +61,9 @@ public:
    ///< @return true if the contact is opened
    bool is_open() const;
 
+   ///< Indicate the contact is no longer managed
+   inline void unmanage() { contact = leave_as; }
+
    ///< Flip the contact
    inline void flip()
    {

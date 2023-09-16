@@ -57,16 +57,8 @@ class UIWorker
 {
    using UIController = sml::sm<sm_cyclo>;
 
-   // Create a timer
-   struct SplashTimer : public rtos::Timer<typestring_is( "tsplash" )>
-   {
-      SplashTimer();
-
-   protected:
-      virtual void run() override;
-   };
-
-   SplashTimer splash_timer;
+   // Timer for the splash screen
+   rtos::Timer<typestring_is( "tsplash" )> splash_timer;
 
    // MVC instances. The model is only a facade
    UIModel      model;
@@ -81,6 +73,9 @@ public:
 
    // @return true if the main screen can be updated with external changes
    bool can_update();
+
+   // @return true if the main state machine is in USB state
+   bool usb_is_on();
 
    // --------------------------------------------------------------
    // Message handlers

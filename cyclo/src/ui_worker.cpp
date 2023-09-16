@@ -38,25 +38,22 @@ namespace
    const char *const DOM = "ui_worker";
 }
 
-/** Create the timer for the splash */
-UIWorker::SplashTimer::SplashTimer() : rtos::Timer<typestring_is( "tsplash" )>( 1.5_s )
-{}
-
-/** Publish a message on expiry */
-void UIWorker::SplashTimer::run()
-{
-   LOG_HEADER( DOM );
-
-   fx::publish( msg::EndOfSplash{} );
-}
-
 UIWorker::UIWorker( ProgramManager &program_manager )
-   : model{ program_manager }
+   : splash_timer{ [] { fx::publish( msg::EndOfSplash{} ); } }
+   , model{ program_manager }
    , view{ model }
    , controller{ model, view }
    , program_manager{ program_manager }
 {
    LOG_HEADER( DOM );
+}
+
+// @return true if the controller is in USB state
+bool UIWorker::usb_is_on()
+{
+   using namespace sml;
+
+   return controller.is( state<mode_usb> );
 }
 
 // @return true if the main screen can be updated with external changes
@@ -70,7 +67,9 @@ bool UIWorker::can_update()
 
    LOG_DEBUG(
       DOM, "%s",
-      is_in_splash ? "X = is in splash" : is_in_program_setup ? "X = is in pgm setup" : "OK" );
+      is_in_splash          ? "X = is in splash"
+      : is_in_program_setup ? "X = is in pgm setup"
+                            : "OK" );
 
    return not ( is_in_splash or is_in_program_setup );
 }
@@ -83,7 +82,7 @@ void UIWorker::on_receive( const fx::DispatcherStarted &msg )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "DispatcherStarted" );
 
-   splash_timer.start();
+   splash_timer.start( 1.5_s );
 }
 
 void UIWorker::on_receive( const msg::EndOfSplash &msg )
@@ -97,20 +96,19 @@ void UIWorker::on_receive( const msg::EndOfSplash &msg )
    // Is there an auto_start program?
    if ( program_manager.starts_automatically() )
    {
-      // Load it (unless it's 0)
-      uint8_t selected = program_manager.get_selected();
-
-      if ( selected > 0 )
-      {
-         // Parse it
-         program_manager.load( selected );
-      }
+      // Parse it
+      program_manager.load( program_manager.get_autostart_index() );
 
       // Start!
       fx::publish( msg::StartProgram{ true } );
 
       // Set the running state
+      model.set_pgm( program_manager.get_autostart_index() );
       model.set_state( UIModel::program_state_t::running );
+   }
+   else if ( program_manager.get_lastused_index() >= 0 )
+   {
+      model.set_pgm( program_manager.get_lastused_index() );
    }
 }
 
@@ -144,6 +142,9 @@ void UIWorker::on_receive( const msg::CounterUpdate & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "CounterUpdate" );
 
+   // Force the state to running
+   model.set_state( UIModel::program_state_t::running );
+
    if ( can_update() )
    {
       view.draw_counter();
@@ -166,7 +167,14 @@ void UIWorker::on_receive( const msg::USBConnected & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBConnected" );
 
-   model.set_state(UIModel::program_state_t::usb);
+   // Update the model with the last program used
+   auto lastUsed = program_manager.get_lastused_index();
+
+   if ( lastUsed >= 0 )
+   {
+      model.set_pgm( lastUsed );
+   }
+
    process_event( controller, usb_on{} );
 }
 
@@ -175,7 +183,7 @@ void UIWorker::on_receive( const msg::USBDisconnected & )
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "USBDisconnected" );
 
-   model.set_state(UIModel::program_state_t::stopped);
+   model.set_state( UIModel::program_state_t::stopped );
    process_event( controller, usb_off{} );
 }
 
@@ -183,7 +191,7 @@ void UIWorker::on_receive( const msg::ProgramIsStopped & )
 {
    LOG_HEADER( DOM );
    LOG_TRACE( DOM, "ProgramIsStopped" );
-   
+
    model.set_state( UIModel::program_state_t::stopped );
    process_event( controller, pgm_stopped{} );
 }

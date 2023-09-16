@@ -35,8 +35,17 @@ namespace
 
 
 SequencerWorker::SequencerWorker( ProgramManager &pgm_man )
-   : timer_counter{ 100 }, ticks_left{ 0 }, pgm_man{ pgm_man }
+   : timer{ [] { fx::publish( msg::SequenceNext{} ); } }
+   , timer_counter{ 100 }
+   , ticks_left{ 0 }
+   , pgm_man{ pgm_man }
 {}
+
+// Kick the watchdog
+void SequencerWorker::on_receive( const msg::CheckHealth &msg )
+{
+   msg.check();
+}
 
 // Activate the sequencer. This resets the program
 void SequencerWorker::on_receive( const msg::StartProgram &msg )
@@ -46,13 +55,19 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
    if ( msg.from_start )
    {
       // Reset the counter
-      pgm_man.set_counter( 0 );
+      pgm_man.set_counter( -1 );
 
-      // Update the GUI
-      fx::publish( msg::CounterUpdate{} );
+      // Is it a loop ?
+      if ( pgm_man.get_active_program().back().command == Command::loop )
+      {
+         pgm_man.set_counter( 0 );
+      }
 
       // Start from the start
       pgm_man.get_active_program().start();
+
+      // Update the GUI
+      fx::publish( msg::CounterUpdate{} );
 
       // Reset the number of ticks left. This is used when pausing,
       // so we resume with the actual time left
@@ -61,8 +76,7 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
    else if ( ticks_left )
    {
       timer.set_param( timer_counter );
-      timer.set_period( ticks_left );
-      timer.start();
+      timer.start(ticks_left);
 
       return;
    }
@@ -70,6 +84,8 @@ void SequencerWorker::on_receive( const msg::StartProgram &msg )
    execute_next();
 }
 
+
+/** Don't if this stop is a pause or a final stop */
 void SequencerWorker::on_receive( const msg::StopProgram &msg )
 {
    LOG_TRACE( DOM, "StopProgram" );
@@ -106,7 +122,7 @@ void SequencerWorker::execute_next()
    const Command *cmd = pgm.iterate();
 
    // Make sure not the last
-   if ( cmd != nullptr )
+   if ( cmd )
    {
       // Execute the item
       switch ( cmd->command )
@@ -133,13 +149,14 @@ void SequencerWorker::execute_next()
       {
          // Fire a new timers
          timer.set_param( ++timer_counter );
-         timer.set_period( rtos::tick::from_ms( cmd->delay_ms ) );
-         timer.start();
-      }
-      else
-      {
-         // The program has stopped - let the GUI know
-         fx::publish( msg::ProgramIsStopped{} );
+         timer.start( rtos::tick::from_ms( cmd->delay_ms ) );
+         return;
       }
    }
+
+   // The program has stopped - let the GUI know
+   fx::publish( msg::ProgramIsStopped{} );
+
+   // Stop linking NO/NC with the contact
+   pgm_man.get_contact().unmanage();
 }

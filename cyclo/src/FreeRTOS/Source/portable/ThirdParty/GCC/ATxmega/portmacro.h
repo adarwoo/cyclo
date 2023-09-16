@@ -4,6 +4,17 @@
  * Port to the AVR xMega micro-controller
 */
 
+/*
+ * #define TCB_t to avoid conflicts between the
+ * FreeRTOS task control block type (TCB_t) and the
+ * AVR Timer Counter B type (TCB_t)
+ */
+#ifndef _POSIX
+#  define TCB_t avrTCB_t
+#  include <avr/io.h>
+#  undef TCB_t
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -11,6 +22,7 @@ extern "C" {
 /*-----------------------------------------------------------
  * Port specific definitions.  
  *
+ * 
  * The settings in this file configure FreeRTOS correctly for the
  * given hardware and compiler.
  *

@@ -94,7 +94,14 @@ struct walkman
       };
 
       return make_transition_table(
-         *"select"_s + sml::on_entry<_> / call_next,
+         *"select"_s
+            + sml::on_entry<_> /
+                 []( UIView &v ) {
+#if CURSOR_ALWAYS
+                    v.draw_cursor( 1 );
+#endif
+                    call_next();
+                 },
          "select"_s + event<next>[ is_running ] = "do_pause"_s,
          "select"_s + event<next>[ is_stopped ] = "do_play"_s,
          "select"_s + event<next>               = "do_play_or_stop"_s
@@ -117,11 +124,10 @@ struct walkman
          "do_pause"_s
             + event<push> /
                  []( UIModel &m ) {
-                    fx::publish( msg::StopProgram{} );
                     m.set_state( UIModel::program_state_t::paused );
+                    fx::publish( msg::StopProgram{} );
                  } = "do_play_or_stop"_s,
-         "do_pause"_s + event<up>[ is_running ], 
-         "do_pause"_s + event<pgm_stopped> = "do_play"_s,
+         "do_pause"_s + event<up>[ is_running ], "do_pause"_s + event<pgm_stopped> = "do_play"_s,
 
          "do_play_or_stop"_s + sml::on_entry<_> / []( UIView &v ) { v.draw_walkman( 1 ); },
          "do_play_or_stop"_s
@@ -137,9 +143,11 @@ struct walkman
          "do_stop"_s + event<up> = "do_play_or_stop"_s,
          "do_stop"_s
             + event<push> /
-                 []( UIModel &m ) {
-                    fx::publish( msg::StopProgram{} );
+                 []( UIModel &m, UIView &v ) {
+                    m.reset_counter( true );
+                    v.draw_counter();
                     m.set_state( UIModel::program_state_t::stopped );
+                    fx::publish( msg::StopProgram{} );
                  } = "do_play"_s );
    }
 };
@@ -299,13 +307,19 @@ struct mode_manual
          return m.get_state() == UIModel::program_state_t::stopped;
       };
 
+      auto counter_active = []( UIModel &m ) { return m.get_counter() >= 0; };
+
       return make_transition_table(
          *"select"_s + sml::on_entry<_> / call_next,
          "select"_s + event<next>[ is_running ] = state<walkman>,
          "select"_s + event<next>               = state<program_selection>
 
          ,
-         state<walkman> + sml::on_exit<_> / []( UIView &v ) { v.draw_walkman(); },
+         state<walkman> + sml::on_exit<_> / []( UIView &v ) {
+#if CURSOR_ALWAYS            
+             v.erase_cursor(1);
+#endif
+             v.draw_walkman(); },
          state<program_selection> + sml::on_exit<_> / []( UIView &v ) { v.erase_cursor( 1 ); },
          state<program_selection> + event<next> / []( UIModel &m ) { m.load_command(); } =
             state<walkman>
@@ -324,16 +338,20 @@ struct mode_manual
          ,
          "contact"_s + sml::on_entry<_> / []( UIView &v ) { v.draw_cursor( 3 ); },
          "contact"_s + sml::on_exit<_> / []( UIView &v ) { v.erase_cursor( 3 ); },
+         "contact"_s + event<up>[ is_paused and not counter_active ] = state<walkman>,
          "contact"_s + event<up>[ is_paused ] = "counter"_s,
          "contact"_s + event<up>              = state<walkman>,
          "contact"_s + event<push> / []( UIModel &m ) { m.flip_contact(); }
 
          ,
          state<program_selection> + event<down> = state<walkman>,
-         state<program_selection> + event<push> / []( UIView &v ) { v.draw_prog( false ); } =
-            state<walkman>,
-         state<walkman> + event<down>[ is_paused ]  = "counter"_s,
-         state<walkman> + event<down>[ is_stopped ] = "contact"_s,
+         state<program_selection> + event<push> / []( UIModel &m, UIView &v ) {
+            m.select_pgm();
+            v.draw_prog( false );
+         } =state<walkman>,
+         state<walkman> + event<down>[ is_paused and not counter_active ]  = "contact"_s,
+         state<walkman> + event<down>[ is_paused ] = "counter"_s,
+         state<walkman> + event<down>[ is_stopped or is_paused ] = "contact"_s,
          state<walkman> + event<up>[ is_stopped ]   = state<program_selection> );
    }
 };

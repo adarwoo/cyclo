@@ -34,7 +34,7 @@ SOFTWARE.
 
 extern void console_putc(vt100::char_t);
 
-class Console : public rtos::Task<typestring_is("console"), 256>
+class Console
 {
    using TTerminal = vt100::Terminal<console_putc>;
    using TConsoleServer = ConsoleServer<TTerminal>;
@@ -58,16 +58,18 @@ class Console : public rtos::Task<typestring_is("console"), 256>
    ///< Copy of the last valid program string
    TConsoleServer::buffer_t last_program;
 
+   rtos::Task<typestring_is("console"), 256> task;
+
 public:
    explicit Console( ProgramManager &);
-   virtual void default_handler() final;
+   virtual void run() final;
 
 protected:
    ///< Display the parsing error
    void show_error();
 
    ///< Print a simple error
-   void print_error(const char *error);
+   void print_error( const char error[], bool is_pgm_str = true );
 
    ///< Process a full command line
    void process(etl::string_view line);

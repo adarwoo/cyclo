@@ -180,4 +180,3 @@ void ssd1306_write_text(const char *string)
 			string++;
 	}
 }
-

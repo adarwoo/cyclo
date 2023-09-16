@@ -24,7 +24,7 @@ SOFTWARE.
  * console_task.cpp
  *
  * Created: 28/08/2021 20:27:07
- *  Author: micro
+ *  Author: software@arreckx.com
  */
 #include "console.hpp"
 
@@ -75,16 +75,16 @@ extern "C" void console_cdc_disabled( uint8_t port )
 
 void console_putc( vt100::char_t c )
 {
+   LOG_DEBUG( DOM, "PUT %c [0x%.2x]", isalnum( c ) ? c : '.', c );
    udi_cdc_multi_putc( 0, (int)c );
 }
 
 /** Create the timer for the splash */
 Console::Console( ProgramManager &program_manager )
-   : parser{ temp_program, error_buffer }, program_manager{ program_manager }
-{
-   // Start the thread
-   this->run();
-}
+   : parser{ temp_program, error_buffer }
+   , program_manager{ program_manager }
+   , task( etl::delegate<void()>::create<Console, &Console::run>( *this ) )
+{}
 
 void Console::show_error()
 {
@@ -103,23 +103,33 @@ void Console::show_error()
 
    T::putc( '^' );
    T::move_to_start_of_next_line();
-   print_error( error_buffer.c_str() );
+   print_error( error_buffer.c_str(), false );
 }
 
-void Console::print_error( const char *error )
+void Console::print_error( const char error[], bool is_pgm_str )
 {
    using T = TTerminal;
 
    T::putc( '#' );
    T::putc( ' ' );
-   T::puts( error );
+
+   if ( is_pgm_str )
+   {
+      T::print_P( error );
+   }
+   else
+   {
+      T::puts( error );
+   }
+
+
    T::move_to_start_of_next_line();
 }
 
 /**
  * The task entry point
  */
-void Console::default_handler()
+void Console::run()
 {
    using T = TTerminal;
 
@@ -180,6 +190,7 @@ void Console::process( etl::string_view line )
 
       program_manager.load( temp_program );
       // Copy this program, so it can be saved as is
+      last_program.clear();
       last_program.assign( line.begin(), line.end() );
       break;
    case Parser::Result::help: show_help(); break;
@@ -195,42 +206,57 @@ void Console::process( etl::string_view line )
       break;
    case Parser::Result::del: program_manager.erase( parser.get_program_number() ); break;
    case Parser::Result::run:
+      // Toggle USB mode
       if ( ! usb_mode )
       {
          usb_mode = true;
          fx::publish( msg::USBConnected{} );
       }
 
-      program_manager.load( parser.get_program_number() );
-      fx::publish( msg::StartProgram{ true } );
+      // Check the program exists
+      if ( program_manager.get_map()[ parser.get_program_number() ] )
+      {
+         auto pgmNumber = parser.get_program_number();
+         program_manager.load( pgmNumber );
+         program_manager.set_lastused( pgmNumber );
+
+         fx::publish( msg::StartProgram{ true } );
+      }
+      else
+      {
+         print_error( PSTR( "No such program number" ) );
+      }
       break;
    case Parser::Result::save:
       if ( last_program.empty() )
       {
-         print_error( "No valid program to save" );
+         print_error( PSTR( "No valid program to save" ) );
       }
       else
       {
-         program_manager.write_pgm_at( parser.get_program_number(), last_program );
+         auto pgmNumber = parser.get_program_number();
+
+         // Store
+         program_manager.write_pgm_at( pgmNumber, last_program );
+
+         // Make it the last used
+         program_manager.set_lastused( pgmNumber );
       }
 
       break;
    case Parser::Result::autostart:
    {
-      // Revoke current autostart
-      auto autostart_index = program_manager.get_autostart_index();
+      auto pgm = parser.get_program_number();
 
-      if ( autostart_index >= 0 )
+      // Make sure the program exists
+      if ( pgm >= 0 and not program_manager.get_map()[ pgm ] )
       {
-         // Erase the current auto
-         program_manager.write_pgm_at(
-            autostart_index, program_manager.get_pgm( autostart_index ) );
+         print_error( PSTR( "Empty program slot" ) );
       }
-
-      auto index = parser.get_program_number();
-
-      // Mark autostart
-      program_manager.write_pgm_at( index, program_manager.get_pgm( index ) );
+      else
+      {
+         program_manager.set_autostart( pgm );
+      }
    }
    break;
    default: LOG_ERROR( DOM, "Unexpected" ); break;
@@ -240,19 +266,20 @@ void Console::process( etl::string_view line )
 void Console::show_help()
 {
    auto help = PSTR(
-      "Commands are separated with spaces. All or just 1 letters can be used.\r\n"
+      "Commands are separated with spaces. All commands can be shortened to just 1 letter.\r\n"
       "\r\n"
-      "Basic commands:\r\n"
+      "Basic control commands:\r\n"
       "  open  .. Opens the contact\r\n"
       "  close .. Closes the contact\r\n"
       "\r\n"
-      "A valid program is a series of open/close with some delay added.\r\n"
-      "A minimum delay of 1 second is automatically added if none is specified.\r\n"
-      "Delays can have units (no units indicate seconds) as:\r\n"
+      "A delay is an unsigned integer (32bits) followed by an optional unit:\r\n"
       "  H .. hour\r\n"
       "  M .. minutes\r\n"
-      "  s .. seconds\r\n"
+      "  s .. seconds (default if no unit)\r\n"
       "  m .. milliseconds\r\n"
+      "\r\n"
+      "A valid program is a series of open/close/delay.\r\n"
+      "The system enforces a minimum delay of 1s between contact state changes.\r\n"
       "\r\n"
       "Example:\r\n"
       "  o 1 500m c 1H 30M\r\n"
@@ -260,16 +287,14 @@ void Console::show_help()
       "  close 250m open 10 c o *\r\n"
       "\r\n"
       "Other commands:\r\n"
-      "  list       : List saved programs\n\r"
-      "  save [1-9] : Save the last valid program\r\n"
-      "  del [1-9]  : Delete the program at the given location\r\n"
-      "  run [0-9]  : Run the given program\r\n"
-      "  auto [0-9] : Start the program automatically on power-up\r\n"
-      "  reset      : Clear the program memory\r\n"
-      "  quit       : Leave this shell and re-enable manual mode\r\n"
+      "  list           : List saved programs\n\r"
+      "  save [1-9]     : Save the last valid program\r\n"
+      "  del [1-9]      : Delete the program at the given location\r\n"
+      "  run [0-9]      : Run the given program\r\n"
+      "  auto [0-9|off] : Start the program automatically on power-up - or turn off\r\n"
+      "  quit           : Leave this shell and re-enable manual mode\r\n"
       "Fast run:\r\n"
-      "  [0-9] <*>  : Type a valid program number to run it.\r\n"
-      "               Add a '*' to loop it. Ignored for looped programs.\r\n" );
+      "  [0-9]          : Type a valid program number to run it.\r\n" );
 
    TTerminal::print_P( help );
 }
@@ -277,18 +302,22 @@ void Console::show_help()
 void Console::show_list()
 {
    // Iterate the bitset
-   uint8_t old, index = 0;
+   int8_t index, next_index = 0;
+   auto   autostart_index = program_manager.get_autostart_index();
 
    do
    {
-      old   = index;
-      index = program_manager.get_next( index );
+      index      = next_index;
+      next_index = program_manager.get_next( index );
+
       // Print the index
+      TTerminal::move_forward();
+      TTerminal::putc( autostart_index == index ? '*' : ' ' );
       TTerminal::move_forward( 2 );
-      TTerminal::putc( '0' + old );
+      TTerminal::putc( '0' + index );
       TTerminal::putc( ':' );
       TTerminal::move_forward( 4 );
-      TTerminal::puts( program_manager.get_pgm( old ) );
+      TTerminal::puts( program_manager.get_pgm( index ) );
       TTerminal::move_to_start_of_next_line();
-   } while ( old != index );
+   } while ( next_index > 0 );
 }
