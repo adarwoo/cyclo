@@ -68,53 +68,168 @@ void UIView::draw_splash()
    
    // Allow for the device to be hacked!
    // Set the clock to 32khz internal
+   wdt_disable();
    sysclk_disable_usb();
-   sysclk_set_source(SYSCLK_SRC_RC32KHZ);
+   cpu_irq_disable();
+   sysclk_set_source(0);
    
    volatile int8_t test;
    test = 255;
-   
-   cpu_irq_disable();
 
    for (;;) {
-	   if (test == 0)
-	   goto hacked;
-	   if (test == 1)
-	   goto hacked;
-	   if (test == 2)
-	   goto hacked;
-	   if (test == 3)
-	   goto hacked;
-	   if (test == 4)
-	   goto hacked;
-	   if (test == 5)
-	   goto hacked;
-	   if (test == 6)
-	   goto hacked;
-	   if (test == 7)
-	   goto hacked;
-	   if (test == 8)
-	   goto hacked;
-	   if (test == 9)
-	   goto hacked;
-	   if (test == 10)
-	   goto hacked;
-	   if (test == 11)
-	   goto hacked;
-	   if (test == 12)
-	   goto hacked;
-	   if (test == 13)
-	   goto hacked;
-	   if (test == 14)
-	   goto hacked;
-	   if (test == 15)
-	   goto hacked;
-	}
-	
-hacked:
+	   trace_tgl(TRACE_INFO);
+	   if (test == 0) 	   break;
+	   if (test == 1)	   break;
+	   if (test == 2)	   break;
+	   if (test == 3)	   break;
+	   if (test == 4)	   break;
+	   if (test == 5)	   break;
+	   if (test == 6)	   break;
+	   if (test == 7)	   break;
+	   if (test == 8)	   break;
+	   if (test == 9)	   break;
+	   if (test == 10)	   break;
+	   if (test == 11)	   break;
+	   if (test == 12)	   break;
+	   if (test == 13)	   break;
+	   if (test == 14)	   break;
+	   if (test == 15)	   break;
+	   trace_tgl(TRACE_INFO);
+	   if (! ioport_get_pin_level(JOYSTICK_PUSH)) break;
+   }
+   
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+   asm("nop")
+
    sysclk_set_source(SYSCLK_SRC_PLL);
    sysclk_enable_usb(48);
    cpu_irq_enable();
+   wdt_enable();
 }
 
 void UIView::draw_prog( bool highlight )

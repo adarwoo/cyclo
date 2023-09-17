@@ -1442,7 +1442,7 @@ static inline void sysclk_set_prescalers(uint8_t psadiv, uint8_t psbcdiv)
  * from the <em>System Clock Sources</em> section.
  */
 static inline void sysclk_set_source(uint8_t src)
-{
+	{
 	ccp_write_io((uint8_t *)&CLK.CTRL, src);
 }
 
