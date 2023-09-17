@@ -3,7 +3,7 @@
                 {
                         "id": "logo",
                         "type": "bitmap",
-                        "source": "arex.png"
+                        "source": "glitch_me.png"
                 },
                 {
                         "id": "switch_opened",

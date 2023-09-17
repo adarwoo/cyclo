@@ -30,9 +30,9 @@ RUN set -xe \
 
 # Install the avr toolchain
 RUN set -xe \
-  && wget https://avr.lumito.net/download/4940/ -O /tmp/avr-gcc.tar.xz \
+  && wget https://github.com/ZakKemble/avr-gcc-build/releases/download/v11.1.0-1/avr-gcc-11.1.0-x64-linux.tar.bz2 -O /tmp/avr-gcc.tar.tbz \
   && cd /opt \
-  && tar xJvf /tmp/avr-gcc.tar.xz \
+  && tar xjvf /tmp/avr-gcc.tar.tbz \
   && rm -f /tmp/avr-gcc.tar.xz \
   && cd /opt \
   && ln -s /opt/avr-gcc-* /opt/avr-gcc \

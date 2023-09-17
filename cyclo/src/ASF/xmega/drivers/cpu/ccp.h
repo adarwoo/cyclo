@@ -35,6 +35,11 @@
  */
 #ifndef CPU_CCP_H
 #define CPU_CCP_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <compiler.h>
 
 /**
@@ -109,5 +114,9 @@ extern void ccp_write_io(void *addr, uint8_t value);
  * -# call CCP write io to change system clock selection:
  *   - \code ccp_write_io((uint8_t *)&CLK.CTRL, CLK_SCLKSEL_RC32M_gc); \endcode
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CPU_CCP_H */
